@@ -46,6 +46,19 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 - [X] **Hito 9.3**: Barrido profundo "Zero-Hardcoding" erradicando variables hexadecimales y asegurando 100% de cumplimiento con tokens semánticos (ej. `bg-card`, `text-primary`).
 - [X] **Hito 9.4**: Estabilización de accesibilidad A11y garantizando soporte industrial para `aria-label` y remediación completa del pipeline de Código de Calidad.
 
+### Fase 9.5: Refinamiento de Permisos Espaciales & Herencia Jerárquica
+- [X] **Hito 9.5.1**: Propagación recursiva de visibilidad perimetral (`PUBLIC`, `INTERNAL`, `PRIVATE`) utilizando expresiones regulares sobre `materializedPath` en `SpaceService`.
+- [X] **Hito 9.5.2**: Rediseño del formulario de edición de espacios (`SpaceForm.tsx`) para incorporar el control premium "Heredar recursivamente" alineado 100% con los estándares visuales de la suite.
+
+### Fase 10: Auditoría en Cadena SaaS & Multi-Conexión Mongoose
+- [X] **Hito 10.1**: Conector de base de datos secundario y desacoplado (`connectLogsDB` en `src/lib/database/mongodb-logs.ts`) para persistir logs en el clúster remoto `logs.epv9qr8.mongodb.net` de forma Fail-Safe.
+- [X] **Hito 10.2**: Mapeo estandarizado de telemetría a las colecciones centralizadas `audit_config_changes` (marca blanca) y `audit_admin_ops` (espacios) de MongoDB Compass.
+- [X] **Hito 10.3**: Ingesta asíncrona de logs delta con enmascaramiento automático de campos altamente confidenciales (ej. `taxId`).
+- [X] **Hito 10.4**: Panel visual interactivo premium (`AuditHistoryPanel.tsx`) que unifica la cronología del tenant mediante chips de comparación semántica delta.
+- [X] **Hito 10.5**: Desacoplamiento total del timeline de logs a una página de auditoría técnica dedicada (`/admin/audit`), implementando aislamiento perimetral estricto de multitenancy SaaS y un Selector de Tenants en caliente reactivo controlado para administradores globales (`SUPER_ADMIN`).
+- [X] **Hito 10.6**: Integración de accesos directos e iconos de navegación interactivos en el grid principal de administración de `/admin` y en el sidebar lateral de telemetría de sistemas.
+- [X] **Hito 10.7**: Refactorización de la infraestructura de scripts del pipeline de auditoría (`abd-audit.ps1`) erradicando las excepciones de ejecución de PowerShell mediante llamadas nativas, aislamiento de stderr (`2>$null`) y adaptación nativa de `npx` en entornos locales Windows corporativos.
+
 ---
 
 ## ⚙️ Tecnologías Certificadas

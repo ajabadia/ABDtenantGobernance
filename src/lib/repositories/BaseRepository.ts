@@ -28,7 +28,7 @@ export class BaseRepository<T extends Document> {
     return await this.model.findByIdAndUpdate(id, data, { new: true }).exec();
   }
 
-  async updateOne(filter: QueryFilter<T>, data: UpdateQuery<T>, options = {}): Promise<any> {
+  async updateOne(filter: QueryFilter<T>, data: UpdateQuery<T>, options = {}): Promise<unknown> {
     return await this.model.updateOne(filter, data, options).exec();
   }
 

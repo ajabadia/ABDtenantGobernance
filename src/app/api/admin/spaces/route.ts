@@ -43,7 +43,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const tenantId = body.tenantId || user.tenantId;
     
-    const newSpace = await SpaceService.createSpace(tenantId, user.id, body);
+    const newSpace = await SpaceService.createSpace(tenantId, user.id, body, user.email);
     
     return NextResponse.json(newSpace, { status: 201 });
   } catch (error: unknown) {

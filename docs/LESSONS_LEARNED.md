@@ -202,7 +202,66 @@ interface DashboardActionCardProps {
   // ...
 }
 ```
-En caso de requerir interactividad estricta en el cliente, pasar solo el nombre en cadena del icono (ej. `'Palette'`) y mapearlo a su correspondiente componente Lucide dentro del Client Component.
 
+---
 
+## 🗃️ 11. Multi-Conexión de Bases de Datos Serverless asíncronas asimétricas (Fail-Safe)
 
+### El Síntoma
+Caídas en cascada de la aplicación principal o lentitud crítica en la respuesta de la API de administración de espacios si el clúster remoto de logs presenta latencia o fallos de red. Colisiones de compilación y fugas de conexión de Mongoose en entornos Serverless (como Next.js) al intentar compilar múltiples modelos ligados a distintas conexiones.
+
+### La Causa Raíz
+En Next.js Serverless, los módulos pueden importarse repetidamente debido a la recarga en caliente (Hot Reload). Si compilas modelos utilizando el flujo tradicional global `mongoose.model('AuditLog', Schema)`, Mongoose los asocia a la conexión por defecto. Si luego cambias la URI global para apuntar al clúster de logs, se contamina el pool operativo principal, interrumpiendo el flujo de autenticación o lanzando el error "Cannot overwrite model once compiled". Además, si los logs se guardan de forma síncrona en el hilo principal (`await log.save()`), cualquier fallo en Atlas de logs bloquea o tumba la transacción operativa del usuario.
+
+### La Solución Industrial
+1. **Multi-Conexión Aislada con Caché Global**: Utilizar `mongoose.createConnection()` en lugar del objeto global `mongoose.connect()`, y almacenar la conexión en una variable global para evitar la duplicación de pools en desarrollo:
+   ```typescript
+   let cached = global.mongooseLogs;
+   if (!cached) {
+     cached = global.mongooseLogs = { conn: null, promise: null };
+   }
+   // ... crear y reusar la conexión aislada ...
+   ```
+2. **Compiladores Dinámicos de Modelos**: No compilar el modelo de manera estática a nivel de archivo. Crear en su lugar una función dinámica que reciba la conexión aislada y compile el modelo solo si no existe en dicha conexión:
+   ```typescript
+   export function getSpaceAuditModel(connection: Connection) {
+     return connection.models.SpaceAudit || connection.model('SpaceAudit', AuditLogSchema, 'audit_admin_ops');
+   }
+   ```
+3. **Escritura Asíncrona Fail-Safe**: Envolver los disparos de auditoría en bloques `try/catch` asíncronos sin bloquear el `await` principal del servicio de negocio. Si falla la escritura de logs remota, se emite un warning local en lugar de abortar la transacción operativa del usuario:
+   ```typescript
+   // 🛡️ Fail-Safe standard
+   AuditService.logEvent(params).catch(err => {
+     console.error('[AUDIT_LOG_STREAM_FAILURE_WARNING]', err);
+   });
+   ```
+
+---
+
+## 📜 12. Desacoplamiento de Logs de Auditoría con Aislamiento SaaS & Resiliencia en Scripts de PowerShell (Windows)
+
+### El Síntoma
+1. **Falsos Negativos en PowerShell**: Al ejecutar la suite de auditoría técnica (`.\scripts\abd-audit.ps1`), el pipeline abortaba repentinamente en la Fase 4 diciendo `[AUDIT] BREACHES DETECTED - SYSTEM NOT READY [!!]` sin mostrar errores reales de Node en el log, omitiendo las fases vitales de compilación (`tsc`) y linteado (`eslint`).
+2. **Arquitectura UX Defectuosa & Riesgo de Seguridad**: Los logs de auditoría técnica estaban acoplados de forma rígida dentro de la consola visual de Marca Blanca, sobrecargando la vista y exponiendo a la aplicación a posibles fugas de datos multitenant si no se blindaba la manipulación manual de los parámetros de consulta (`searchParams`) en la URL.
+
+### La Causa Raíz
+1. **Peculiaridades de Shell de Windows**: El script de PowerShell utilizaba `Invoke-Expression` combinado con la redirección masiva de streams `2>&1`. Bajo este flujo, cualquier warning inofensivo escrito por Node o librerías en `stderr` (por ejemplo, avisos de deprecación del cargador de módulos o de Mongoose) es interpretado por PowerShell como un fallo crítico de subproceso, forzando `$LASTEXITCODE = 1` y cancelando el flujo de forma prematura. Adicionalmente, el comando `pnpm exec` suele colisionar en Windows al buscar dependencias recursivas en la base de un monorepo corporativo (`ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL`).
+2. **Acoplamiento de Vistas & URL Tampering**: El historial de logs se renderizaba directamente en `/admin/branding`. En arquitecturas SaaS multi-tenant, cada vista debe responder a una única responsabilidad estricta. Si un administrador astuto intentaba modificar la URL (`?tenantId=otro_tenant`), la falta de validación perimetral a nivel de Server Component del panel de logs permitía la visualización indebida de actividad ajena.
+
+### La Solución Industrial
+1. **Desacoplamiento Estricto e Isolation perimetral (RSC)**:
+   - Crear una página protegida dedicada `/admin/audit` (Server Component con `export const revalidate = 0`).
+   - Implementar un **Guard de Aislamiento Estricto** en el backend. Si el usuario actual posee rol `'SUPER_ADMIN'`, se le permite utilizar el query parameter `tenantId` de la URL para auditar cualquier organización mediante un dropdown de cliente dinámico (`AuditTenantSelector`). Si es un `'ADMIN'` estándar de una organización, el sistema fuerza inquebrantablemente el `targetTenantId` al `tenantId` de su sesión federada cifrada, haciendo que cualquier manipulación de la URL sea inocua:
+     ```typescript
+     const user = await ensureIndustrialAccess('ADMIN');
+     const isSuperAdmin = user.role === 'SUPER_ADMIN';
+     const targetTenantId = isSuperAdmin && tenantId ? tenantId : user.tenantId;
+     ```
+2. **Resiliencia de Scripts de Ejecución Nativos**:
+   - Sustituir `Invoke-Expression` por el operador de llamada directo y nativo de PowerShell `&`, aislar el stream de error estándar mediante `2>$null` y capturar el exitCode de inmediato tras la finalización del proceso para evitar mutaciones de comandos internos de shell:
+     ```powershell
+     $out = & node $StepArgs 2>$null
+     $exitCode = $LASTEXITCODE
+     ```
+   - Sustituir `pnpm exec` por la herramienta de ejecución de binarios local nativa de Node `npx` (`npx tsc --noEmit` y `npx eslint --quiet`), la cual es 100% portable y resiliente ante monorepos e instalaciones corporativas de Windows.
+3. **Puntos de Entrada Consistentes**: Enriquecer la UI mediante accesos rápidos e iconos de accesibilidad en el grid principal de control y en el sidebar lateral de telemetría, enlazándolos a la nueva ruta en todos los locales del ecosistema.

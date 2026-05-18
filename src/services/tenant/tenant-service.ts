@@ -1,6 +1,7 @@
 import { TenantSchema, type Tenant } from '@/lib/schemas/tenant';
 import { TenantRepository } from '@/lib/repositories/TenantRepository';
 import { SecurityService } from '@/lib/security';
+import { AuditService } from './audit-service';
 
 const tenantRepository = new TenantRepository();
 
@@ -78,8 +79,32 @@ export class TenantService {
       throw new Error(`Fallo al actualizar el tenant con ID: ${tenantId}`);
     }
 
-    // Registrar en auditoría de consola
+    // Registrar en auditoría de consola e inmutable de logs remotos
     console.log(`[AUDIT] [UPDATE_TENANT_CONFIG] Tenant: ${tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
+    
+    // Obtener delta limpio de auditoría
+    const changedFields = { ...updateData };
+    const prevObj = previousState.toObject();
+
+    // 🛡️ Ocultar datos altamente confidenciales del feed de auditoría
+    if (changedFields.billing?.taxId) {
+      changedFields.billing = { ...changedFields.billing, taxId: '[ENCRYPTED_DATA]' };
+    }
+    if (prevObj.billing?.taxId) {
+      prevObj.billing = { ...prevObj.billing, taxId: '[ENCRYPTED_DATA]' };
+    }
+
+    // Disparar log de auditoría remota de forma asíncrona
+    AuditService.logEvent({
+      tenantId,
+      action: 'UPDATE_BRANDING',
+      entityType: 'TENANT',
+      entityId: previousState._id.toString(),
+      userId: performedBy,
+      userEmail: performedBy,
+      changedFields,
+      previousState: prevObj
+    });
     
     // Purgar caché
     this.cache.delete(tenantId);
@@ -143,6 +168,22 @@ export class TenantService {
 
     console.log(`[AUDIT] [CREATE_TENANT] Tenant: ${validated.tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
 
+    // Registrar auditoría remota SaaS
+    const auditFields = { ...validated };
+    if (auditFields.billing?.taxId) {
+      auditFields.billing = { ...auditFields.billing, taxId: '[ENCRYPTED_DATA]' };
+    }
+
+    AuditService.logEvent({
+      tenantId: validated.tenantId,
+      action: 'CREATE_TENANT',
+      entityType: 'TENANT',
+      entityId: createdDoc._id.toString(),
+      userId: performedBy,
+      userEmail: performedBy,
+      changedFields: auditFields
+    });
+
     const result = TenantSchema.parse(createdDoc.toObject());
     if (result.billing?.taxId) {
       result.billing.taxId = SecurityService.decrypt(result.billing.taxId);
@@ -163,6 +204,17 @@ export class TenantService {
     }
 
     console.log(`[AUDIT] [DELETE_TENANT] ID: ${id} | TenantId: ${updatedDoc.tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
+
+    // Registrar auditoría remota SaaS
+    AuditService.logEvent({
+      tenantId: updatedDoc.tenantId,
+      action: 'DELETE_TENANT',
+      entityType: 'TENANT',
+      entityId: id,
+      userId: performedBy,
+      userEmail: performedBy,
+      changedFields: { active: false }
+    });
 
     // Purgar de la caché en memoria
     this.cache.delete(updatedDoc.tenantId);

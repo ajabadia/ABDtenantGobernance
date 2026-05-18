@@ -1,6 +1,6 @@
 "use client"
 
-import { Building2, Globe, Database, Trash2, Edit3, Palette, Layers } from 'lucide-react'
+import { Building2, Globe, Database, Trash2, Edit3, Palette, Layers, ShieldCheck } from 'lucide-react'
 import type { Tenant } from "@/lib/schemas/tenant"
 import type { TenantManagementTranslations } from "./types"
 import Link from 'next/link'
@@ -56,6 +56,14 @@ export function TenantCard({ tenant, translations: t, onEdit, onDelete }: Tenant
             title="Branding Customizer"
           >
             <Palette size={13} aria-hidden="true" />
+          </Link>
+          <Link 
+            href={`/${locale}/admin/audit?tenantId=${tenant.tenantId}`}
+            className="p-1.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-md transition-all outline-none"
+            aria-label="View audit logs and telemetries"
+            title="Audit Logs & Telemetry"
+          >
+            <ShieldCheck size={13} aria-hidden="true" />
           </Link>
           <button aria-label={t.actions.edit}
             onClick={() => onEdit(tenant)}

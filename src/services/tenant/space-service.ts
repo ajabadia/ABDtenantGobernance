@@ -2,6 +2,7 @@ import { SpaceSchema, type Space } from '@/lib/schemas/spaces';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import type { QueryFilter } from 'mongoose';
 import type { ISpace } from '@/models/Space';
+import { AuditService } from './audit-service';
 
 const spaceRepository = new SpaceRepository();
 
@@ -13,10 +14,11 @@ export class SpaceService {
   static async createSpace(
     tenantId: string,
     userId: string,
-    data: Partial<Space>
+    data: Partial<Space>,
+    userEmail = 'SYSTEM'
   ): Promise<Space> {
     let materializedPath = `/${data.slug}`;
-    let parentSpaceId = data.parentSpaceId;
+    const parentSpaceId = data.parentSpaceId;
 
     if (parentSpaceId) {
       const parent = await spaceRepository.findById(parentSpaceId);
@@ -37,6 +39,25 @@ export class SpaceService {
     });
 
     const doc = await spaceRepository.create(newSpaceData as unknown as ISpace);
+    
+    // Registrar auditoría remota asíncrona (SaaS Logs)
+    AuditService.logEvent({
+      tenantId,
+      action: 'CREATE_SPACE',
+      entityType: 'SPACE',
+      entityId: doc._id.toString(),
+      userId,
+      userEmail,
+      changedFields: {
+        name: doc.name,
+        slug: doc.slug,
+        type: doc.type,
+        visibility: doc.visibility,
+        parentSpaceId: doc.parentSpaceId,
+        materializedPath: doc.materializedPath
+      }
+    });
+
     const obj = doc.toObject();
     if (obj._id) obj._id = obj._id.toString();
     return SpaceSchema.parse(obj);
@@ -98,7 +119,9 @@ export class SpaceService {
   static async moveSpace(
     spaceId: string,
     newParentId: string | null,
-    tenantId: string
+    tenantId: string,
+    userId = 'SYSTEM',
+    userEmail = 'SYSTEM'
   ): Promise<void> {
     const space = await spaceRepository.findById(spaceId);
     if (!space) {
@@ -125,6 +148,24 @@ export class SpaceService {
       }
     }).exec();
 
+    // Registrar auditoría remota asíncrona (SaaS Logs)
+    AuditService.logEvent({
+      tenantId,
+      action: 'MOVE_SPACE',
+      entityType: 'SPACE',
+      entityId: spaceId,
+      userId,
+      userEmail,
+      changedFields: {
+        parentSpaceId: newParentId,
+        materializedPath: newPath
+      },
+      previousState: {
+        parentSpaceId: space.parentSpaceId,
+        materializedPath: oldPath
+      }
+    });
+
     // 2. Actualizar recursivamente en cascada todos los hijos
     if (oldPath) {
       const children = await spaceRepository.find({
@@ -143,6 +184,81 @@ export class SpaceService {
       }
 
       console.log(`[AUDIT] [MOVE_SPACE] Moved space ${spaceId} and updated ${children.length} nested child spaces recursively.`);
+    }
+  }
+
+  /**
+   * Actualiza la visibilidad de un espacio y opcionalmente la propaga recursivamente en cascada
+   * a todos sus sub-espacios descendientes.
+   */
+  static async updateSpaceVisibility(
+    spaceId: string,
+    visibility: 'PUBLIC' | 'INTERNAL' | 'PRIVATE',
+    tenantId: string,
+    userId: string,
+    userEmail: string,
+    cascade = false
+  ): Promise<void> {
+    const space = await spaceRepository.findById(spaceId);
+    if (!space) {
+      throw new Error('Espacio no encontrado');
+    }
+
+    const previousState = { visibility: space.visibility };
+
+    // 1. Actualizar el espacio actual
+    await spaceRepository.model.findByIdAndUpdate(spaceId, {
+      $set: { 
+        visibility, 
+        updatedAt: new Date() 
+      }
+    }).exec();
+
+    // Registrar auditoría remota asíncrona (SaaS Logs)
+    AuditService.logEvent({
+      tenantId,
+      action: 'UPDATE_SPACE',
+      entityType: 'SPACE',
+      entityId: spaceId,
+      userId,
+      userEmail,
+      changedFields: { visibility },
+      previousState
+    });
+
+    // 2. Propagación en cascada a los descendientes usando el materializedPath
+    if (cascade && space.materializedPath) {
+      const oldPath = space.materializedPath;
+      
+      const descendants = await spaceRepository.find({
+        tenantId,
+        materializedPath: { $regex: `^${oldPath}/` }
+      });
+
+      for (const desc of descendants) {
+        const prevDescState = { visibility: desc.visibility };
+        
+        await spaceRepository.model.findByIdAndUpdate(desc._id, {
+          $set: { 
+            visibility, 
+            updatedAt: new Date() 
+          }
+        }).exec();
+
+        // Registrar auditoría de herencia remota por cada sub-espacio mutado
+        AuditService.logEvent({
+          tenantId,
+          action: 'HERITAGE_VISIBILITY',
+          entityType: 'SPACE',
+          entityId: desc._id.toString(),
+          userId,
+          userEmail,
+          changedFields: { visibility, inheritedFrom: spaceId },
+          previousState: prevDescState
+        });
+      }
+      
+      console.log(`[AUDIT] [VISIBILITY_HERITAGE] Propagated visibility ${visibility} from ${spaceId} to ${descendants.length} sub-spaces.`);
     }
   }
 

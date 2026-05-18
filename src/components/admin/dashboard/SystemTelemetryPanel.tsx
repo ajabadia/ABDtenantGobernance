@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
-import { ShieldCheck, Terminal } from 'lucide-react';
+import { ShieldCheck, Terminal, ArrowRight } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Card } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 
 interface SystemTelemetryPanelProps {
   userId: string;
@@ -51,7 +52,7 @@ export function SystemTelemetryPanel({
 
       <Separator className="bg-border" aria-hidden="true" />
       
-      <div className="p-4 bg-secondary/30 border border-border flex flex-col gap-2 rounded-lg">
+      <div className="p-4 bg-secondary/30 border border-border flex flex-col gap-2 rounded-lg group">
         <div className="flex items-center gap-2 text-[9px] font-mono font-bold tracking-widest text-primary uppercase">
           <Terminal className="w-3.5 h-3.5" />
           {t('auditTitle')}
@@ -59,6 +60,14 @@ export function SystemTelemetryPanel({
         <p className="text-[9px] text-muted-foreground uppercase leading-relaxed font-mono">
           {t('auditDesc')}
         </p>
+        <Link 
+          href={`/${locale}/admin/audit`}
+          className="mt-2 w-full inline-flex items-center justify-between px-3 py-1.5 bg-secondary/80 hover:bg-primary/10 text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-primary border border-border hover:border-primary/20 rounded transition-all cursor-pointer"
+          aria-label="Ir a la página de auditoría técnica"
+        >
+          <span>{t('viewFullHistory')}</span>
+          <ArrowRight size={10} className="opacity-70 group-hover:translate-x-0.5 transition-all text-primary" />
+        </Link>
       </div>
     </Card>
   );

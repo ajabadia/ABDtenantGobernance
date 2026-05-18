@@ -62,6 +62,7 @@ export function useSpacesManager(explicitTenantId: string | null) {
 
   useEffect(() => {
     if (tenantId || allTenants.length === 0) {
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
       fetchSpaces();
     }
   }, [tenantId]);

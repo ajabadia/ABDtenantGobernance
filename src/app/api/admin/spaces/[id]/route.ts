@@ -24,12 +24,19 @@ export async function PATCH(
     
     // 1. Move space if parent changed
     if (body.parentSpaceId !== undefined) {
-      await SpaceService.moveSpace(id, body.parentSpaceId || null, tenantId);
+      await SpaceService.moveSpace(id, body.parentSpaceId || null, tenantId, user.id, user.email);
+    }
+
+    // 2. Propagate visibility recursively if cascade option is sent
+    if (body.visibility !== undefined) {
+      await SpaceService.updateSpaceVisibility(id, body.visibility, tenantId, user.id, user.email, body.cascade === true);
     }
     
-    // 2. Update other fields
+    // 3. Update other fields
     const updateData = { ...body };
     delete updateData.parentSpaceId;
+    delete updateData.visibility; // Handled by our dedicated updateSpaceVisibility method
+    delete updateData.cascade;
     delete updateData.tenantId;
     delete updateData.materializedPath; // Managed by backend
     delete updateData._id;

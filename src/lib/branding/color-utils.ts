@@ -47,15 +47,15 @@ export function getContrastColor(hexcolor: string): '#000000' | '#ffffff' {
 export function hexToHslComponents(hex: string): string {
   if (!hex || !hex.startsWith('#')) return '';
   try {
-    let r = parseInt(hex.substring(1, 3), 16) / 255;
-    let g = parseInt(hex.substring(3, 5), 16) / 255;
-    let b = parseInt(hex.substring(5, 7), 16) / 255;
+    const r = parseInt(hex.substring(1, 3), 16) / 255;
+    const g = parseInt(hex.substring(3, 5), 16) / 255;
+    const b = parseInt(hex.substring(5, 7), 16) / 255;
 
     const max = Math.max(r, g, b);
     const min = Math.min(r, g, b);
     let h = 0;
     let s = 0;
-    let l = (max + min) / 2;
+    const l = (max + min) / 2;
 
     if (max !== min) {
       const d = max - min;

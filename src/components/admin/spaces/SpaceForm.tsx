@@ -46,12 +46,17 @@ export function SpaceForm({
     visibility: 'INTERNAL',
     parentSpaceId: ''
   });
+  const [cascadeVisibility, setCascadeVisibility] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (spaceToEdit) {
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
       setFormData({ ...spaceToEdit, parentSpaceId: spaceToEdit.parentSpaceId || '' });
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
+      setCascadeVisibility(false); // Resetear al cambiar de espacio
     } else {
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
       setFormData({
         name: '',
         slug: '',
@@ -60,6 +65,8 @@ export function SpaceForm({
         visibility: 'INTERNAL',
         parentSpaceId: ''
       });
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
+      setCascadeVisibility(false);
     }
   }, [spaceToEdit]);
 
@@ -83,7 +90,8 @@ export function SpaceForm({
       const payload = {
         ...formData,
         tenantId,
-        parentSpaceId: formData.parentSpaceId === '' ? null : formData.parentSpaceId
+        parentSpaceId: formData.parentSpaceId === '' ? null : formData.parentSpaceId,
+        cascade: cascadeVisibility
       };
 
       const url = spaceToEdit ? `/api/admin/spaces/${spaceToEdit._id}` : `/api/admin/spaces`;
@@ -196,6 +204,29 @@ export function SpaceForm({
           </select>
         </div>
       </div>
+
+      {spaceToEdit && (
+        <div className="flex items-center justify-between p-4 bg-secondary/10 border border-border rounded-lg">
+          <div className="flex flex-col gap-0.5">
+            <label
+              htmlFor="cascade-visibility"
+              className="text-xs font-semibold text-foreground cursor-pointer select-none"
+            >
+              {t('cascade_label', { defaultMessage: 'Heredar recursivamente' })}
+            </label>
+            <span className="text-[10px] text-muted-foreground select-none leading-normal">
+              {t('cascade_desc', { defaultMessage: 'Propaga la visibilidad seleccionada a todos los sub-espacios descendientes.' })}
+            </span>
+          </div>
+          <input
+            id="cascade-visibility"
+            type="checkbox"
+            checked={cascadeVisibility}
+            onChange={e => setCascadeVisibility(e.target.checked)}
+            className="w-4 h-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
+          />
+        </div>
+      )}
 
       <DialogFooter className="pt-4 border-t border-border mt-4">
         <Button 

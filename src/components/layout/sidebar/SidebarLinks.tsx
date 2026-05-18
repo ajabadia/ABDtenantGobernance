@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, Palette, Folder, Terminal } from 'lucide-react';
+import { Home, Palette, Folder, Terminal, ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 
@@ -53,6 +53,18 @@ export function SidebarLinks({
         >
           <Folder className="w-4 h-4 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
           {locale === 'es' ? 'Jerarquía de Espacios' : 'Spaces Hierarchy'}
+        </Link>
+      )}
+
+      {/* Link A.2: Chain Auditing (Auditoría en Cadena) */}
+      {isLoggedIn && isAdmin && (
+        <Link
+          href="/admin/audit"
+          onClick={toggleSidebar}
+          className="flex items-center gap-4 px-4 py-3 bg-muted/10 border border-border hover:border-primary/20 hover:bg-primary/5 text-muted-foreground hover:text-primary transition-all duration-200 uppercase font-mono text-[10px] font-bold tracking-wider rounded-none"
+        >
+          <ShieldCheck className="w-4 h-4 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+          {locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing'}
         </Link>
       )}
 

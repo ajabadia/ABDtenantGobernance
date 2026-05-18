@@ -27,6 +27,7 @@ export function TenantForm({ initialData, onSubmit, onCancel, isSubmitting }: Te
 
   React.useEffect(() => {
     if (initialData) {
+      /* eslint-disable-next-line react-hooks/set-state-in-effect */
       setFormData(prev => ({ ...prev, ...initialData }))
     }
   }, [initialData])

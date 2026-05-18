@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Separator } from '@/components/ui/separator';
 import { ensureIndustrialAccess } from '@/lib/session';
-import { LayoutDashboard, Palette, Layers, Building2 } from 'lucide-react';
+import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 
@@ -25,14 +25,19 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
         {/* Header */}
         <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-8">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-4">
-              <LayoutDashboard className="w-8 h-8 text-primary" aria-hidden="true" />
-              <h1 className="text-4xl font-black tracking-tighter uppercase italic">
-                ABD <span className="text-primary">{ap('gobernanza')}</span>
-              </h1>
+            {/* Tag Monospace de Ubicación (Breadcrumb/Ruta) de acuerdo con la guía de estilo */}
+            <div className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-primary flex items-center gap-2 mb-2">
+              <LayoutDashboard size={14} className="text-primary animate-pulse" aria-hidden="true" />
+              {t('controlConsole')} • DASHBOARD
             </div>
-            <p className="text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono ml-12">
-              Consola de Control del Tenant: <span className="text-primary font-bold">{user.tenantId}</span>
+            
+            <h1 className="text-3xl font-black uppercase italic tracking-tight text-foreground leading-none">
+              ABD <span className="text-primary">{ap('gobernanza')}</span>
+            </h1>
+            
+            {/* Subtítulo descriptivo en Geist Sans, tamaño normal y sentence-case */}
+            <p className="text-sm text-muted-foreground font-sans mt-2 leading-relaxed">
+              Consola de control federada y gobernanza en caliente del tenant <span className="text-primary font-bold">{user.tenantId}</span>.
             </p>
           </div>
         </header>
@@ -78,6 +83,18 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
                 footerValue={ap('activo')}
                 buttonText={t('tenantCardBtn')}
                 href={`/${locale}/admin/tenants`}
+              />
+
+              {/* Card 4: Chain Auditing Logs */}
+              <DashboardActionCard 
+                icon={ShieldCheck}
+                category={t('certification')}
+                title={t('auditTitle')}
+                description={t('auditDesc')}
+                footerLabel={t('prodReady')}
+                footerValue={ap('activo')}
+                buttonText={t('auditTitle')}
+                href={`/${locale}/admin/audit`}
               />
 
             </div>
