@@ -58,6 +58,7 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 - [X] **Hito 10.5**: Desacoplamiento total del timeline de logs a una página de auditoría técnica dedicada (`/admin/audit`), implementando aislamiento perimetral estricto de multitenancy SaaS y un Selector de Tenants en caliente reactivo controlado para administradores globales (`SUPER_ADMIN`).
 - [X] **Hito 10.6**: Integración de accesos directos e iconos de navegación interactivos en el grid principal de administración de `/admin` y en el sidebar lateral de telemetría de sistemas.
 - [X] **Hito 10.7**: Refactorización de la infraestructura de scripts del pipeline de auditoría (`abd-audit.ps1`) erradicando las excepciones de ejecución de PowerShell mediante llamadas nativas, aislamiento de stderr (`2>$null`) y adaptación nativa de `npx` en entornos locales Windows corporativos.
+- [X] **Hito 10.8**: Despliegue oficial en producción en Vercel (`https://abd-tenant-gobernance.vercel.app/`), federación SSO activa con el IdP (`https://abd-auth.vercel.app`) y mapeo de variables de entorno asépticas.
 
 ---
 
