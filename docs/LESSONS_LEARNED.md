@@ -265,3 +265,90 @@ En Next.js Serverless, los módulos pueden importarse repetidamente debido a la 
      ```
    - Sustituir `pnpm exec` por la herramienta de ejecución de binarios local nativa de Node `npx` (`npx tsc --noEmit` y `npx eslint --quiet`), la cual es 100% portable y resiliente ante monorepos e instalaciones corporativas de Windows.
 3. **Puntos de Entrada Consistentes**: Enriquecer la UI mediante accesos rápidos e iconos de accesibilidad en el grid principal de control y en el sidebar lateral de telemetría, enlazándolos a la nueva ruta en todos los locales del ecosistema.
+
+---
+
+## 📜 13. Delegación de Wrappers en Motores CI/CD de Windows (npx/npm shell delegation)
+
+### El Síntoma
+Intentar ejecutar scripts de NodeJS o herramientas de empaquetado (como `npx` o `npm`) dentro de subprocesos o consolas no interactivas en entornos Windows falla con errores del tipo `Spawn ENOENT` o de variables de entorno nulas, deteniendo la construcción técnica sin arrojar causas legibles.
+
+### La Causa Raíz
+En sistemas operativos Windows, `npm` y `npx` no son ejecutables binarios directos (PE), sino scripts de procesamiento de comandos (`.cmd` o `.ps1`). Cuando NodeJS o un shell perimetral intenta llamar a `npx` de forma cruda, el kernel de Windows es incapaz de ejecutarlo directamente al carecer de un binario nativo. Se requiere que el shell del sistema actúe como intérprete y cargue el script de lotes.
+
+### La Solución Industrial
+Envolver toda invocación de `npx` o `npm` que corra dentro de subprocesos (por ejemplo, llamadas a `exec` o `spawn` de NodeJS) mediante la delegación explícita del procesador de comandos de Windows (`cmd /c`):
+```javascript
+const { exec } = require('child_process');
+// ❌ Incorrecto: exec('npx tsc --noEmit') -> Falla en Windows no interactivo
+// 🛡️ Solución Industrial:
+const command = process.platform === 'win32' ? 'cmd /c npx tsc --noEmit' : 'npx tsc --noEmit';
+exec(command, ...);
+```
+
+---
+
+## 🛰️ 14. Resolución y Prevención de Falsas Coincidencias en Subdominios Base de Vercel (Control Plane Host Extraction)
+
+### El Síntoma
+Al desplegar la aplicación SaaS en Vercel, al intentar acceder a la ruta raíz (`/`), el sistema redirigía automáticamente a `/logout-success?error=tenant_not_found` bloqueando el acceso al Control Plane central.
+
+### La Causa Raíz
+El parser del subdominio (`getTenantSubdomain(host)`) dividía el dominio por puntos y, al detectar más de 2 segmentos (`parts.length > 2`), extraía el primer segmento como el inquilino. Para un despliegue estándar en Vercel (ej: `abd-tenant-gobernance.vercel.app`), el array resultante tiene 3 segmentos (`["abd-tenant-gobernance", "vercel", "app"]`). Por lo tanto, el sistema catalogaba erróneamente el nombre de la aplicación `"abd-tenant-gobernance"` como un ID de inquilino (tenant). Al validarlo contra el IdP federado y no existir en la base de datos central, el middleware interceptaba el flujo y redirigía a `tenant_not_found`.
+
+### La Solución Industrial
+Robustecer el algoritmo de extracción del host para reconocer de forma activa los dominios base principales de la aplicación de Gobernanza (Control Plane) y aplicar un filtrado estricto en la profundidad de los subdominios de Vercel:
+```typescript
+export function getTenantSubdomain(host: string | null): string | null {
+  if (!host) return null;
+  const hostname = host.split(':')[0].toLowerCase();
+  
+  // 1. Bypass para dominios principales
+  if (
+    hostname === 'abd-tenant-gobernance.vercel.app' || 
+    hostname === 'localhost' || 
+    hostname === '127.0.0.1'
+  ) {
+    return null;
+  }
+
+  const parts = hostname.split('.');
+  
+  // 2. Control estricto para subdominios desplegados en Vercel (ej: tenant.abd-tenant-gobernance.vercel.app -> parts.length === 4)
+  if (hostname.endsWith('.vercel.app')) {
+    if (parts.length > 3) {
+      return parts[0];
+    }
+    return null;
+  }
+  
+  // 3. Dominios personalizados de producción estándar (ej: tenant.abdelevators.com -> parts.length === 3)
+  if (parts.length > 2) {
+    const subdomain = parts[0];
+    if (subdomain === 'www') return null;
+    return subdomain;
+  }
+  
+  return null;
+}
+```
+
+---
+
+## 🗃️ 15. Desincronización de Base de Datos y Colisiones de Capitalización (MongoDB Case-Sensitive Collections Mismatch)
+
+### El Síntoma
+Al loguearse desde el despliegue de Vercel, la aplicación fallaba lanzando un error plano de API: `{"error":"Redirect URI mismatch"}` a pesar de haber verificado y añadido las URLs de redirección al cliente federado en la base de datos de MongoDB Atlas.
+
+### La Causa Raíz
+En MongoDB Atlas, los nombres de las colecciones son estrictamente **sensibles a mayúsculas y minúsculas (case-sensitive)**. En la base de datos compartida central de `ABDAuth` (`ABDElevators-Auth`), existían simultáneamente dos colecciones físicamente independientes: `applications` (con "a" minúscula) y `Applications` (con "A" mayúscula). El script de mantenimiento actualizó la colección de minúsculas `applications` (que es la pluralización por defecto de Mongoose). Sin embargo, el servidor de producción de `ABDAuth` estaba explícitamente configurado para validar contra `Applications` (con "A" mayúscula). Esta desincronización de capitalización mantuvo el callback antiguo en producción, denegando el apretón de manos federado.
+
+### La Solución Industrial
+1. **Resiliencia ante Duplicación de Colecciones**: Todo script de aprovisionamiento o mantenimiento de grado industrial que altere configuraciones federadas del ecosistema debe realizar una actualización en cascada buscando el `clientId` en todas las colecciones homólogas posibles de forma tolerante a mayúsculas/minúsculas.
+2. **Definición Explícita de Esquemas**: Configurar siempre de forma explícita el nombre de la colección en el modelo de Mongoose para evitar que cambios de versión del driver o pluralizaciones implícitas del motor creen colecciones duplicadas en Atlas:
+   ```typescript
+   const ApplicationSchema = new Schema({ ... }, { collection: 'Applications' });
+   ```
+
+---
+*Documento de Lecciones Aprendidas redactado y certificado por Antigravity | ABD Ecosystem Architecture Team.*
