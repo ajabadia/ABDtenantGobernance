@@ -6,7 +6,7 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 
 ## 📊 Estado Actual del Sistema: `SYS_CERTIFIED` ✅
 
-*   **Última Certificación**: 18 de Mayo de 2026
+*   **Última Certificación**: 18 de Mayo de 2026 (Certificado bajo Next.js 16, React 19 y SSO Resiliente)
 *   **Compilación de Producción (`next build`)**: 100% Exitosa (Webpack y Turbopack optimizados)
 *   **Cumplimiento de Auditoría Industrial**: Cero Errores Técnicos (Audit Pipeline PASSED)
 *   **Puerto Oficial del Ecosistema**: `3500`
@@ -36,6 +36,9 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 - [X] **Hito 4.3**: Mapeo y serialización de traducciones i18n multilenguaje (español e inglés) al 100% de cobertura.
 - [X] **Hito 4.4**: Remediación integral de hallazgos del pipeline de auditoría de i18n y tipados estrictos (Cero usos de `any`, cero textos hardcodeados).
 - [X] **Hito 4.5**: Escalado a Consola Multi-Tenant Dinámica mediante preprocesamiento Zod resiliente ante datos legacy, botón de acceso contextual en tarjetas de tenant y Selector de Contexto en caliente (Context Switcher) en la pantalla de Marca Blanca.
+- [X] **Hito 4.6**: Estabilización del proxy federado (`proxy.ts`) alineándolo con la resiliencia de sesión e integración federada de `ABDQuiz`.
+- [X] **Hito 4.7**: Resolución definitiva de bucles de redirección de red ("Code already used") mediante tolerancia a fallos asimétrica ante caídas y respuestas 401 del IdP central.
+- [X] **Hito 4.8**: Refactorización de componentes de control (como `DashboardActionCard`) migrándolos a Server Components de React 19 para permitir la serialización segura de iconos Lucide en el servidor.
 
 ### Fase 9: Jerarquía de Espacios Asépticos & Gobernanza Zero-Hardcoding
 - [X] **Hito 9.1**: Corrección de validación Zod (`nullable().optional()`) para soportar la instanciación de espacios raíz de nivel cero.

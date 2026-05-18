@@ -155,4 +155,54 @@ Para blindarse ante AST/Regex limitados sin sacrificar funcionalidad, los identi
 >
 ```
 
+---
+
+## 🛡️ 9. Resiliencia de Sesión en Proxies de Next.js 16 (Tolerancia a Fallos del IdP Central)
+
+### El Síntoma
+Bucle infinito de redirección al intentar acceder a rutas protegidas bajo el proxy de desarrollo local (`http://localhost:3500/en/admin`), lanzando la excepción `"Token exchange failed: Code already used"` en el callback de autenticación.
+
+### La Causa Raíz
+El proxy interceptor (`src/proxy.ts` en Next.js 16) llamaba al endpoint `/api/auth/session/verify` del Identity Provider central para validar si la sesión de un usuario continuaba activa en vivo. Si dicho endpoint respondía con un error `401` (por desajustes en el Bearer `AUTH_CLIENT_SECRET` local vs el de la nube) o por caídas de red, el middleware local invalidaba inmediatamente la cookie local, purgaba la sesión y redirigía al IdP central de forma pesimista. Como el IdP central ya tenía una cookie de sesión del navegador válida, redirigía de inmediato de vuelta con un nuevo código, causando una tormenta de peticiones superpuestas y el consumo duplicado de códigos OAuth efímeros.
+
+### La Solución Industrial
+Implementar un patrón de tolerancia a fallos de "Fail-Open" o resiliencia asimétrica. El proxy local solo debe destruir la sesión si el IdP responde explícitamente con `200 OK` y `{ active: false }` (usuario deshabilitado de forma intencionada). Ante cualquier fallo del IdP (401, 500 o fallos de red), se asume que la sesión local sigue siendo válida de forma temporal, evitando bucles infinitos por problemas de configuración o red de servicios externos:
+```typescript
+if (response.ok) {
+  const data = await response.json() as { active: boolean };
+  return !!data.active;
+} else {
+  // 🛡️ Resilience Standard: Central IdP responded with non-200. Gracefully fail-open to keep local session.
+  console.warn(`[PROXY_SESSION_VERIFICATION_WARNING] Central IdP responded with status ${response.status}. Falling back to local session validity.`);
+  return true;
+}
+```
+
+---
+
+## 🛡️ 10. Serialización de Componentes de Iconos en React 19 (Server vs Client Components)
+
+### El Síntoma
+Error de consola y compilador en caliente:
+`Only plain objects can be passed to Client Components from Server Components. Classes or other objects with methods are not supported.` al renderizar una vista de panel de administración.
+
+### La Causa Raíz
+En React 19 y Next.js 16 (Turbopack), no es posible pasar objetos no serializables (como funciones, clases o componentes funcionales de React, incluyendo los iconos de Lucide como `Palette` o `Layers`) desde un Server Component de nivel superior directamente a un Client Component interactivo (declarado con `'use client'`). Esto rompe el límite de serialización de React Server Components (RSC).
+
+### La Solución Industrial
+Si el componente de destino (como `DashboardActionCard`) no contiene hooks interactivos (`useState`, `useEffect`, event handlers), la mejor práctica es **eliminar por completo la directiva `'use client'` del componente receptor**, transformándolo en un Server Component. De esta forma, el paso de componentes funcionales como props se procesa de forma nativa e instantánea en el servidor sin cruzar límites de serialización:
+```tsx
+// src/components/admin/dashboard/DashboardActionCard.tsx
+// ❌ Eliminar 'use client'
+import React from 'react';
+import { LucideIcon } from 'lucide-react';
+
+interface DashboardActionCardProps {
+  icon: LucideIcon;
+  // ...
+}
+```
+En caso de requerir interactividad estricta en el cliente, pasar solo el nombre en cadena del icono (ej. `'Palette'`) y mapearlo a su correspondiente componente Lucide dentro del Client Component.
+
+
 
