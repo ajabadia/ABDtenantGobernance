@@ -11,39 +11,18 @@ import {
   Layers, 
   ChevronDown, 
   ChevronUp, 
-  Eye,
-  Shield,
-  FileCode,
-  Tag
+  Eye
 } from 'lucide-react';
-
-interface AuditLog {
-  _id?: string;
-  tenantId: string;
-  action: 
-    | 'CREATE_SPACE' 
-    | 'UPDATE_SPACE' 
-    | 'DELETE_SPACE' 
-    | 'MOVE_SPACE' 
-    | 'UPDATE_BRANDING' 
-    | 'CREATE_TENANT' 
-    | 'DELETE_TENANT' 
-    | 'HERITAGE_VISIBILITY';
-  entityType: 'SPACE' | 'TENANT';
-  entityId: string;
-  userId: string;
-  userEmail: string;
-  changedFields: Record<string, unknown>;
-  previousState?: Record<string, unknown>;
-  createdAt?: string;
-}
+import { AuditLog } from './types';
+import { ActionBadge } from './ActionBadge';
+import { AuditDeltaViewer } from './AuditDeltaViewer';
 
 interface AuditHistoryPanelProps {
   tenantId: string;
 }
 
 export function AuditHistoryPanel({ tenantId }: AuditHistoryPanelProps) {
-  const t = useTranslations('admin'); // Reutilizar el hook de traducción
+  const t = useTranslations('admin');
   
   const [logs, setLogs] = useState<AuditLog[]>([]);
   const [loading, setLoading] = useState(true);
@@ -72,52 +51,6 @@ export function AuditHistoryPanel({ tenantId }: AuditHistoryPanelProps) {
     setExpandedLogId(prev => (prev === id ? null : id));
   };
 
-  const getActionBadge = (action: AuditLog['action']) => {
-    switch (action) {
-      case 'CREATE_SPACE':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            <Layers className="w-3 h-3" />
-            {t('audit_action_create_space', { defaultMessage: 'Creación Espacio' })}
-          </span>
-        );
-      case 'UPDATE_SPACE':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-sky-500/10 text-sky-600 dark:text-sky-400 border border-sky-500/20">
-            <Layers className="w-3 h-3" />
-            {t('audit_action_update_space', { defaultMessage: 'Edición Espacio' })}
-          </span>
-        );
-      case 'MOVE_SPACE':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20">
-            <Activity className="w-3 h-3" />
-            {t('audit_action_move_space', { defaultMessage: 'Traslado Espacio' })}
-          </span>
-        );
-      case 'HERITAGE_VISIBILITY':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">
-            <Shield className="w-3 h-3" />
-            {t('audit_action_heritage_visibility', { defaultMessage: 'Herencia Permisos' })}
-          </span>
-        );
-      case 'UPDATE_BRANDING':
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-pink-500/10 text-pink-600 dark:text-pink-400 border border-pink-500/20">
-            <Settings className="w-3 h-3" />
-            {t('audit_action_update_branding', { defaultMessage: 'Marca Blanca' })}
-          </span>
-        );
-      default:
-        return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wider bg-secondary text-muted-foreground border border-border">
-            {action}
-          </span>
-        );
-    }
-  };
-
   const filteredLogs = logs.filter(log => {
     if (filter === 'ALL') return true;
     if (filter === 'BRANDING') return log.action === 'UPDATE_BRANDING';
@@ -126,64 +59,6 @@ export function AuditHistoryPanel({ tenantId }: AuditHistoryPanelProps) {
     }
     return true;
   });
-
-  const renderDelta = (log: AuditLog) => {
-    const changes = log.changedFields || {};
-    const previous = log.previousState || {};
-
-    const formatValue = (val: unknown): string => {
-      if (val === null || val === undefined) return 'null';
-      if (typeof val === 'object') return JSON.stringify(val);
-      return String(val);
-    };
-
-    return (
-      <div className="grid gap-3 p-4 rounded-lg bg-secondary/15 border border-border font-mono text-xs text-foreground/90 max-h-72 overflow-y-auto">
-        <div className="flex items-center gap-1.5 border-b border-border pb-2 text-[10px] uppercase tracking-wider text-primary font-bold">
-          <FileCode className="w-3.5 h-3.5 text-primary" />
-          {t('audit_delta_title', { defaultMessage: 'Comparación de Estados (Delta)' })}
-        </div>
-        
-        {Object.keys(changes).length === 0 ? (
-          <span className="text-muted-foreground italic">
-            {t('audit_no_details', { defaultMessage: 'No hay detalles adicionales.' })}
-          </span>
-        ) : (
-          Object.keys(changes).map(key => {
-            if (key === 'updatedAt' || key === 'createdAt' || key === '_id') return null;
-            
-            const prevValue = previous[key];
-            const newValue = changes[key];
-
-            return (
-              <div key={key} className="grid grid-cols-1 md:grid-cols-3 gap-2 py-2 border-b border-border/10 last:border-b-0 items-start">
-                <div className="font-bold text-primary flex items-center gap-1.5">
-                  <Tag className="w-3.5 h-3.5 opacity-60 text-primary" />
-                  {key}
-                </div>
-                <div className="md:col-span-2 grid gap-1.5">
-                  {prevValue !== undefined && (
-                    <div className="flex items-center gap-2 text-rose-500 bg-rose-500/5 px-2.5 py-0.5 rounded border border-rose-500/10 w-fit">
-                      <span className="text-[9px] uppercase font-semibold tracking-wider opacity-60">
-                        {t('audit_previous', { defaultMessage: 'Previo:' })}
-                      </span>
-                      <span className="break-all font-bold">{formatValue(prevValue)}</span>
-                    </div>
-                  )}
-                  <div className="flex items-center gap-2 text-emerald-500 bg-emerald-500/5 px-2.5 py-0.5 rounded border border-emerald-500/10 w-fit">
-                    <span className="text-[9px] uppercase font-semibold tracking-wider opacity-60">
-                      {t('audit_new', { defaultMessage: 'Nuevo:' })}
-                    </span>
-                    <span className="break-all font-bold">{formatValue(newValue)}</span>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        )}
-      </div>
-    );
-  };
 
   return (
     <div className="space-y-4">
@@ -263,7 +138,7 @@ export function AuditHistoryPanel({ tenantId }: AuditHistoryPanelProps) {
                     </div>
                     <div className="grid gap-0.5">
                       <div className="flex items-center gap-2 flex-wrap">
-                        {getActionBadge(log.action)}
+                        <ActionBadge action={log.action} />
                         <span className="font-mono text-[10px] font-bold text-foreground/80 bg-background border border-border px-2 py-0.5 rounded">
                           ID: {log.entityId.slice(-6)}
                         </span>
@@ -299,7 +174,7 @@ export function AuditHistoryPanel({ tenantId }: AuditHistoryPanelProps) {
                 {/* Detalles y Delta Expandido */}
                 {isExpanded && (
                   <div className="mt-4 pt-4 border-t border-border space-y-3 animate-in fade-in duration-200">
-                    {renderDelta(log)}
+                    <AuditDeltaViewer log={log} />
                   </div>
                 )}
               </div>

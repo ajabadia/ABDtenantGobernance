@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { DialogFooter } from '@/components/ui/dialog';
 import { toast } from 'sonner';
+import { ParentSpaceSelector } from './ParentSpaceSelector';
 
 export interface SpaceData {
   _id?: string;
@@ -54,7 +55,7 @@ export function SpaceForm({
       /* eslint-disable-next-line react-hooks/set-state-in-effect */
       setFormData({ ...spaceToEdit, parentSpaceId: spaceToEdit.parentSpaceId || '' });
       /* eslint-disable-next-line react-hooks/set-state-in-effect */
-      setCascadeVisibility(false); // Resetear al cambiar de espacio
+      setCascadeVisibility(false);
     } else {
       /* eslint-disable-next-line react-hooks/set-state-in-effect */
       setFormData({
@@ -124,19 +125,6 @@ export function SpaceForm({
     }
   };
 
-  // Prevenir que un espacio sea su propio padre o padre de sus propios hijos en la UI
-  const getAvailableParents = () => {
-    if (!spaceToEdit) return allSpaces;
-    return allSpaces.filter(s => {
-      if (s._id === spaceToEdit._id) return false;
-      // Evitar referencias circulares filtrando descendientes
-      if (s.materializedPath && spaceToEdit.materializedPath && s.materializedPath.startsWith(spaceToEdit.materializedPath + '/')) {
-        return false;
-      }
-      return true;
-    });
-  };
-
   const parentId = formData.parentSpaceId || null;
   const parentSpace = parentId ? allSpaces.find(s => s._id === parentId) : null;
   const levelIndex = parentSpace && parentSpace.materializedPath 
@@ -169,18 +157,12 @@ export function SpaceForm({
 
       <div className="grid gap-2">
         <Label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('parent_label')}</Label>
-        <select 
-          className="flex h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50"
+        <ParentSpaceSelector 
           value={formData.parentSpaceId || ''}
-          onChange={e => setFormData({ ...formData, parentSpaceId: e.target.value })}
-        >
-          <option value="" className="bg-background">{t('no_parent')}</option>
-          {getAvailableParents().map(s => (
-            <option key={s._id} value={s._id} className="bg-background">
-              {s.materializedPath || s.name}
-            </option>
-          ))}
-        </select>
+          onChange={val => setFormData({ ...formData, parentSpaceId: val })}
+          allSpaces={allSpaces}
+          spaceToEdit={spaceToEdit}
+        />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
