@@ -23,9 +23,8 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./src/*"
-      ]
+      "@abd/styles/*": ["../ABDStyles/src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [

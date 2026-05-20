@@ -6,6 +6,9 @@ echo    ABD GOBERNANZA - INICIO LOCAL (ROOT)
 echo ==========================================
 echo.
 
+rem Borrar caché compilada si existe
+if exist .next rmdir /s /q .next
+
 echo [0/3] Comprobando si el puerto %PORT% esta ocupado...
 FOR /F "tokens=5" %%P IN ('netstat -aon ^| findstr ":%PORT% " ^| findstr "LISTENING"') DO (
     echo [0/3] Proceso encontrado: PID %%P. Terminando...
