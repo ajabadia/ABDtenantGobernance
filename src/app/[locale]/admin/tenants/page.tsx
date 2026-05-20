@@ -6,12 +6,17 @@ import connectDB from '@/lib/database/mongodb';
 import Link from 'next/link';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import type { TenantManagementTranslations } from '@/components/admin/tenants/types';
-
+import { redirect } from 'next/navigation';
 export default async function TenantsAdminPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   
-  // 🛡️ Ecosystem Identity Guard
-  await ensureIndustrialAccess('ADMIN');
+  // 🛡️ Ecosystem Identity Guard with redirect fallback
+  try {
+    await ensureIndustrialAccess('ADMIN');
+  } catch (e) {
+    // If access check fails, send user back to admin home
+    redirect(`/${locale}/admin`);
+  }
   
   await connectDB();
   const initialTenants = await TenantService.getAllTenants();

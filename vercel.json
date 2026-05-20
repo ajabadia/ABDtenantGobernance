@@ -1,0 +1,11 @@
+{
+  "env": {
+    "RESEND_API_KEY": "re_jJT76ccQ_BpkeHBxKcttPZ9ZM93A1yd1a",
+    "RESEND_FROM_EMAIL": "ABD RAG Platform <noreply@resend.dev>"
+  },
+  "build": {
+    "env": {
+      "NEXT_PUBLIC_BASE_URL": "https://abdtenantgobernance.vercel.app"
+    }
+  }
+}
