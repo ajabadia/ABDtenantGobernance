@@ -1,6 +1,6 @@
 "use client"
 
-import { Building2, Globe, Database, Trash2, Edit3, Palette, Layers, ShieldCheck } from 'lucide-react'
+import { Building2, Globe, Database, Trash2, Edit3, Palette, Layers, ShieldCheck, Shield, Users } from 'lucide-react'
 import type { Tenant } from "@/lib/schemas/tenant"
 import type { TenantManagementTranslations } from "./types"
 import Link from 'next/link'
@@ -12,6 +12,8 @@ interface TenantCardProps {
   onEdit: (tenant: Tenant) => void;
   onDelete: (id: string) => void;
 }
+
+const actionBtnClass = "flex-1 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none";
 
 export function TenantCard({ tenant, translations: t, onEdit, onDelete }: TenantCardProps) {
   const params = useParams()
@@ -34,7 +36,7 @@ export function TenantCard({ tenant, translations: t, onEdit, onDelete }: Tenant
              )}
            </div>
            <p className="text-sm text-muted-foreground leading-relaxed">
-             ID: <span className="font-mono text-primary font-bold">{tenant.tenantId}</span>
+             {'ID:'} <span className="font-mono text-primary font-bold">{tenant.tenantId}</span>
            </p>
         </div>
         
@@ -55,50 +57,74 @@ export function TenantCard({ tenant, translations: t, onEdit, onDelete }: Tenant
         </div>
       </div>
 
-      {/* Consola de Ejecución Fragmentada (Split Action Block) */}
-      <div className="flex gap-2 h-14 z-10">
-         {/* Acción Maestra */}
+      {/* Consola de Ejecución — Distribución Uniforme */}
+      <div className="grid grid-cols-7 gap-1.5 h-12 z-10">
+         {/* Branding */}
          <Link 
            href={`/${locale}/admin/branding?tenantId=${tenant.tenantId}`}
-           className="flex-1 flex items-center justify-center bg-transparent border border-primary/40 hover:border-primary hover:bg-primary/10 text-primary font-mono text-xs uppercase tracking-widest font-black transition-all rounded-none active:scale-[0.98]"
+           className={actionBtnClass}
+           aria-label="Configurar Branding visual"
+           title="Branding Visual"
          >
-           <Palette size={14} className="mr-2" aria-hidden="true" />
-           Branding
+           <Palette size={14} aria-hidden="true" />
          </Link>
 
-         {/* Bloque de Operaciones Secundarias */}
+         {/* Espacios */}
          <Link 
            href={`/${locale}/admin/spaces?tenantId=${tenant.tenantId}`}
-           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
-           aria-label="Manage space hierarchy"
-           title="Manage Space Hierarchy"
+           className={actionBtnClass}
+           aria-label="Gestionar jerarquía de espacios"
+           title="Espacios"
          >
            <Layers size={14} aria-hidden="true" />
          </Link>
+
+         {/* Permisos y Grupos */}
+         <Link 
+           href={`/${locale}/admin/permissions?tenantId=${tenant.tenantId}`}
+           className={actionBtnClass}
+           aria-label="Gestionar grupos y políticas de permisos"
+           title="Grupos y Permisos ABAC"
+         >
+           <Shield size={14} aria-hidden="true" />
+         </Link>
+
+         {/* Usuarios */}
+         <Link 
+           href={`/${locale}/admin/users?tenantId=${tenant.tenantId}`}
+           className={actionBtnClass}
+           aria-label="Gestionar usuarios del tenant"
+           title="Usuarios"
+         >
+           <Users size={14} aria-hidden="true" />
+         </Link>
          
+         {/* Auditoría */}
          <Link 
            href={`/${locale}/admin/audit?tenantId=${tenant.tenantId}`}
-           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
-           aria-label="View audit logs"
-           title="Audit Logs & Telemetry"
+           className={actionBtnClass}
+           aria-label="Ver logs de auditoría"
+           title="Auditoría y Telemetría"
          >
            <ShieldCheck size={14} aria-hidden="true" />
          </Link>
          
+         {/* Editar */}
          <button 
            aria-label={t.actions.edit}
            onClick={() => onEdit(tenant)}
-           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
-           title="Edit Details"
+           className={actionBtnClass}
+           title="Editar Tenant"
          >
            <Edit3 size={14} aria-hidden="true" />
          </button>
          
+         {/* Eliminar */}
          <button 
            aria-label={t.actions.delete}
            onClick={() => onDelete(tenant._id?.toString() || '')}
-           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-500"
-           title="Delete Organization"
+           className={`${actionBtnClass} hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-500`}
+           title="Eliminar Organización"
          >
            <Trash2 size={14} aria-hidden="true" />
          </button>
@@ -106,3 +132,4 @@ export function TenantCard({ tenant, translations: t, onEdit, onDelete }: Tenant
     </div>
   )
 }
+
