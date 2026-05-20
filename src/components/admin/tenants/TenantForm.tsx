@@ -22,6 +22,7 @@ export function TenantForm({ initialData, onSubmit, onCancel, isSubmitting }: Te
     industry: "Industrial",
     dbPrefix: "",
     isolationStrategy: "COLLECTION_PREFIX",
+    allowedApps: [],
     active: true,
   })
 
@@ -129,6 +130,43 @@ export function TenantForm({ initialData, onSubmit, onCancel, isSubmitting }: Te
             placeholder="Ej: Organización, Espacio, Carpeta"
           />
           <p className="text-[10px] text-muted-foreground/70 ml-1">{t('hierarchy_help', { defaultMessage: 'Separa los niveles por coma. Se asignarán por profundidad.' })}</p>
+        </div>
+
+        <div className="space-y-1.5 pt-2">
+          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
+            {t('allowed_apps_label', { defaultMessage: 'Aplicaciones Autorizadas' })}
+          </label>
+          <div className="grid grid-cols-2 gap-3 p-3 bg-background/50 border border-border rounded-lg">
+            {['auth', 'quiz', 'gobernanza', 'elevators'].map((app) => {
+              const isChecked = (formData.allowedApps || []).includes(app);
+              return (
+                <label 
+                  key={app} 
+                  className="flex items-center gap-2 cursor-pointer select-none group text-xs text-foreground"
+                >
+                  <input
+                    type="checkbox"
+                    checked={isChecked}
+                    onChange={(e) => {
+                      const checked = e.target.checked;
+                      const currentApps = formData.allowedApps || [];
+                      const updatedApps = checked 
+                        ? [...currentApps, app] 
+                        : currentApps.filter(a => a !== app);
+                      setFormData({ ...formData, allowedApps: updatedApps });
+                    }}
+                    className="rounded border-border text-primary focus:ring-primary focus:ring-offset-background"
+                  />
+                  <span className="font-mono text-[10px] tracking-wide text-muted-foreground group-hover:text-foreground transition-colors">
+                    {t(`apps.${app}` as `apps.${string}`, { defaultValue: app })}
+                  </span>
+                </label>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-muted-foreground/70 ml-1">
+            {t('allowed_apps_help', { defaultMessage: 'Selecciona las aplicaciones satélite autorizadas para este tenant.' })}
+          </p>
         </div>
       </div>
 

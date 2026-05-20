@@ -1,51 +1,17 @@
 'use server';
 
-import { cookies } from 'next/headers';
-
-export interface FederatedSession {
-  authenticated: boolean;
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    surname: string;
-    role: string;
-    tenantId: string;
-    dbPrefix: string;
-    isolationStrategy: string;
-  };
-}
+import {
+  getIndustrialSession as _getIndustrialSession,
+  ensureIndustrialAccess as _ensureIndustrialAccess,
+} from '@abd/satellite-sdk';
+import type { FederatedSession, UserProfile } from '@/lib/session-types';
 
 export async function getIndustrialSession(): Promise<FederatedSession> {
-  const cookieStore = await cookies();
-  const sessionCookie = cookieStore.get('abd_session');
-  
-  if (!sessionCookie?.value) {
-    return { authenticated: false };
-  }
-
-  try {
-    const user = JSON.parse(sessionCookie.value);
-    return { authenticated: true, user };
-  } catch (error) {
-    return { authenticated: false };
-  }
+  return await _getIndustrialSession();
 }
 
-/**
- * 🛡️ Assertion Helper
- * Throws if the user is not authenticated or doesn't have the required role.
- */
 export async function ensureIndustrialAccess(requiredRole?: string) {
-  const session = await getIndustrialSession();
-  
-  if (!session.authenticated || !session.user) {
-    throw new Error('UNAUTHORIZED_ECOSYSTEM_ACCESS');
-  }
-
-  if (requiredRole && session.user.role !== requiredRole && session.user.role !== 'SUPER_ADMIN') {
-    throw new Error('INSUFFICIENT_INDUSTRIAL_PRIVILEGES');
-  }
-
-  return session.user;
+  return await _ensureIndustrialAccess(requiredRole);
 }
+
+

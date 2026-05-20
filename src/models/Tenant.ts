@@ -42,6 +42,7 @@ export interface ITenant extends Document {
   branding?: ITenantBranding;
   billing?: ITenantBilling;
   customSpaceLabels?: string[];
+  allowedApps?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -87,7 +88,8 @@ const TenantMongooseSchema = new Schema<ITenant>({
       country: { type: String }
     }
   },
-  customSpaceLabels: [{ type: String }]
+  customSpaceLabels: [{ type: String }],
+  allowedApps: { type: [String], default: [] }
 }, {
   timestamps: true
 });

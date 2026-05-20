@@ -15,7 +15,8 @@ export async function GET(request: NextRequest) {
 
   try {
     // 1. Exchange code for token & profile
-    const tokenUrl = process.env.AUTH_VERIFY_URL || 'https://abd-auth.vercel.app/api/auth/federated/token';
+    const providerUrl = process.env.AUTH_PROVIDER_URL || 'https://abd-auth.vercel.app';
+    const tokenUrl = `${providerUrl}/api/auth/federated/token`;
     const currentUrl = new URL(request.url);
     const dynamicRedirectUri = `${currentUrl.protocol}//${currentUrl.host}/api/auth/federated/callback`;
 
@@ -35,18 +36,17 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Token exchange failed', detail: errorData }, { status: 401 });
     }
 
-    const data = await response.json();
+    const data = await response.json(); // Contiene { token, user }
 
-    // 2. Create the local session (Cookie)
-    // For now, we store the full industrial profile in a secure cookie
+    // 2. Create the local session storing the cryptographically signed JWT
     const nextResponse = NextResponse.redirect(new URL(state, request.url));
     
-    nextResponse.cookies.set('abd_session', JSON.stringify(data.user), {
+    nextResponse.cookies.set('abd_session', data.token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
       path: '/',
-      maxAge: 60 * 60 * 8, // 8 hours industrial shift
+      maxAge: 60 * 60 * 8, // Turno industrial de 8 horas
     });
 
     return nextResponse;

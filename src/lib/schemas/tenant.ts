@@ -50,6 +50,7 @@ export const TenantSchema = z.object({
     }).optional(),
   }).optional(),
   customSpaceLabels: z.array(z.string()).default(['Workspace', 'Espacio', 'Carpeta']),
+  allowedApps: z.array(z.string()).default([]),
   spaceCount: z.number().optional(),
   createdAt: z.coerce.date().default(() => new Date()),
   updatedAt: z.coerce.date().optional(),

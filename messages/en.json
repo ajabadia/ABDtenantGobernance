@@ -471,7 +471,15 @@
         "cancel": "Cancel"
       },
       "hierarchy_levels": "Space Hierarchy Levels",
-      "hierarchy_help": "Separate levels by comma. They will be assigned by depth."
+      "hierarchy_help": "Separate levels by comma. They will be assigned by depth.",
+      "allowed_apps_label": "Authorized Applications",
+      "allowed_apps_help": "Select the satellite applications authorized for this tenant.",
+      "apps": {
+        "auth": "Identity Console (ABDAuth)",
+        "quiz": "Evaluation Platform (ABDQuiz)",
+        "gobernanza": "Governance Portal (Control Plane)",
+        "elevators": "Elevator Manager (ABDElevators)"
+      }
     },
     "spaces": {
       "title": "Spaces Hierarchy",

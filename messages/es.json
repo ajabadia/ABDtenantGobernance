@@ -471,7 +471,15 @@
         "cancel": "Cancelar"
       },
       "hierarchy_levels": "Niveles de Jerarquía de Espacios",
-      "hierarchy_help": "Separa los niveles por coma. Se asignarán por profundidad."
+      "hierarchy_help": "Separa los niveles por coma. Se asignarán por profundidad.",
+      "allowed_apps_label": "Aplicaciones Autorizadas",
+      "allowed_apps_help": "Selecciona las aplicaciones satélite autorizadas para este tenant.",
+      "apps": {
+        "auth": "Consola de Identidad (ABDAuth)",
+        "quiz": "Plataforma de Evaluación (ABDQuiz)",
+        "gobernanza": "Portal de Gobernanza (Control Plane)",
+        "elevators": "Gestor de Elevadores (ABDElevators)"
+      }
     },
     "spaces": {
       "title": "Jerarquía de Espacios",

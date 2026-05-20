@@ -1,11 +1,6 @@
-'use client';
-
 import React from 'react';
-import { ShieldCheck, Terminal, ArrowRight } from 'lucide-react';
+import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { Card } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import Link from 'next/link';
 
 interface SystemTelemetryPanelProps {
   userId: string;
@@ -21,54 +16,41 @@ export function SystemTelemetryPanel({
   const t = useTranslations('admin');
 
   return (
-    <Card className="p-8 bg-card/50 border-border rounded-xl flex flex-col gap-6 h-fit shadow-sm">
-      <div className="flex items-center gap-3">
-        <ShieldCheck className="w-5 h-5 text-primary" aria-hidden="true" />
-        <h2 className="text-sm font-bold uppercase tracking-widest font-mono text-foreground">
-          {t('securityTitle')}
-        </h2>
-      </div>
+    <div className="group relative p-8 flex flex-col min-h-[300px] overflow-hidden rounded-none bg-card backdrop-blur-sm border border-border transition-all duration-500 hover:border-primary/40">
+      {/* Marca de Agua Decorativa */}
+      <ShieldCheck className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none text-foreground" size={96} aria-hidden="true" />
       
-      <Separator className="bg-border" aria-hidden="true" />
-
-      <div className="flex flex-col gap-4 font-mono text-[10px] uppercase">
-        <div className="flex justify-between items-center py-1">
-          <span className="text-muted-foreground tracking-wider">{t('activeAuthority')}</span>
-          <span className="text-foreground font-bold">{userId}</span>
+      <div className="z-10 flex flex-col h-full">
+        {/* Bloque Narrativo Superior */}
+        <div className="flex flex-col gap-2 mb-6">
+          <div className="flex items-center gap-3">
+            <h2 className="text-2xl font-bold uppercase tracking-tight text-foreground leading-none truncate">
+              {t('securityTitle')}
+            </h2>
+            <span className="flex h-2 w-2 rounded-full bg-emerald-500 shrink-0 animate-pulse" aria-label="System Secure" />
+          </div>
         </div>
-        <div className="flex justify-between items-center py-1 border-t border-border pt-3">
-          <span className="text-muted-foreground tracking-wider">{t('sessionRole')}</span>
-          <span className="text-foreground font-bold">{userRole}</span>
-        </div>
-        <div className="flex justify-between items-center py-1 border-t border-border pt-3">
-          <span className="text-muted-foreground tracking-wider">{t('localRegion')}</span>
-          <span className="text-foreground font-bold">{locale.toUpperCase()}</span>
-        </div>
-        <div className="flex justify-between items-center py-1 border-t border-border pt-3">
-          <span className="text-muted-foreground tracking-wider">{t('certification')}</span>
-          <span className="text-emerald-500 font-black animate-pulse">{t('prodReady')}</span>
+        
+        {/* Bandeja de Metadatos (Telemetría de Sesión) */}
+        <div className="flex-1 border-t border-border pt-6 flex flex-col gap-4 font-mono text-[9px] uppercase tracking-widest text-muted-foreground/80">
+          <div className="flex justify-between items-center gap-2">
+            <span className="opacity-70">{t('activeAuthority')}</span>
+            <span className="text-primary font-bold truncate max-w-[150px]" title={userId}>{userId}</span>
+          </div>
+          <div className="flex justify-between items-center border-t border-border/50 pt-3">
+            <span className="opacity-70">{t('sessionRole')}</span>
+            <span className="text-foreground font-bold">{userRole}</span>
+          </div>
+          <div className="flex justify-between items-center border-t border-border/50 pt-3">
+            <span className="opacity-70">{t('localRegion')}</span>
+            <span className="text-foreground font-bold">{locale.toUpperCase()}</span>
+          </div>
+          <div className="flex justify-between items-center border-t border-border/50 pt-3">
+            <span className="opacity-70">{t('certification')}</span>
+            <span className="text-emerald-500 font-black animate-pulse">{t('prodReady')}</span>
+          </div>
         </div>
       </div>
-
-      <Separator className="bg-border" aria-hidden="true" />
-      
-      <div className="p-4 bg-secondary/30 border border-border flex flex-col gap-2 rounded-lg group">
-        <div className="flex items-center gap-2 text-[9px] font-mono font-bold tracking-widest text-primary uppercase">
-          <Terminal className="w-3.5 h-3.5" />
-          {t('auditTitle')}
-        </div>
-        <p className="text-[9px] text-muted-foreground uppercase leading-relaxed font-mono">
-          {t('auditDesc')}
-        </p>
-        <Link 
-          href={`/${locale}/admin/audit`}
-          className="mt-2 w-full inline-flex items-center justify-between px-3 py-1.5 bg-secondary/80 hover:bg-primary/10 text-[9px] font-mono font-bold uppercase tracking-wider text-muted-foreground hover:text-primary border border-border hover:border-primary/20 rounded transition-all cursor-pointer"
-          aria-label="Ir a la página de auditoría técnica"
-        >
-          <span>{t('viewFullHistory')}</span>
-          <ArrowRight size={10} className="opacity-70 group-hover:translate-x-0.5 transition-all text-primary" />
-        </Link>
-      </div>
-    </Card>
+    </div>
   );
 }

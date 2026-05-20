@@ -28,7 +28,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             {/* Tag Monospace de Ubicación (Breadcrumb/Ruta) de acuerdo con la guía de estilo */}
             <div className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-primary flex items-center gap-2 mb-2">
               <LayoutDashboard size={14} className="text-primary animate-pulse" aria-hidden="true" />
-              {t('controlConsole')} • DASHBOARD
+              <span className="animate-console-pulse">{t('controlConsole')} • DASHBOARD</span>
             </div>
             
             <h1 className="text-3xl font-black uppercase italic tracking-tight text-foreground leading-none">
@@ -49,7 +49,19 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
           <div className="lg:col-span-2 flex flex-col gap-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              {/* Card 1: Visual Branding Customizer */}
+              {/* Card 1: Tenant Governance Panel */}
+              <DashboardActionCard 
+                icon={Building2}
+                category={t('organizaciones')}
+                title={t('tenantCardTitle')}
+                description={t('tenantCardDesc')}
+                footerLabel={t('multiTenancy')}
+                footerValue={ap('activo')}
+                buttonText={t('tenantCardBtn')}
+                href={`/${locale}/admin/tenants`}
+              />
+
+              {/* Card 2: Visual Branding Customizer */}
               <DashboardActionCard 
                 icon={Palette}
                 category={t('visual')}
@@ -61,7 +73,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
                 href={`/${locale}/admin/branding`}
               />
 
-              {/* Card 2: Space Hierarchy Management */}
+              {/* Card 3: Space Hierarchy Management */}
               <DashboardActionCard 
                 icon={Layers}
                 category={t('estructura')}
@@ -71,18 +83,6 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
                 footerValue={ap('activo')}
                 buttonText={t('spaceCardBtn')}
                 href={`/${locale}/admin/spaces`}
-              />
-
-              {/* Card 3: Tenant Governance Panel */}
-              <DashboardActionCard 
-                icon={Building2}
-                category={t('organizaciones')}
-                title={t('tenantCardTitle')}
-                description={t('tenantCardDesc')}
-                footerLabel={t('multiTenancy')}
-                footerValue={ap('activo')}
-                buttonText={t('tenantCardBtn')}
-                href={`/${locale}/admin/tenants`}
               />
 
               {/* Card 4: Chain Auditing Logs */}

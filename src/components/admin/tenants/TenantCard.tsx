@@ -18,92 +18,90 @@ export function TenantCard({ tenant, translations: t, onEdit, onDelete }: Tenant
   const locale = params?.locale as string || 'en'
 
   return (
-    <div className="bg-card p-5 rounded-xl border border-border hover:border-primary/30 transition-all group relative overflow-hidden flex flex-col justify-between">
+    <div className="group relative p-8 flex flex-col justify-between min-h-[300px] overflow-hidden rounded-none bg-card backdrop-blur-sm border border-border transition-all duration-500 hover:border-primary/40">
+      {/* Marca de Agua Decorativa */}
+      <Building2 className="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity pointer-events-none text-foreground" size={96} aria-hidden="true" />
       
-      <div className="flex items-start justify-between gap-4">
-        <div className="flex items-start gap-4 min-w-0 flex-1">
-          <div className="w-12 h-12 bg-primary/5 rounded-lg flex items-center justify-center border border-primary/10 text-primary shrink-0">
-            <Building2 size={24} aria-hidden="true" />
-          </div>
-          
-          <div className="min-w-0 flex-1">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-black tracking-tight uppercase truncate text-foreground leading-none">{tenant.name}</h3>
-              {tenant.active ? (
-                <span className="flex h-2 w-2 rounded-full bg-green-500 shrink-0" aria-label={t.status_label} />
-              ) : (
-                <span className="flex h-2 w-2 rounded-full bg-red-500 shrink-0" aria-label={t.status_label} />
-              )}
-            </div>
-            <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground truncate">{tenant.tenantId}</p>
-          </div>
+      <div className="z-10">
+        {/* Bloque Narrativo Superior */}
+        <div className="flex flex-col gap-2 mb-6">
+           <div className="flex items-center gap-3">
+             <h3 className="text-2xl font-bold uppercase tracking-tight text-foreground leading-none truncate">{tenant.name}</h3>
+             {tenant.active ? (
+                <span className="flex h-2 w-2 rounded-full bg-emerald-500 shrink-0" aria-label={t.status_label} />
+             ) : (
+                <span className="flex h-2 w-2 rounded-full bg-rose-500 shrink-0" aria-label={t.status_label} />
+             )}
+           </div>
+           <p className="text-sm text-muted-foreground leading-relaxed">
+             ID: <span className="font-mono text-primary font-bold">{tenant.tenantId}</span>
+           </p>
         </div>
-
-        {/* Botones de acción alineados estáticamente en el flujo flex para prevenir colisiones */}
-        <div className="flex items-center gap-0.5 shrink-0 bg-card">
-          <Link 
-            href={`/${locale}/admin/spaces?tenantId=${tenant.tenantId}`}
-            className="p-1.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-md transition-all outline-none"
-            aria-label="Manage space hierarchy"
-            title="Manage Space Hierarchy"
-          >
-            <Layers size={13} aria-hidden="true" />
-          </Link>
-          <Link 
-            href={`/${locale}/admin/branding?tenantId=${tenant.tenantId}`}
-            className="p-1.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-md transition-all outline-none"
-            aria-label="Customize white-label branding"
-            title="Branding Customizer"
-          >
-            <Palette size={13} aria-hidden="true" />
-          </Link>
-          <Link 
-            href={`/${locale}/admin/audit?tenantId=${tenant.tenantId}`}
-            className="p-1.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-md transition-all outline-none"
-            aria-label="View audit logs and telemetries"
-            title="Audit Logs & Telemetry"
-          >
-            <ShieldCheck size={13} aria-hidden="true" />
-          </Link>
-          <button aria-label={t.actions.edit}
-            onClick={() => onEdit(tenant)}
-            className="p-1.5 text-muted-foreground/40 hover:text-primary hover:bg-primary/5 rounded-md transition-all outline-none cursor-pointer"
-            title="Edit Details"
-          >
-            <Edit3 size={13} aria-hidden="true" />
-          </button>
-          <button aria-label={t.actions.delete}
-            onClick={() => onDelete(tenant._id?.toString() || '')}
-            className="p-1.5 text-muted-foreground/40 hover:text-destructive hover:bg-destructive/5 rounded-md transition-all outline-none cursor-pointer"
-            title="Delete Organization"
-          >
-            <Trash2 size={13} aria-hidden="true" />
-          </button>
+        
+        {/* Bandeja de Metadatos */}
+        <div className="border-t border-border pt-4 mb-6 flex flex-wrap gap-4 text-[9px] font-mono uppercase tracking-widest text-muted-foreground/50">
+           <div className="flex items-center gap-1.5">
+             <Globe size={10} className="text-primary opacity-80" aria-hidden="true" />
+             <span>{t.industry}: <span className="text-foreground/70 font-bold">{tenant.industry}</span></span>
+           </div>
+           <div className="flex items-center gap-1.5">
+             <Database size={10} className="text-primary opacity-80" aria-hidden="true" />
+             <span>{t.database}: <span className="text-foreground/70 font-bold">{tenant.dbPrefix || '---'}</span></span>
+           </div>
+           <div className="flex items-center gap-1.5">
+             <Layers size={10} className="text-primary opacity-80" aria-hidden="true" />
+             <span>{t.spaces}: <span className="text-foreground/70 font-bold">{tenant.spaceCount !== undefined ? tenant.spaceCount : 0}</span></span>
+           </div>
         </div>
       </div>
 
-      <div className="mt-6 pt-4 border-t border-border grid grid-cols-3 gap-4">
-        <div className="space-y-1">
-          <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">{t.industry}</p>
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Globe size={10} className="text-primary" aria-hidden="true" />
-            <span className="truncate">{tenant.industry}</span>
-          </div>
-        </div>
-        <div className="space-y-1">
-          <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">{t.database}</p>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-            <Database size={10} className="text-primary" aria-hidden="true" />
-            {tenant.dbPrefix || '---'}
-          </div>
-        </div>
-        <div className="space-y-1">
-          <p className="text-[8px] font-black uppercase tracking-widest text-muted-foreground/60">{t.spaces}</p>
-          <div className="flex items-center gap-1.5 text-xs font-mono text-muted-foreground">
-            <Layers size={10} className="text-primary" aria-hidden="true" />
-            {tenant.spaceCount !== undefined ? tenant.spaceCount : 0}
-          </div>
-        </div>
+      {/* Consola de Ejecución Fragmentada (Split Action Block) */}
+      <div className="flex gap-2 h-14 z-10">
+         {/* Acción Maestra */}
+         <Link 
+           href={`/${locale}/admin/branding?tenantId=${tenant.tenantId}`}
+           className="flex-1 flex items-center justify-center bg-transparent border border-primary/40 hover:border-primary hover:bg-primary/10 text-primary font-mono text-xs uppercase tracking-widest font-black transition-all rounded-none active:scale-[0.98]"
+         >
+           <Palette size={14} className="mr-2" aria-hidden="true" />
+           Branding
+         </Link>
+
+         {/* Bloque de Operaciones Secundarias */}
+         <Link 
+           href={`/${locale}/admin/spaces?tenantId=${tenant.tenantId}`}
+           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
+           aria-label="Manage space hierarchy"
+           title="Manage Space Hierarchy"
+         >
+           <Layers size={14} aria-hidden="true" />
+         </Link>
+         
+         <Link 
+           href={`/${locale}/admin/audit?tenantId=${tenant.tenantId}`}
+           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
+           aria-label="View audit logs"
+           title="Audit Logs & Telemetry"
+         >
+           <ShieldCheck size={14} aria-hidden="true" />
+         </Link>
+         
+         <button 
+           aria-label={t.actions.edit}
+           onClick={() => onEdit(tenant)}
+           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none"
+           title="Edit Details"
+         >
+           <Edit3 size={14} aria-hidden="true" />
+         </button>
+         
+         <button 
+           aria-label={t.actions.delete}
+           onClick={() => onDelete(tenant._id?.toString() || '')}
+           className="w-14 h-full flex items-center justify-center border border-border bg-muted/10 hover:bg-muted text-muted-foreground hover:text-foreground transition-all cursor-pointer active:scale-95 rounded-none hover:border-rose-500/50 hover:bg-rose-500/10 hover:text-rose-500"
+           title="Delete Organization"
+         >
+           <Trash2 size={14} aria-hidden="true" />
+         </button>
       </div>
     </div>
   )

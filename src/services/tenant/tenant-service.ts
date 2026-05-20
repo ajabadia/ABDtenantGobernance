@@ -94,10 +94,18 @@ export class TenantService {
       prevObj.billing = { ...prevObj.billing, taxId: '[ENCRYPTED_DATA]' };
     }
 
+    // Determine the most accurate audit action name
+    let auditAction = 'UPDATE_TENANT_CONFIG';
+    if ('allowedApps' in updateData) {
+      auditAction = 'UPDATE_TENANT_LICENSING';
+    } else if ('branding' in updateData) {
+      auditAction = 'UPDATE_BRANDING';
+    }
+
     // Disparar log de auditoría remota de forma asíncrona
     AuditService.logEvent({
       tenantId,
-      action: 'UPDATE_BRANDING',
+      action: auditAction,
       entityType: 'TENANT',
       entityId: previousState._id.toString(),
       userId: performedBy,

@@ -1,21 +1,14 @@
 import { Schema, Connection, Document } from 'mongoose';
 
 export interface IAuditLog {
-  tenantId: string;
-  action: 
-    | 'CREATE_SPACE' 
-    | 'UPDATE_SPACE' 
-    | 'DELETE_SPACE' 
-    | 'MOVE_SPACE' 
-    | 'UPDATE_BRANDING' 
-    | 'CREATE_TENANT' 
-    | 'DELETE_TENANT' 
-    | 'HERITAGE_VISIBILITY';
-  entityType: 'SPACE' | 'TENANT';
-  entityId: string;
-  userId: string;
-  userEmail: string;
-  changedFields: Record<string, unknown>;
+  appId?: string;                        // Aplicación origen: 'auth', 'quiz', 'gobernanza'
+  tenantId: string;                     // ID de la organización o 'SYSTEM' para operaciones globales
+  action: string;                       // Ej: 'USER_LOGIN', 'SSO_HANDSHAKE_GRANTED', 'EXAM_CREATED'
+  entityType: 'USER' | 'TENANT' | 'SSO' | 'EXAM' | 'CONFIG' | 'SYSTEM' | 'SPACE' | 'BRANDING';
+  entityId: string;                     // ID de la entidad afectada
+  userId: string;                       // ID del operador (actor)
+  userEmail: string;                    // Email del operador
+  changedFields: Record<string, unknown>; // Metadatos dinámicos del evento
   previousState?: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
@@ -25,37 +18,37 @@ export interface IAuditLog {
 export interface IAuditLogDocument extends IAuditLog, Document {}
 
 export const AuditLogSchema = new Schema<IAuditLog>({
+  appId: { type: String, default: 'gobernanza', index: true },
   tenantId: { type: String, required: true, index: true },
-  action: { 
-    type: String, 
-    required: true,
-    index: true 
-  },
-  entityType: { type: String, required: true, enum: ['SPACE', 'TENANT'] },
-  entityId: { type: String, required: true, index: true },
-  userId: { type: String, required: true, index: true },
+  action: { type: String, required: true, index: true },
+  entityType: { type: String, required: true },
+  entityId: { type: String, required: true },
+  userId: { type: String, required: true },
   userEmail: { type: String, required: true },
   changedFields: { type: Schema.Types.Mixed, default: {} },
   previousState: { type: Schema.Types.Mixed },
   ipAddress: { type: String },
-  userAgent: { type: String }
-}, {
-  timestamps: { createdAt: true, updatedAt: false }
+  userAgent: { type: String },
+  createdAt: { type: Date, default: Date.now, index: true },
 });
 
-// Índice compuesto para feeds de actividad fluidos ordenados por fecha
+// Índice compuesto para telemetría rápida por organización y tiempo
 AuditLogSchema.index({ tenantId: 1, createdAt: -1 });
 
-/**
- * Obtiene el modelo Mongoose para Marca Blanca, apuntando a la colección 'audit_config_changes'
- */
-export function getBrandingAuditModel(connection: Connection) {
-  return connection.models.BrandingAudit || connection.model<IAuditLog>('BrandingAudit', AuditLogSchema, 'audit_config_changes');
+export function getAuditLogModel(connection: Connection) {
+  return connection.models.AuditLog || connection.model<IAuditLog>('AuditLog', AuditLogSchema, 'central_audit_logs');
 }
 
 /**
- * Obtiene el modelo Mongoose para Espacios, apuntando a la colección 'audit_admin_ops'
+ * Obtiene el modelo Mongoose para Marca Blanca, apuntando a la colección 'central_audit_logs'
+ */
+export function getBrandingAuditModel(connection: Connection) {
+  return getAuditLogModel(connection);
+}
+
+/**
+ * Obtiene el modelo Mongoose para Espacios, apuntando a la colección 'central_audit_logs'
  */
 export function getSpaceAuditModel(connection: Connection) {
-  return connection.models.SpaceAudit || connection.model<IAuditLog>('SpaceAudit', AuditLogSchema, 'audit_admin_ops');
+  return getAuditLogModel(connection);
 }

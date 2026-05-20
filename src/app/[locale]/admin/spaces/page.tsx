@@ -63,7 +63,7 @@ export default function SpacesPage() {
             {/* Tag Monospace de Ubicación (Breadcrumb/Ruta) de acuerdo con la guía de estilo */}
             <div className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-primary flex items-center gap-2 mb-2">
               <FolderOpen size={14} className="text-primary animate-pulse" aria-hidden="true" />
-              {tAdmin('controlConsole')} • {t('title')}
+              <span className="animate-console-pulse">{tAdmin('controlConsole')} • {t('title')}</span>
             </div>
             
             <div className="flex items-center gap-4 mt-1">
