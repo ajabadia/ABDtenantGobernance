@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Separator } from '@/components/ui/separator';
 import { ensureIndustrialAccess } from '@/lib/session';
-import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck } from 'lucide-react';
+import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 
@@ -95,6 +95,18 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
                 footerValue={ap('activo')}
                 buttonText={t('auditTitle')}
                 href={`/${locale}/admin/audit`}
+              />
+
+              {/* Card 5: Permission Groups (Phase 3) */}
+              <DashboardActionCard 
+                icon={Shield}
+                category={t('iamGovernance')}
+                title={t('permissionsCardTitle')}
+                description={t('permissionsCardDesc')}
+                footerLabel={t('abacPolicies')}
+                footerValue={ap('activo')}
+                buttonText={t('permissionsCardBtn')}
+                href={`/${locale}/admin/permissions`}
               />
 
             </div>

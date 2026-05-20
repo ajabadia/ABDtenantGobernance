@@ -1,7 +1,7 @@
 export interface LogPayload {
   tenantId: string;
   action: string;
-  entityType: 'USER' | 'TENANT' | 'SSO' | 'EXAM' | 'CONFIG' | 'SYSTEM' | 'SPACE' | 'BRANDING';
+  entityType: 'USER' | 'TENANT' | 'SSO' | 'EXAM' | 'CONFIG' | 'SYSTEM' | 'SPACE' | 'BRANDING' | 'PERMISSION_GROUP' | 'PERMISSION_POLICY';
   entityId: string;
   userId: string;
   userEmail: string;

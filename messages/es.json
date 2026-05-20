@@ -255,7 +255,12 @@
     "audit_live_pause": "Pausar Stream",
     "audit_live_resume": "Reanudar Stream",
     "audit_live_on": "En Vivo",
-    "audit_live_off": "Pausado"
+    "audit_live_off": "Pausado",
+    "iamGovernance": "IAM & Gobernanza",
+    "permissionsCardTitle": "Grupos y Permisos",
+    "permissionsCardDesc": "Define grupos de acceso con jerarquía recursiva y políticas ABAC granulares. Los permisos se heredan automáticamente de padres a hijos.",
+    "permissionsCardBtn": "Gestionar Permisos",
+    "abacPolicies": "Políticas ABAC"
   },
   "quiz": {
     "module": "MÓDULO",

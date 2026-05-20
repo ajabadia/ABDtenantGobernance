@@ -255,7 +255,12 @@
     "audit_live_pause": "Pause Stream",
     "audit_live_resume": "Resume Stream",
     "audit_live_on": "Live ON",
-    "audit_live_off": "Live OFF"
+    "audit_live_off": "Live OFF",
+    "iamGovernance": "IAM & Governance",
+    "permissionsCardTitle": "Groups & Permissions",
+    "permissionsCardDesc": "Define access groups with recursive hierarchy and granular ABAC policies. Permissions are automatically inherited from parent groups to children.",
+    "permissionsCardBtn": "Manage Permissions",
+    "abacPolicies": "ABAC Policies"
   },
   "quiz": {
     "module": "MODULE",
