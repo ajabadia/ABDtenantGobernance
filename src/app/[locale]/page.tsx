@@ -9,7 +9,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const h = await getTranslations('home');
   
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-6 md:p-24 bg-background text-foreground selection:bg-primary/30 overflow-hidden" role="main">
+    <main className="flex min-h-screen flex-col items-center justify-center pt-24 pb-12 px-6 md:px-24 bg-background text-foreground selection:bg-primary/30 overflow-hidden relative z-10" role="main">
       {/* Tactical grid background layer */}
       <div className="absolute inset-0 bg-industrial-grid mask-industrial-fade pointer-events-none opacity-50" aria-hidden="true" />
 

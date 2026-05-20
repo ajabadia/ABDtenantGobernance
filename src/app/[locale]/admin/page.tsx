@@ -19,7 +19,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
   const user = await ensureIndustrialAccess('ADMIN');
 
   return (
-    <main className="min-h-screen bg-background text-foreground p-6 md:p-12 selection:bg-primary/30" role="main">
+    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
         
         {/* Header */}
