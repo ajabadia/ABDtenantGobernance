@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Plus, Database, FolderOpen, ArrowLeft } from 'lucide-react';
+import { Plus, FolderOpen, ArrowLeft } from 'lucide-react';
 import { SpaceTreeView } from '@/components/admin/spaces/SpaceTreeView';
 import { CreateEditSpaceModal } from '@/components/admin/spaces/CreateEditSpaceModal';
 import { useSearchParams, useRouter, usePathname, useParams } from 'next/navigation';
@@ -86,32 +86,6 @@ export default function SpacesPage() {
             <p className="text-sm text-muted-foreground font-sans mt-2 leading-relaxed">
               {t('subtitle')}
             </p>
-
-            {/* 🏢 Selector de Tenant Activo (para SuperAdmins con múltiples tenants) */}
-            {allTenants && allTenants.length > 1 && (
-              <div className="flex flex-col gap-2 p-4 bg-secondary/20 border border-border rounded-xl max-w-md mt-4">
-                <label className="text-[10px] font-black uppercase tracking-wider text-primary flex items-center gap-2 font-mono">
-                  <Database size={12} aria-hidden="true" />
-                  {tAdmin('selectedOrganization')}
-                </label>
-                <select
-                  value={tenantId}
-                  onChange={(e) => {
-                    const newTenantId = e.target.value;
-                    setTenantId(newTenantId);
-                    router.push(`${pathname}?tenantId=${newTenantId}`);
-                  }}
-                  className="w-full bg-background border border-border hover:border-primary/40 text-foreground rounded-lg px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer font-bold font-mono"
-                >
-                  <option value="" className="bg-card text-foreground">{t('select_tenant', { defaultMessage: 'Selecciona una organización' })}</option>
-                  {allTenants.map(ten => (
-                    <option key={ten.tenantId} value={ten.tenantId} className="bg-card text-foreground">
-                      {ten.name} ({ten.tenantId})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
           </div>
           <div className="flex items-center space-x-2">
             {/* Botón de Avance / Crear Raíz pulido bajo los estándares exactos */}

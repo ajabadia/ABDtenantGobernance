@@ -4,10 +4,11 @@ import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
-import { Users, ArrowLeft, Plus, RefreshCw, Shield } from 'lucide-react';
+import { Users, ArrowLeft, Plus, RefreshCw, Shield, UserPlus } from 'lucide-react';
 import { fetchUsersAction, updateUserAction } from './actions';
 import { fetchGroupsAction } from '../permissions/actions';
 import { UserStatusBadge } from './components/UserStatusBadge';
+import { AddExistingUserModal } from './components/AddExistingUserModal';
 import { UserInviteModal } from './components/UserInviteModal';
 import { toast } from 'sonner';
 import { IamUser } from '@/lib/services/iamClient';
@@ -32,13 +33,13 @@ export default function UsersPage() {
   const searchParams = useSearchParams();
   const params = useParams();
   const locale = params?.locale as string || 'en';
-  const tenantIdParam = searchParams.get('tenantId') || 'academia-alfa';
+  const tenantId = searchParams.get('tenantId') || 'academia-alfa';
 
   const [users, setUsers] = useState<IamUser[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
-  const [tenantId] = useState(tenantIdParam);
+  const [modalOpenExisting, setModalOpenExisting] = useState(false);
 
   const fetchData = async () => {
     setLoading(true);
@@ -129,6 +130,14 @@ export default function UsersPage() {
             >
               <Plus className="h-4 w-4" />
               INVITAR USUARIO
+            </button>
+            <button
+              aria-label="Agregar usuario existente"
+              onClick={() => setModalOpenExisting(true)}
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent text-primary border border-primary/40 hover:border-primary hover:bg-primary/10 font-mono text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer rounded-none active:scale-[0.98] focus:outline-none focus:ring-1 focus:ring-primary/50"
+            >
+              <UserPlus className="h-4 w-4" />
+              AGREGAR EXISTENTE
             </button>
           </div>
         </header>
@@ -223,6 +232,13 @@ export default function UsersPage() {
         <UserInviteModal
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
+          tenantId={tenantId}
+          onSuccess={fetchData}
+          availableGroups={groups}
+        />
+        <AddExistingUserModal
+          isOpen={modalOpenExisting}
+          onClose={() => setModalOpenExisting(false)}
           tenantId={tenantId}
           onSuccess={fetchData}
           availableGroups={groups}

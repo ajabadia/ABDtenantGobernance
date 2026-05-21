@@ -13,6 +13,12 @@ export function useSpacesManager(explicitTenantId: string | null) {
   const [tenantId, setTenantId] = useState<string>(explicitTenantId || '');
   const [allTenants, setAllTenants] = useState<{tenantId: string, name: string, customSpaceLabels?: string[]}[]>([]);
 
+  useEffect(() => {
+    if (explicitTenantId) {
+      setTenantId(explicitTenantId);
+    }
+  }, [explicitTenantId]);
+
   const activeTenant = allTenants.find(t => t.tenantId === tenantId);
   const customSpaceLabels = activeTenant?.customSpaceLabels && activeTenant.customSpaceLabels.length > 0
     ? activeTenant.customSpaceLabels

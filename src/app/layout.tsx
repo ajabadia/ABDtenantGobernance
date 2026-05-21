@@ -29,23 +29,8 @@ export default async function RootLayout({
   const session = await getIndustrialSession();
 
   return (
-    <html lang={locale} suppressHydrationWarning>
+    <html lang={locale} className="dark" suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                var theme = localStorage.getItem('theme') || 'dark';
-                if (theme === 'system') {
-                  var isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                  document.documentElement.classList.add(isDark ? 'dark' : 'light');
-                } else {
-                  document.documentElement.classList.add(theme);
-                }
-              } catch (e) {}
-            `,
-          }}
-        />
         {/* Centralized dynamic branding styles injection (Zero FOUC) */}
         <BrandingStyles />
       </head>

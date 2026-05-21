@@ -37,7 +37,8 @@
     "menuTitle": "Panel de Control",
     "homeMenu": "Examinar",
     "adminMenu": "Administración",
-    "historyMenu": "Historial & Analíticas"
+    "historyMenu": "Historial & Analíticas",
+    "addOrInviteUser": "Agregar / Invitar Usuario"
   },
   "home": {
     "status": "Estado del Sistema: Operativo",

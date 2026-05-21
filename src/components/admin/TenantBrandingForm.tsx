@@ -23,6 +23,7 @@ interface TenantBrandingFormProps {
       url?: string | null;
       publicId?: string;
     };
+    fromName?: string;
     colors?: {
       primary: string;
       secondary?: string;
@@ -50,6 +51,7 @@ export function TenantBrandingForm({ tenantId, initialBranding, allTenants }: Te
   const [accentColor, setAccentColor] = useState(initialBranding?.colors?.accent || '#3b82f6');
   const [isRounded, setIsRounded] = useState(initialBranding?.rounded ?? true);
   const [radiusValue, setRadiusValue] = useState(initialBranding?.radius || '0.75rem');
+  const [fromName, setFromName] = useState(initialBranding?.fromName || '');
 
   // --- Cajas de previsualización en vivo (Live previews) ---
   const [logoPreview, setLogoPreview] = useState<string | null>(initialBranding?.logo?.url || null);
@@ -80,6 +82,7 @@ export function TenantBrandingForm({ tenantId, initialBranding, allTenants }: Te
     startTransition(async () => {
       try {
         const formData = new FormData();
+        formData.append('fromName', fromName);
         formData.append('tenantId', tenantId);
         formData.append('primary', primaryColor);
         formData.append('secondary', secondaryColor);
@@ -170,6 +173,20 @@ export function TenantBrandingForm({ tenantId, initialBranding, allTenants }: Te
           accentColor={accentColor}
           setAccentColor={setAccentColor}
         />
+
+        {/* 📧 Email From Name */}
+        <div className="flex flex-col gap-2">
+          <label className="text-[10px] font-black uppercase tracking-wider text-primary">
+            Nombre Remitente del Email
+          </label>
+          <input
+            type="text"
+            value={fromName}
+            onChange={e => setFromName(e.target.value)}
+            className="h-10 px-4 rounded-none bg-secondary/30 border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 font-mono text-xs outline-none text-foreground"
+            placeholder="Ej: ABD RAG Platform"
+          />
+        </div>
 
         {/* 📐 Estilo de Esquinas */}
         <BorderRadiusSelector 

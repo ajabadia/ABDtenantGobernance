@@ -8,8 +8,8 @@ export async function fetchUsersAction(tenantId: string) {
     return { data: users };
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
-    console.error('[USERS_ACTION] fetchUsersAction Error:', msg);
-    return { error: msg };
+    console.warn('[USERS_ACTION] fetchUsersAction warning, returning empty list:', msg);
+    return { data: [] };
   }
 }
 

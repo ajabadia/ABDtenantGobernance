@@ -37,7 +37,8 @@
     "menuTitle": "Control Panel",
     "homeMenu": "Exams",
     "adminMenu": "Administration",
-    "historyMenu": "History & Analytics"
+    "historyMenu": "History & Analytics",
+    "addOrInviteUser": "Add / Invite User"
   },
   "home": {
     "status": "System Status: Operational",
