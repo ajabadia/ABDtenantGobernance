@@ -5,11 +5,11 @@ import { iamClient, InviteUserPayload, UpdateUserPayload } from '@/lib/services/
 export async function fetchUsersAction(tenantId: string) {
   try {
     const users = await iamClient.listUsers(tenantId);
-    return { data: users };
+    return { data: users, error: undefined };
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
     console.warn('[USERS_ACTION] fetchUsersAction warning, returning empty list:', msg);
-    return { data: [] };
+    return { data: [], error: msg };
   }
 }
 
