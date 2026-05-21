@@ -130,3 +130,23 @@ El motor `@abd/styles` implementa un flujo libre de latencia para aplicar identi
 *   **Ajuste Bitwise para Modo Oscuro**: Realiza operaciones de desplazamiento de bits a nivel hexadecimal para aclarar sutilmente los colores saturados del Tenant cuando se activa el modo oscuro, evitando cansancio visual sobre fondos negros.
 *   **Inyección SSR (Zero-FOUC)**: El layout raíz de Next.js compila el CSS e inyecta la etiqueta `<style id="tenant-branding-gateway">` directamente en el renderizado del lado del servidor (`head`), logrando que la interfaz cargue completamente teñida sin parpadeos visuales intermedios.
 *   **Esquinas Dinámicas**: Configura `--radius` para mutar entre bordes redondeados orgánicos (`0.75rem`) o interfaces angulares ciber-industriales cuadradas (`0px`/`0.15rem`) instantáneamente según la preferencia del Tenant.
+
+---
+
+## 🏢 7. Conmutación de Contexto de Inquilino en Caliente (TenantSelector)
+
+Para permitir a los usuarios con múltiples membresías organizacionales (especialmente a los administradores globales `SUPER_ADMIN`) conmutar entre diferentes inquilinos de manera dinámica y sin necesidad de cerrar sesión, se dispone de un mecanismo de conmutación en caliente coordinado:
+
+### Componente Transversal `TenantSelector`
+*   **Definición**: Componente UI premium centralizado en la librería compartida `@abd/styles` e integrado globalmente en la barra de controles flotante superior derecha (`fixed top-6 right-6`) de los layouts principales (`ABDtenantGobernance`, `ABDLogs`).
+*   **Modo Lectura (Estéril)**: Para usuarios con rol `ADMIN` estándar o inferiores, el componente se renderiza como un badge informativo de solo lectura que expone de forma inerte su inquilino activo asignado, previniendo cualquier alteración visual.
+*   **Modo Interactivo (Buscador)**: Para usuarios con rol `SUPER_ADMIN`, renderiza un disparador que abre una interfaz flotante con buscador interactivo y carga dinámicamente los tenants activos para permitir la conmutación al vuelo.
+
+### Sincronización, Propagación y Aislamiento
+1.  **Reactividad en la URL**: Al conmutar de organización, el selector propaga el cambio actualizando el parámetro `?tenantId=...` en la barra de direcciones de Next.js, preservando otros parámetros de búsqueda activos.
+2.  **Consumo de API Local**: El componente de cliente consume un endpoint local seguro (`/api/admin/tenants`) para obtener la lista de tenants basada en los datos de la base de datos (por ejemplo, registros de auditoría reales en `ABDLogs` mediante agregación de `distinct('tenantId')`).
+3.  **Seguridad y Aislamiento Estricto (SaaS Context Isolation)**:
+    - La API de los satélites (como `/api/admin/audit` en `ABDLogs`) implementa un filtro inquebrantable a nivel de controlador.
+    - Si el rol de la sesión del usuario no es `SUPER_ADMIN`, la API descarta cualquier query parameter `tenantId` provisto en la petición y enforza forzosamente la consulta al `tenantId` cifrado en su claim JWT.
+    - Esto previene ataques de manipulación de parámetros (IDOR) donde un administrador estándar podría intentar consultar logs o recursos de otros tenants.
+

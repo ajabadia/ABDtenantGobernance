@@ -173,3 +173,16 @@ Una vez verificado que el flujo HTTP funciona en producción, puedes borrar de f
 *   `src/models/AuditLog.ts` (Modelos locales eliminados)
 
 ¡Listo! Con este diseño modular e industrial, has blindado la escalabilidad a largo plazo de la plataforma. La transición a **`ABDLogs`** será transparente y libre de fricciones técnicas.
+
+---
+
+## 🔒 5. Seguridad de Consultas y Aislamiento en el Servidor (SaaS Isolation)
+
+Al exponer los logs de auditoría en interfaces visuales a través de controladores o Route Handlers intermedios (como el endpoint de consulta `/api/admin/audit` expuesto a administradores locales en `ABDLogs`), se debe implementar una validación perimetral inquebrantable:
+
+1. **Chequeo de Rol**:
+   - Únicamente los usuarios autenticados con rol `SUPER_ADMIN` tienen la facultad de consultar logs especificando parámetros arbitrarios en la URL (ej. `?tenantId=SYSTEM` o `?tenantId=otro-tenant`).
+2. **Sobrescritura Forzosa (Anti-IDOR)**:
+   - Si el usuario logueado posee el rol `ADMIN` estándar (administrador local de su tenant), el backend **deberá ignorar irrevocablemente** cualquier valor proporcionado en el query param `tenantId` y sobrescribirlo con el `user.tenantId` validado en la sesión activa decodificada del JWT.
+   - De este modo, se neutralizan intentos de manipulación de peticiones donde un inquilino intente realizar minería de logs de otras organizaciones o de la infraestructura global.
+
