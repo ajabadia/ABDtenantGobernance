@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { getLocale } from "next-intl/server";
 import { BrandingStyles, getIndustrialSession } from "@abd/satellite-sdk";
 import { SessionProvider } from "@abd/satellite-sdk/client";
+import { ThemeScript } from "@abd/styles";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -29,8 +30,9 @@ export default async function RootLayout({
   const session = await getIndustrialSession();
 
   return (
-    <html lang={locale} className="dark" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
+        <ThemeScript />
         {/* Centralized dynamic branding styles injection (Zero FOUC) */}
         <BrandingStyles />
       </head>

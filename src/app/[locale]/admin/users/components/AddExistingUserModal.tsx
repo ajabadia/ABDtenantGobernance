@@ -3,7 +3,7 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { X, UserPlus, ChevronDown } from 'lucide-react';
@@ -38,15 +38,19 @@ export function AddExistingUserModal({
   const [selectedGroups, setSelectedGroups] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [, startTransition] = useTransition();
 
-  // Reset fields when modal opens
+  // Reset fields when modal opens — deferred via startTransition to avoid
+  // synchronous setState inside effect (react-hooks/set-state-in-effect)
   useEffect(() => {
     if (isOpen) {
-      setEmail('');
-      setName('');
-      setRole('student');
-      setSelectedGroups([]);
-      setError('');
+      startTransition(() => {
+        setEmail('');
+        setName('');
+        setRole('student');
+        setSelectedGroups([]);
+        setError('');
+      });
     }
   }, [isOpen]);
 
@@ -153,8 +157,8 @@ export function AddExistingUserModal({
                 onChange={e => setRole(e.target.value)}
                 className="w-full h-10 pl-4 pr-10 rounded-none bg-secondary/30 border border-border focus:border-primary focus:ring-1 focus:ring-primary/30 font-mono text-xs outline-none text-foreground uppercase appearance-none"
               >
-                <option value="student">Estudiante / Operario</option>
-                <option value="admin">Administrador (Tenant)</option>
+              <option value="student">{t('roleStudent', { defaultMessage: 'Estudiante / Operario' })}</option>
+              <option value="admin">{t('roleAdmin', { defaultMessage: 'Administrador (Tenant)' })}</option>
               </select>
               <ChevronDown size={12} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none" />
             </div>
@@ -191,16 +195,18 @@ export function AddExistingUserModal({
             <button
               type="button"
               onClick={onClose}
+              aria-label={t('cancel', { defaultMessage: 'Cancelar' })}
               className="px-5 py-2.5 bg-transparent text-muted-foreground border border-border hover:border-muted-foreground/40 hover:bg-white/[0.02] font-mono text-[10px] font-bold uppercase tracking-wider transition-all duration-200 rounded-none active:scale-[0.98]"
             >
-              Cancelar
+              {t('cancel', { defaultMessage: 'Cancelar' })}
             </button>
             <button
               type="submit"
               disabled={isLoading}
+              aria-label={isLoading ? t('processing', { defaultMessage: 'Procesando...' }) : t('addOrInviteUser', { defaultMessage: 'Agregar / Invitar' })}
               className="px-5 py-2.5 bg-primary/10 text-primary border border-primary/40 hover:border-primary hover:bg-primary/20 font-mono text-[10px] font-black uppercase tracking-wider transition-all duration-200 rounded-none active:scale-[0.98] disabled:opacity-50"
             >
-              {isLoading ? 'Procesando...' : 'Agregar / Invitar'}
+              {isLoading ? t('processing', { defaultMessage: 'Procesando...' }) : t('addOrInviteUser', { defaultMessage: 'Agregar / Invitar' })}
             </button>
           </div>
         </form>

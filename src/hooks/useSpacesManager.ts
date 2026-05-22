@@ -10,16 +10,15 @@ export function useSpacesManager(explicitTenantId: string | null) {
 
   const [spaces, setSpaces] = useState<SpaceData[]>([]);
   const [loading, setLoading] = useState(true);
+  // explicitTenantId is used as the source of truth; state mirrors it for local mutations
   const [tenantId, setTenantId] = useState<string>(explicitTenantId || '');
+
+  // Sync when the parent passes a new explicitTenantId (avoid synchronous setState in effect)
+  const resolvedTenantId = explicitTenantId || tenantId;
+
   const [allTenants, setAllTenants] = useState<{tenantId: string, name: string, customSpaceLabels?: string[]}[]>([]);
 
-  useEffect(() => {
-    if (explicitTenantId) {
-      setTenantId(explicitTenantId);
-    }
-  }, [explicitTenantId]);
-
-  const activeTenant = allTenants.find(t => t.tenantId === tenantId);
+  const activeTenant = allTenants.find(t => t.tenantId === resolvedTenantId);
   const customSpaceLabels = activeTenant?.customSpaceLabels && activeTenant.customSpaceLabels.length > 0
     ? activeTenant.customSpaceLabels
     : ['L01', 'L02', 'L03'];
@@ -67,11 +66,11 @@ export function useSpacesManager(explicitTenantId: string | null) {
   }, []);
 
   useEffect(() => {
-    if (tenantId || allTenants.length === 0) {
+    if (resolvedTenantId || allTenants.length === 0) {
       /* eslint-disable-next-line react-hooks/set-state-in-effect */
       fetchSpaces();
     }
-  }, [tenantId]);
+  }, [resolvedTenantId]);
 
   const handleDelete = async (spaceId: string) => {
     if (!window.confirm(t('delete_confirm'))) return;

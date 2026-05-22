@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { Separator } from '@/components/ui/separator';
 import { ensureIndustrialAccess } from '@/lib/session';
 import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
+import { Footer, AdminPageHeader } from '@abd/styles';
 
 /**
  * 🛰️ Central Admin Governance Portal Page (Federated Server Component)
@@ -23,24 +23,12 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
         
         {/* Header */}
-        <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-border pb-8">
-          <div className="flex flex-col gap-2">
-            {/* Tag Monospace de Ubicación (Breadcrumb/Ruta) de acuerdo con la guía de estilo */}
-            <div className="text-[10px] font-mono font-black uppercase tracking-[0.25em] text-primary flex items-center gap-2 mb-2">
-              <LayoutDashboard size={14} className="text-primary animate-pulse" aria-hidden="true" />
-              <span className="animate-console-pulse">{t('controlConsole')} • DASHBOARD</span>
-            </div>
-            
-            <h1 className="text-3xl font-black uppercase italic tracking-tight text-foreground leading-none">
-              ABD <span className="text-primary">{ap('gobernanza')}</span>
-            </h1>
-            
-            {/* Subtítulo descriptivo en Geist Sans, tamaño normal y sentence-case */}
-            <p className="text-sm text-muted-foreground font-sans mt-2 leading-relaxed">
-              Consola de control federada y gobernanza en caliente del tenant <span className="text-primary font-bold">{user.tenantId}</span>.
-            </p>
-          </div>
-        </header>
+        <AdminPageHeader
+          icon={LayoutDashboard}
+          breadcrumb={<>{t('controlConsole')} • DASHBOARD</>}
+          title={<>ABD <span className="text-primary">{ap('gobernanza')}</span></>}
+          description={<>Consola de control federada y gobernanza en caliente del tenant <span className="text-primary font-bold">{user.tenantId}</span>.</>}
+        />
 
         {/* Dashboard Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -122,10 +110,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
         </div>
 
         {/* Footer */}
-        <footer className="mt-auto pt-12 flex flex-col items-center gap-6 text-muted-foreground/40 font-mono text-[9px] uppercase tracking-[0.3em]" role="contentinfo">
-          <Separator className="bg-border" aria-hidden="true" />
-          <span>{t('footer')}</span>
-        </footer>
+        <Footer label={t('footer')} opacity="high" />
 
       </div>
     </main>
