@@ -117,7 +117,7 @@ export function ManageSpaceCollaboratorsModal({ tenantId, space, isOpen, onClose
                           <select className="h-7 bg-secondary/30 border border-border text-[10px] font-mono uppercase text-foreground px-2 focus:border-primary outline-none" value={c.role} onChange={e => handleRoleChange(c.subjectId, e.target.value as 'VIEWER' | 'EDITOR' | 'ADMIN')}>
                             <option value="VIEWER">{t('role_viewer')}</option><option value="EDITOR">{t('role_editor')}</option><option value="ADMIN">{t('role_admin')}</option>
                           </select>
-                          <button type="button" onClick={() => handleRemove(c.subjectId)} className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors"><Trash2 size={14} /></button>
+                          <button type="button" onClick={() => handleRemove(c.subjectId)} className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors" aria-label="Remove"><Trash2 size={14} /></button>
                         </div>
                       </div>
                     ))
@@ -127,8 +127,8 @@ export function ManageSpaceCollaboratorsModal({ tenantId, space, isOpen, onClose
           </div>
         )}
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-border shrink-0">
-          <button type="button" onClick={onClose} className="px-5 py-2.5 bg-transparent text-muted-foreground border border-border hover:border-muted-foreground/40 font-mono text-[10px] font-bold uppercase transition-all rounded-none">{t('cancel')}</button>
-          <button type="button" onClick={handleSave} disabled={saving || loading} className="px-5 py-2.5 bg-primary/10 text-primary border border-primary/40 hover:border-primary hover:bg-primary/20 font-mono text-[10px] font-black uppercase transition-all disabled:opacity-50 rounded-none">{saving ? t('saving') : t('save')}</button>
+          <button type="button" onClick={onClose} aria-label={t('cancel')} className="px-5 py-2.5 bg-transparent text-muted-foreground border border-border hover:border-muted-foreground/40 font-mono text-[10px] font-bold uppercase transition-all rounded-none">{t('cancel')}</button>
+          <button type="button" onClick={handleSave} aria-label={saving ? t('saving') : t('save')} disabled={saving || loading} className="px-5 py-2.5 bg-primary/10 text-primary border border-primary/40 hover:border-primary hover:bg-primary/20 font-mono text-[10px] font-black uppercase transition-all disabled:opacity-50 rounded-none">{saving ? t('saving') : t('save')}</button>
         </div>
       </div>
     </div>

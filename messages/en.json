@@ -327,6 +327,45 @@
         "membersUpdateError": "Error updating members",
         "loadingData": "LOADING DATA..."
       }
+    },
+    "marketplace": {
+      "title": "Satellite Marketplace",
+      "subtitle": "Catalog of modules and federated license management.",
+      "requestTitle": "License Request",
+      "requestDesc": "Please justify the need to acquire this module for your Tenant.",
+      "requestLabel": "Request Justification",
+      "requestPlaceholder": "We need this module for...",
+      "cancel": "Cancel",
+      "submit": "Submit Request",
+      "statusAvailable": "Available",
+      "statusPending": "Request Pending",
+      "statusLicensed": "Active License",
+      "statusComingSoon": "Coming Soon",
+      "modules": {
+        "logs": {
+          "name": "Central Logs",
+          "desc": "Immutable chain audit and SOC2 logging."
+        },
+        "gobernanza": {
+          "name": "Governance Portal",
+          "desc": "IAM control, ABAC and federated white-labeling."
+        },
+        "quiz": {
+          "name": "ABD Quiz Engine",
+          "desc": "Technical evaluation with anti-fraud validation and traceability."
+        },
+        "rag": {
+          "name": "Smart Assistant (RAG)",
+          "desc": "Augmented AI for real-time query resolution."
+        }
+      },
+      "requestsPanelTitle": "Pending License Requests",
+      "approve": "Approve",
+      "deny": "Deny",
+      "resolutionComment": "Resolution comment (Optional)...",
+      "toastSuccess": "Request submitted successfully",
+      "toastError": "Error processing request",
+      "toastResolved": "Request resolved successfully"
     }
   },
   "quiz": {

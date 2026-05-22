@@ -327,6 +327,45 @@
         "membersUpdateError": "Error al actualizar miembros",
         "loadingData": "CARGANDO DATOS..."
       }
+    },
+    "marketplace": {
+      "title": "Marketplace de Satélites",
+      "subtitle": "Catálogo de módulos y gestión de licencias federadas del ecosistema.",
+      "requestTitle": "Solicitud de Licencia",
+      "requestDesc": "Por favor, justifica la necesidad de adquirir este módulo para tu Tenant.",
+      "requestLabel": "Justificación de la solicitud",
+      "requestPlaceholder": "Necesitamos este módulo para...",
+      "cancel": "Cancelar",
+      "submit": "Enviar Solicitud",
+      "statusAvailable": "Disponible",
+      "statusPending": "Solicitud Pendiente",
+      "statusLicensed": "Licencia Activa",
+      "statusComingSoon": "Próximamente",
+      "modules": {
+        "logs": {
+          "name": "Central de Logs",
+          "desc": "Auditoría en cadena inmutable y registro SOC2."
+        },
+        "gobernanza": {
+          "name": "Portal de Gobernanza",
+          "desc": "Control IAM, ABAC y marca blanca federada."
+        },
+        "quiz": {
+          "name": "Motor ABD Quiz",
+          "desc": "Evaluación técnica con validación anti-fraude y trazabilidad."
+        },
+        "rag": {
+          "name": "Asistente Inteligente (RAG)",
+          "desc": "Inteligencia artificial aumentada para la resolución de dudas en tiempo real."
+        }
+      },
+      "requestsPanelTitle": "Solicitudes de Licencia Pendientes",
+      "approve": "Aprobar",
+      "deny": "Denegar",
+      "resolutionComment": "Comentario de resolución (Opcional)...",
+      "toastSuccess": "Solicitud enviada exitosamente",
+      "toastError": "Error al procesar la solicitud",
+      "toastResolved": "Solicitud resuelta correctamente"
     }
   },
   "quiz": {

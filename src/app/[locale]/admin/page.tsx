@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@/lib/session';
-import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield } from 'lucide-react';
+import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 import { Footer, AdminPageHeader } from '@abd/styles';
@@ -95,6 +95,18 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
                 footerValue={ap('activo')}
                 buttonText={t('permissionsCardBtn')}
                 href={`/${locale}/admin/permissions`}
+              />
+
+              {/* Card 6: Marketplace de Satélites */}
+              <DashboardActionCard 
+                icon={ShoppingBag}
+                category={t('marketplace.title')}
+                title={t('marketplace.title')}
+                description={t('marketplace.subtitle')}
+                footerLabel={t('marketplace.title')}
+                footerValue={ap('activo')}
+                buttonText={t('marketplace.title')}
+                href={`/${locale}/admin/marketplace`}
               />
 
             </div>
