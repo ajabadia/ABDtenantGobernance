@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { getTenantModel } from '../lib/database/tenant-model';
 
 export interface ISpaceCollaborator {
   userId: string;
@@ -45,6 +46,6 @@ const SpaceMongooseSchema = new Schema<ISpace>({
 // Índice compuesto para garantizar slugs únicos dentro de una jerarquía del mismo tenant
 SpaceMongooseSchema.index({ tenantId: 1, parentSpaceId: 1, slug: 1 }, { unique: true });
 
-const Space: Model<ISpace> = mongoose.models.Space || mongoose.model<ISpace>('Space', SpaceMongooseSchema);
+const Space: Model<ISpace> = mongoose.models.Space || getTenantModel<ISpace>('Space', SpaceMongooseSchema);
 
 export default Space;

@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { getTenantModel } from '../lib/database/tenant-model';
 
 export interface IPermissionPolicy extends Document {
   tenantId: string;
@@ -48,6 +49,6 @@ PermissionPolicySchema.index({ tenantId: 1, isActive: 1 });
 
 const PermissionPolicy: Model<IPermissionPolicy> =
   mongoose.models.PermissionPolicy ||
-  mongoose.model<IPermissionPolicy>('PermissionPolicy', PermissionPolicySchema);
+  getTenantModel<IPermissionPolicy>('PermissionPolicy', PermissionPolicySchema);
 
 export default PermissionPolicy;

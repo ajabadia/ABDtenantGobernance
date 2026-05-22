@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { getTenantModel } from '../lib/database/tenant-model';
 
 export interface IPermissionGroup extends Document {
   tenantId: string;
@@ -32,6 +33,6 @@ PermissionGroupSchema.index({ tenantId: 1, slug: 1 }, { unique: true });
 
 const PermissionGroup: Model<IPermissionGroup> =
   mongoose.models.PermissionGroup ||
-  mongoose.model<IPermissionGroup>('PermissionGroup', PermissionGroupSchema);
+  getTenantModel<IPermissionGroup>('PermissionGroup', PermissionGroupSchema);
 
 export default PermissionGroup;

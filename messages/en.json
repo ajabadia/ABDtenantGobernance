@@ -50,7 +50,8 @@
     "coreLabel": "Core",
     "logicLabel": "Logic",
     "styleLabel": "Style",
-    "tenants": "TENANTS"
+    "tenants": "TENANTS",
+    "abdTitle": "ABD"
   },
   "results": {
     "passed": "MISSION ACCOMPLISHED",
@@ -261,7 +262,8 @@
     "permissionsCardTitle": "Groups & Permissions",
     "permissionsCardDesc": "Define access groups with recursive hierarchy and granular ABAC policies. Permissions are automatically inherited from parent groups to children.",
     "permissionsCardBtn": "Manage Permissions",
-    "abacPolicies": "ABAC Policies"
+    "abacPolicies": "ABAC Policies",
+    "brandCardDescFull": "Adjust visual parameters for <tenant>{tenantName}</tenant>. Changes will impact all users instantly."
   },
   "quiz": {
     "module": "MODULE",
@@ -280,7 +282,7 @@
     "globalTimeout": "Global time limit reached. Finishing exam..."
   },
   "adminPortal": {
-    "gobernanza": "GOVERNANCE",
+    "gobernanza": "Governance",
     "subTitle": "Central Technical Control Panel | Tenant: ",
     "bancoDatos": "DATABASE",
     "ingestorDesc": "Import JSON or CSV files seamlessly with automated field sanitization.",
@@ -331,7 +333,9 @@
     "labelSource": "Source of Origin",
     "labelDifficulty": "Difficulty Level (Dropdown)",
     "btnSaving": "SAVING...",
-    "btnNextQuestion": "NEXT QUESTION"
+    "btnNextQuestion": "NEXT QUESTION",
+    "abdTitle": "ABD",
+    "adminDescriptionFull": "Federated control console and hot governance for tenant <tenant>{tenantId}</tenant>."
   },
   "settings": {
     "title": "System Settings",

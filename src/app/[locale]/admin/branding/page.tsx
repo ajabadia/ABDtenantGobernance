@@ -50,7 +50,7 @@ export default async function AdminBrandingPage({
                 <ArrowLeft size={14} aria-hidden="true" />
               </Link>
           }
-          description={<>Ajusta los parámetros visuales para <span className="text-primary font-bold">{tenantConfig.name}</span>. Los cambios impactan a todos sus usuarios de forma instantánea.</>}
+          description={<>{tAdmin.rich('brandCardDescFull', { tenantName: tenantConfig.name, tenant: (chunks) => <span className="text-primary font-bold">{chunks}</span> })}</>}
         />
 
         {/* Formulario de personalización premium con Live Preview */}

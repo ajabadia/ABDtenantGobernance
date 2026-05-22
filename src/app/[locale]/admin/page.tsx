@@ -26,8 +26,8 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
         <AdminPageHeader
           icon={LayoutDashboard}
           breadcrumb={<>{t('controlConsole')} • DASHBOARD</>}
-          title={<>ABD <span className="text-primary">{ap('gobernanza')}</span></>}
-          description={<>Consola de control federada y gobernanza en caliente del tenant <span className="text-primary font-bold">{user.tenantId}</span>.</>}
+          title={<>{ap('abdTitle')} <span className="text-primary">{ap('gobernanza')}</span></>}
+          description={<>{ap.rich('adminDescriptionFull', { tenantId: user.tenantId, tenant: (chunks) => <span className="text-primary font-bold">{chunks}</span> })}</>}
         />
 
         {/* Dashboard Grid */}
