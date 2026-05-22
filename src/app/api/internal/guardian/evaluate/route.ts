@@ -33,7 +33,12 @@ export async function POST(req: Request) {
         context,
       });
 
-      return NextResponse.json(result, { status: 200 });
+      return NextResponse.json({
+        allowed: result.decision === 'ALLOW',
+        reason: result.reason,
+        allowedSpaceIds: result.allowedSpaceIds || [],
+        allowedGroupIds: result.allowedGroupIds || []
+      }, { status: 200 });
     } catch (error) {
       console.error('[GuardianEngine S2S] Error:', error);
       return NextResponse.json(

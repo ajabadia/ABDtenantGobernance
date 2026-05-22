@@ -17,6 +17,8 @@ export interface EvaluationRequest {
 export interface EvaluationResult {
   decision: 'ALLOW' | 'DENY';
   reason?: string;
+  allowedSpaceIds?: string[];
+  allowedGroupIds?: string[];
 }
 
 export class GuardianEngine {
@@ -46,10 +48,23 @@ export class GuardianEngine {
       }
     }
 
-    // 4. Resolver políticas efectivas desde los grupos (Resolución BFS Jerárquica)
+    // 4. Resolución de espacios permitidos
+    const { SpaceRepository } = await import('@/lib/repositories/SpaceRepository');
+    const spaceRepo = new SpaceRepository();
+    const userSpaces = await spaceRepo.find({
+      tenantId,
+      $or: [
+        { ownerUserId: userId },
+        { 'collaborators.userId': userId }
+      ]
+    } as Record<string, unknown>);
+    const allowedSpaceIds = userSpaces.map(s => s._id.toString());
+    const allowedGroupIds = Array.from(groupIds);
+
+    // 5. Resolver políticas efectivas desde los grupos (Resolución BFS Jerárquica)
     let allPolicies = await PermissionService.resolveEffectivePolicies(
       tenantId,
-      Array.from(groupIds)
+      allowedGroupIds
     );
 
     // Añadimos políticas directas desde delegaciones (si aplica)
@@ -97,9 +112,9 @@ export class GuardianEngine {
     }
 
     if (isAllowed) {
-      return { decision: 'ALLOW' };
+      return { decision: 'ALLOW', allowedSpaceIds, allowedGroupIds };
     }
 
-    return { decision: 'DENY', reason: 'Implicit DENY: No matching ALLOW policy found for this context' };
+    return { decision: 'DENY', reason: 'Implicit DENY: No matching ALLOW policy found for this context', allowedSpaceIds, allowedGroupIds };
   }
 }
