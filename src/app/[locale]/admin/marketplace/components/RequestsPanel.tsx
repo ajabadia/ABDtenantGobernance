@@ -6,7 +6,7 @@ import { resolveLicenseRequestAction } from '../actions';
 import { Check, X, Loader2, ShieldAlert } from 'lucide-react';
 
 interface RequestsPanelProps {
-  requests: { _id: string; tenantId: string; appId: string; requestedBy: string; comments: string; createdAt: Date }[];
+  requests: { _id: string; tenantId: string; appId: string; requestedBy: string; comments?: string; createdAt: Date }[];
   locale: string;
 }
 

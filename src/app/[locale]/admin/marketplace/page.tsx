@@ -6,18 +6,29 @@ import { fetchMarketplaceData, fetchAllPendingRequests } from './actions';
 import { MarketplaceGrid } from './components/MarketplaceGrid';
 import { RequestsPanel } from './components/RequestsPanel';
 
-export default async function MarketplacePage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function MarketplacePage({ 
+  params,
+  searchParams 
+}: { 
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ tenantId?: string }>;
+}) {
   const { locale } = await params;
+  const sp = await searchParams;
   const t = await getTranslations('admin.marketplace');
   
   // 🛡️ Ensure minimum ADMIN access
   const user = await ensureIndustrialAccess('ADMIN');
   
+  const targetTenantId = (user.role === 'SUPER_ADMIN' && sp?.tenantId) 
+    ? sp.tenantId 
+    : user.tenantId;
+
   // Fetch tenant licensing info
-  const marketplaceData = await fetchMarketplaceData(user.tenantId);
+  const marketplaceData = await fetchMarketplaceData(targetTenantId);
   
   // Fetch all pending requests globally if user is SUPER_ADMIN
-  let superAdminRequests: { _id: string; tenantId: string; appId: string; requestedBy: string; comments: string; createdAt: Date }[] = [];
+  let superAdminRequests: { _id: string; tenantId: string; appId: string; requestedBy: string; comments?: string; createdAt: Date }[] = [];
   if (user.role === 'SUPER_ADMIN') {
     superAdminRequests = await fetchAllPendingRequests();
   }
@@ -30,6 +41,7 @@ export default async function MarketplacePage({ params }: { params: Promise<{ lo
           breadcrumb={<>{t('title')} • DASHBOARD</>}
           title={t('title')}
           description={t('subtitle')}
+          tenantId={targetTenantId}
         />
 
         {user.role === 'SUPER_ADMIN' && superAdminRequests.length > 0 && (
@@ -41,7 +53,7 @@ export default async function MarketplacePage({ params }: { params: Promise<{ lo
 
         <div className="bg-card text-card-foreground p-6 rounded-xl border border-border shadow-md">
           <MarketplaceGrid 
-            tenantId={user.tenantId}
+            tenantId={targetTenantId}
             allowedApps={marketplaceData.allowedApps} 
             pendingRequests={marketplaceData.pendingRequests}
             locale={locale}
