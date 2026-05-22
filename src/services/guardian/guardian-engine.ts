@@ -55,9 +55,9 @@ export class GuardianEngine {
       tenantId,
       $or: [
         { ownerUserId: userId },
-        { 'collaborators.userId': userId }
+        { 'collaborators.subjectId': userId }
       ]
-    } as Record<string, unknown>);
+    });
     const allowedSpaceIds = userSpaces.map(s => s._id.toString());
     const allowedGroupIds = Array.from(groupIds);
 
@@ -80,7 +80,7 @@ export class GuardianEngine {
       const policyRepo = new PermissionPolicyRepository();
       const directPoliciesDocs = await policyRepo.find({
         tenantId,
-        _id: { $in: Array.from(directPolicyIds) } as never,
+        _id: { $in: Array.from(directPolicyIds) },
         isActive: true,
       });
       

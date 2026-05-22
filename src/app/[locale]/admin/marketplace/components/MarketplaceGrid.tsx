@@ -95,10 +95,9 @@ export function MarketplaceGrid({ tenantId, allowedApps, pendingRequests, locale
               <p className="text-sm text-muted-foreground flex-grow mb-6">{mod.desc}</p>
 
               {!mod.isCore && mod.status === 'AVAILABLE' && (
-                <button
+                <button aria-label={t('requestTitle')}
                   onClick={() => setSelectedApp(mod.id)}
                   className="w-full py-2 px-4 rounded-md bg-primary text-primary-foreground font-semibold hover:bg-primary/90 transition-colors text-sm"
-                  aria-label={t('requestTitle')}
                 >
                   {t('requestTitle')}
                 </button>

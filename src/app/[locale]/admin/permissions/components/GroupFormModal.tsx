@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
@@ -59,7 +60,7 @@ export function GroupFormModal({ tenantId, isOpen, onClose, onSuccess, editingGr
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label={editingGroup ? t('editGroup') : t('createGroup')}>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in" onClick={(e) => { e.stopPropagation(); onClose(); }} />
       <div className="relative w-full max-w-xl bg-card border border-border shadow-2xl p-8 rounded-none animate-in fade-in slide-in-from-bottom-4 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-6 pb-2 border-b border-border">
           <h2 className="text-xl font-black uppercase italic tracking-tight text-foreground flex items-center gap-2">

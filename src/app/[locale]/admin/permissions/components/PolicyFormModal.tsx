@@ -61,7 +61,7 @@ export function PolicyFormModal({ tenantId, isOpen, onClose, onSuccess }: Policy
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label="Crear política de permisos">
       <div
         className="absolute inset-0 bg-black/70 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
-        onClick={onClose}
+        onClick={(e) => { e.stopPropagation(); onClose(); }}
       />
 
       <div className="relative w-full max-w-lg bg-card border border-border shadow-2xl p-8 rounded-none animate-in fade-in slide-in-from-bottom-4">

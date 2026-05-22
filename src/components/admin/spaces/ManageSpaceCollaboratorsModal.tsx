@@ -1,4 +1,5 @@
 'use client';
+/* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect, useTransition } from 'react';
 import { toast } from 'sonner';
@@ -68,7 +69,7 @@ export function ManageSpaceCollaboratorsModal({ tenantId, space, isOpen, onClose
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center" role="dialog" aria-modal="true">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={(e) => { e.stopPropagation(); onClose(); }} />
       <div className="relative w-full max-w-2xl bg-card border border-border shadow-2xl p-8 rounded-none animate-in fade-in slide-in-from-bottom-4 max-h-[90vh] flex flex-col">
         <div className="flex items-center justify-between mb-6 pb-2 border-b border-border shrink-0">
           <h2 className="text-lg font-black uppercase italic tracking-tight text-foreground flex items-center gap-2"><Users size={18} className="text-primary" />{t('manage_collaborators', { defaultMessage: 'Gobernanza' })}</h2>

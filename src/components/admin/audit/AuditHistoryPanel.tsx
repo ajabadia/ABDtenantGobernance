@@ -3,7 +3,11 @@
 'use client';
 
 // Import shared components and feature flags via virtual package paths
-import { LiveLogViewer, featureFlags } from '@abd/styles';
+import { LiveLogViewer } from '@abd/ecosystem-widgets';
+
+const featureFlags = {
+  liveModeEnabled: true
+};
 
 interface AuditHistoryPanelProps {
   tenantId: string;

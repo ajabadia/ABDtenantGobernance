@@ -7,21 +7,14 @@ async function run() {
   const connection = await mongoose.connect(uri);
   const db = connection.connection.client.db('ABDElevators-Auth');
   
-  console.log("Removing 'quiz' from allowedApps for abd_global tenant...");
+  console.log("Removing 'quiz' from allowedApps for ALL tenants...");
   
-  // Update abd_global
-  const resultGlobal = await db.collection('tenants').updateOne(
-    { tenantId: 'abd_global' },
+  // Update all tenants
+  const result = await db.collection('tenants').updateMany(
+    {},
     { $pull: { allowedApps: 'quiz' } }
   );
-  console.log(`Updated abd_global: matched ${resultGlobal.matchedCount}, modified ${resultGlobal.modifiedCount}`);
-
-  // Also remove from some other tenant to have a mix, e.g. tenant_02 if it exists
-  const resultOther = await db.collection('tenants').updateMany(
-    { tenantId: { $in: ['tenant_02', 'tenant_03'] } },
-    { $pull: { allowedApps: 'quiz' } }
-  );
-  console.log(`Updated others: matched ${resultOther.matchedCount}, modified ${resultOther.modifiedCount}`);
+  console.log(`Updated all tenants: matched ${result.matchedCount}, modified ${result.modifiedCount}`);
 
   await mongoose.disconnect();
   console.log("Done.");

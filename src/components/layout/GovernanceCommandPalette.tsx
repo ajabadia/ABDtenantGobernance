@@ -3,7 +3,7 @@
 import React from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
-import { CommandPalette, Command } from '@abd/styles';
+import { CommandPalette, Command } from '@abd/ecosystem-widgets';
 import { Home, Palette, Folder, Terminal, ShieldCheck, Globe, LogOut, Settings } from 'lucide-react';
 
 export function GovernanceCommandPalette() {
@@ -89,7 +89,7 @@ export function GovernanceCommandPalette() {
       shortcut: ['c', 's'],
       icon: <Settings className="w-4 h-4" />,
       action: () => {
-        const settingsBtn = document.querySelector('[aria-label="Open Settings"]') as HTMLButtonElement;
+        const settingsBtn = document.querySelector('#system-settings-wrapper button') as HTMLButtonElement;
         if (settingsBtn) {
           settingsBtn.click();
         }
@@ -112,7 +112,6 @@ export function GovernanceCommandPalette() {
     <CommandPalette
       commands={commands}
       placeholder={locale === 'es' ? 'Escribe un comando o busca...' : 'Type a command or search...'}
-      triggerElementId="command-palette-trigger"
     />
   );
 }

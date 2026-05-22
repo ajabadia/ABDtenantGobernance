@@ -4,7 +4,9 @@ import { ensureIndustrialAccess } from '@/lib/session';
 import connectDB from '@/lib/database/mongodb';
 import LicenseRequest from '@/models/LicenseRequest';
 import { TenantService } from '@/services/tenant/tenant-service';
+import { AuditService } from '@/services/tenant/audit-service';
 import { revalidatePath } from 'next/cache';
+import { headers } from 'next/headers';
 
 export async function fetchMarketplaceData(tenantId: string) {
   await connectDB();
@@ -52,6 +54,22 @@ export async function createLicenseRequestAction(tenantId: string, appId: string
     comments
   });
 
+  const headersList = await headers();
+  const ipAddress = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || '127.0.0.1';
+  const userAgent = headersList.get('user-agent') || 'Unknown';
+
+  AuditService.logEvent({
+    tenantId,
+    action: 'REQUEST_LICENSE',
+    entityType: 'LICENSE_REQUEST',
+    entityId: appId,
+    userId: user.email,
+    userEmail: user.email,
+    changedFields: { appId, comments },
+    ipAddress,
+    userAgent
+  });
+
   revalidatePath('/[locale]/admin/marketplace', 'page');
   return { success: true };
 }
@@ -97,6 +115,22 @@ export async function resolveLicenseRequestAction(requestId: string, action: 'AP
   request.comments = comments || request.comments;
   
   await request.save();
+
+  const headersList = await headers();
+  const ipAddress = headersList.get('x-forwarded-for') || headersList.get('x-real-ip') || '127.0.0.1';
+  const userAgent = headersList.get('user-agent') || 'Unknown';
+
+  AuditService.logEvent({
+    tenantId: request.tenantId,
+    action: action === 'APPROVE' ? 'APPROVE_LICENSE_REQUEST' : 'DENY_LICENSE_REQUEST',
+    entityType: 'LICENSE_REQUEST',
+    entityId: request.appId,
+    userId: user.email,
+    userEmail: user.email,
+    changedFields: { status: request.status, resolutionComments: request.comments },
+    ipAddress,
+    userAgent
+  });
 
   revalidatePath('/[locale]/admin/marketplace', 'page');
   return { success: true };

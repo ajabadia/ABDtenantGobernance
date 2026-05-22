@@ -36,7 +36,7 @@ export class IamClient {
   private get headers() {
     return {
       'Content-Type': 'application/json',
-      'x-internal-iam-key': process.env.INTERNAL_IAM_API_KEY || '',
+      'x-internal-iam-key': process.env.INTERNAL_IAM_API_KEY as string,
     };
   }
 

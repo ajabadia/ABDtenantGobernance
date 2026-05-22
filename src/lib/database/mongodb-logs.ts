@@ -30,12 +30,12 @@ export async function connectLogsDB(): Promise<Connection> {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000,
       socketTimeoutMS: 45000,
-      dbName: 'ABDElevators-Logs', // ⚡ Estandarizar conexión a la BD centralizada de Logs
+      dbName: process.env.LOGS_DB_NAME || 'ABDElevators-Logs', // ⚡ Estandarizar conexión a la BD centralizada de Logs
     };
 
     // Usar mongoose.createConnection para evitar colisiones con la conexión por defecto
-    cached.promise = Promise.resolve(mongoose.createConnection(MONGODB_LOGS_URI, opts));
-    console.log('✅ Secondary Mongoose connected successfully to ABDElevators-Logs');
+    cached.promise = mongoose.createConnection(MONGODB_LOGS_URI, opts).asPromise();
+    console.log(`✅ Secondary Mongoose connected successfully to ${opts.dbName}`);
   }
 
   try {

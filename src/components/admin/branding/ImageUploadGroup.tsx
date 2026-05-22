@@ -3,7 +3,7 @@
 import React, { useRef } from 'react';
 import { Upload } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-
+import { toast } from 'sonner';
 interface ImageUploadGroupProps {
   logoPreview: string | null;
   setLogoPreview: (preview: string | null) => void;
@@ -25,9 +25,23 @@ export function ImageUploadGroup({
   const logoInputRef = useRef<HTMLInputElement>(null);
   const faviconInputRef = useRef<HTMLInputElement>(null);
 
+  const validateFile = (file: File) => {
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml', 'image/x-icon'];
+    if (!validTypes.includes(file.type)) {
+      toast.error(t('invalidFileType', { defaultMessage: 'Invalid file format. Use JPG, PNG, WEBP, SVG or ICO' }));
+      return false;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error(t('fileTooLarge', { defaultMessage: 'File size must be under 2MB' }));
+      return false;
+    }
+    return true;
+  };
+
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      if (!validateFile(file)) return;
       setLogoFile(file);
 
       const reader = new FileReader();
@@ -41,6 +55,7 @@ export function ImageUploadGroup({
   const handleFaviconChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
+      if (!validateFile(file)) return;
       setFaviconFile(file);
 
       const reader = new FileReader();

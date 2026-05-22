@@ -4,7 +4,7 @@ import type { QueryFilter } from 'mongoose';
 import type { ISpace } from '@/models/Space';
 import { AuditService } from './audit-service';
 import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
-
+import { withTenantContext } from '@/lib/database/tenant-model';
 const spaceRepository = new SpaceRepository();
 
 export class SpaceService {
@@ -64,25 +64,8 @@ export class SpaceService {
     return SpaceSchema.parse(obj);
   }
 
-  /**
-   * Obtiene los espacios accesibles para un usuario dentro de un tenant basado en su visibilidad
-   */
-  static async getAccessibleSpaces(
-    tenantId: string,
-    userId: string,
-    filters: {
-      parentSpaceId?: string;
-      isRoot?: boolean;
-      search?: string;
-    } = {}
-  ): Promise<Space[]> {
-    
-    // 1. Obtener a qué grupos pertenece el usuario en este tenant
-    const memberships = await userGroupMembershipRepository.findByUserId(tenantId, userId);
-    const groupIds = memberships.map(m => m.groupId.toString());
-
-    // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
-    const accessibilityQuery: QueryFilter<ISpace> = {
+  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): QueryFilter<ISpace> {
+    return {
       tenantId,
       $or: [
         // 1. Espacios personales del usuario
@@ -104,6 +87,27 @@ export class SpaceService {
         { type: 'TENANT', visibility: 'INTERNAL', ownerUserId: userId }
       ]
     };
+  }
+
+  /**
+   * Obtiene los espacios accesibles para un usuario dentro de un tenant basado en su visibilidad
+   */
+  static async getAccessibleSpaces(
+    tenantId: string,
+    userId: string,
+    filters: {
+      parentSpaceId?: string;
+      isRoot?: boolean;
+      search?: string;
+    } = {}
+  ): Promise<Space[]> {
+    
+    // 1. Obtener a qué grupos pertenece el usuario en este tenant
+    const memberships = await userGroupMembershipRepository.findByUserId(tenantId, userId);
+    const groupIds = memberships.map(m => m.groupId.toString());
+
+    // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
+    const accessibilityQuery = this.buildAccessibilityFilter(tenantId, userId, groupIds);
 
     const extraFilters: QueryFilter<ISpace> = {};
     if (filters.isRoot) {
@@ -137,68 +141,70 @@ export class SpaceService {
     userId = 'SYSTEM',
     userEmail = 'SYSTEM'
   ): Promise<void> {
-    const space = await spaceRepository.findById(spaceId);
-    if (!space) {
-      throw new Error('Espacio no encontrado');
-    }
-
-    let newPath = `/${space.slug}`;
-    if (newParentId) {
-      const newParent = await spaceRepository.findById(newParentId);
-      if (!newParent) {
-        throw new Error('El nuevo espacio padre no existe');
+    return withTenantContext(async () => {
+      const space = await spaceRepository.findById(spaceId);
+      if (!space) {
+        throw new Error('Espacio no encontrado');
       }
-      newPath = `${newParent.materializedPath}/${space.slug}`;
-    }
 
-    const oldPath = space.materializedPath;
-
-    // 1. Actualizar el espacio actual
-    await spaceRepository.model.findByIdAndUpdate(spaceId, {
-      $set: {
-        parentSpaceId: newParentId || undefined,
-        materializedPath: newPath,
-        updatedAt: new Date()
+      let newPath = `/${space.slug}`;
+      if (newParentId) {
+        const newParent = await spaceRepository.findById(newParentId);
+        if (!newParent) {
+          throw new Error('El nuevo espacio padre no existe');
+        }
+        newPath = `${newParent.materializedPath}/${space.slug}`;
       }
-    }).exec();
 
-    // Registrar auditoría remota asíncrona (SaaS Logs)
-    AuditService.logEvent({
-      tenantId,
-      action: 'MOVE_SPACE',
-      entityType: 'SPACE',
-      entityId: spaceId,
-      userId,
-      userEmail,
-      changedFields: {
-        parentSpaceId: newParentId,
-        materializedPath: newPath
-      },
-      previousState: {
-        parentSpaceId: space.parentSpaceId,
-        materializedPath: oldPath
-      }
-    });
+      const oldPath = space.materializedPath;
 
-    // 2. Actualizar recursivamente en cascada todos los hijos
-    if (oldPath) {
-      const children = await spaceRepository.find({
+      // 1. Actualizar el espacio actual
+      await spaceRepository.model.findByIdAndUpdate(spaceId, {
+        $set: {
+          parentSpaceId: newParentId || undefined,
+          materializedPath: newPath,
+          updatedAt: new Date()
+        }
+      }).exec();
+
+      // Registrar auditoría remota asíncrona (SaaS Logs)
+      AuditService.logEvent({
         tenantId,
-        materializedPath: { $regex: `^${oldPath}/` }
+        action: 'MOVE_SPACE',
+        entityType: 'SPACE',
+        entityId: spaceId,
+        userId,
+        userEmail,
+        changedFields: {
+          parentSpaceId: newParentId,
+          materializedPath: newPath
+        },
+        previousState: {
+          parentSpaceId: space.parentSpaceId,
+          materializedPath: oldPath
+        }
       });
 
-      for (const child of children) {
-        const childSubPath = child.materializedPath?.replace(oldPath, '') || '';
-        await spaceRepository.model.findByIdAndUpdate(child._id, {
-          $set: {
-            materializedPath: `${newPath}${childSubPath}`,
-            updatedAt: new Date()
-          }
-        }).exec();
-      }
+      // 2. Actualizar recursivamente en cascada todos los hijos
+      if (oldPath) {
+        const children = await spaceRepository.find({
+          tenantId,
+          materializedPath: { $regex: `^${oldPath}/` }
+        });
 
-      console.log(`[AUDIT] [MOVE_SPACE] Moved space ${spaceId} and updated ${children.length} nested child spaces recursively.`);
-    }
+        for (const child of children) {
+          const childSubPath = child.materializedPath?.replace(oldPath, '') || '';
+          await spaceRepository.model.findByIdAndUpdate(child._id, {
+            $set: {
+              materializedPath: `${newPath}${childSubPath}`,
+              updatedAt: new Date()
+            }
+          }).exec();
+        }
+
+        console.log(`[AUDIT] [MOVE_SPACE] Moved space ${spaceId} and updated ${children.length} nested child spaces recursively.`);
+      }
+    });
   }
 
   /**

@@ -1,7 +1,7 @@
 export interface LogPayload {
   tenantId: string;
   action: string;
-  entityType: 'USER' | 'TENANT' | 'SSO' | 'EXAM' | 'CONFIG' | 'SYSTEM' | 'SPACE' | 'BRANDING' | 'PERMISSION_GROUP' | 'PERMISSION_POLICY';
+  entityType: 'USER' | 'TENANT' | 'SSO' | 'EXAM' | 'CONFIG' | 'SYSTEM' | 'SPACE' | 'BRANDING' | 'PERMISSION_GROUP' | 'PERMISSION_POLICY' | 'LICENSE_REQUEST';
   entityId: string;
   userId: string;
   userEmail: string;
@@ -15,7 +15,7 @@ export class LogsClient {
   private static getApiConfig() {
     return {
       endpoint: process.env.LOGS_SERVICE_URL || 'http://localhost:3600/api/logs',
-      token: process.env.LOGS_SECRET_TOKEN || 'shared-system-token-2026',
+      token: process.env.LOGS_SECRET_TOKEN,
       appId: process.env.NEXT_PUBLIC_APP_ID || 'gobernanza',
     };
   }

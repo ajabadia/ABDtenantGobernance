@@ -122,7 +122,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
         </div>
 
         {/* Footer */}
-        <Footer label={t('footer')} opacity="high" />
+        <Footer label={t('footer')} />
 
       </div>
     </main>

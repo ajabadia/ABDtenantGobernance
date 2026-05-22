@@ -2,6 +2,9 @@ import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@/lib/session';
 import { TenantService } from '@/services/tenant/tenant-service';
 import connectDB from '@/lib/database/mongodb';
+import { TenantSchema } from '@/lib/schemas/tenant';
+
+// ... (GET handler unchanged, doing a precise chunk below)
 
 /**
  * 🏢 GET /api/admin/tenants
@@ -32,7 +35,8 @@ export async function POST(request: Request) {
     const user = await ensureIndustrialAccess('ADMIN');
     await connectDB();
     
-    const body = await request.json();
+    const rawBody = await request.json();
+    const body = TenantSchema.parse(rawBody);
     const newTenant = await TenantService.createTenant(body, user.email);
     
     return NextResponse.json(newTenant, { status: 201 });

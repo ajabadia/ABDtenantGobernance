@@ -1,9 +1,14 @@
 import crypto from 'crypto';
 
-// Se utiliza la clave configurada en .env.local, con fallback seguro para desarrollo local
-const ENCRYPTION_SECRET = process.env.ENCRYPTION_SECRET || 'default-secret-key-must-be-32-chars-long!';
+// Se utiliza la clave configurada en .env.local, sin fallback inseguro
+const ENCRYPTION_SECRET = process.env.ENCRYPTION_SECRET;
 
 export class SecurityService {
+  private static getSecret(): string {
+    if (!ENCRYPTION_SECRET) throw new Error('ENCRYPTION_SECRET is required in environment variables');
+    return ENCRYPTION_SECRET;
+  }
+
   /**
    * Cifra un texto utilizando AES-256-CBC de forma segura con un Vector de Inicialización (IV) aleatorio
    */
@@ -11,7 +16,7 @@ export class SecurityService {
     if (!text) return '';
     try {
       const iv = crypto.randomBytes(16);
-      const key = crypto.scryptSync(ENCRYPTION_SECRET, 'salt', 32);
+      const key = crypto.scryptSync(this.getSecret(), 'salt', 32);
       const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
       let encrypted = cipher.update(text, 'utf8', 'hex');
       encrypted += cipher.final('hex');
@@ -33,7 +38,7 @@ export class SecurityService {
       
       const iv = Buffer.from(parts[0], 'hex');
       const encrypted = parts[1];
-      const key = crypto.scryptSync(ENCRYPTION_SECRET, 'salt', 32);
+      const key = crypto.scryptSync(this.getSecret(), 'salt', 32);
       const decipher = crypto.createDecipheriv('aes-256-cbc', key, iv);
       let decrypted = decipher.update(encrypted, 'hex', 'utf8');
       decrypted += decipher.final('utf8');

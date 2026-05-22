@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/routing";
-import { TenantSelector as SharedTenantSelector, type TenantOption, type ContextOption } from "@abd/styles";
+import { TenantSelector as SharedTenantSelector, type TenantOption, type ContextOption } from "@abd/ecosystem-widgets";
 
 interface TenantApiResponse {
   tenantId: string;
@@ -136,13 +136,6 @@ export function TenantSelector({ sessionUser }: TenantSelectorProps) {
       onContextChange={handleContextChange}
       userRole={userRole}
       isLoading={isLoading}
-      translations={{
-        title: "Organización",
-        searchPlaceholder: "Buscar...",
-        noTenantsFound: "Sin resultados",
-        activeTenantBadge: "Organización Activa",
-        selectTenant: "Seleccionar organización",
-      }}
     />
   );
 }

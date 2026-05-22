@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, Palette, Folder, Terminal, ShieldCheck } from 'lucide-react';
+import { Home, Palette, Folder, Terminal, ShieldCheck, Building } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { TacticalSidebar as SharedTacticalSidebar } from '@abd/styles';
@@ -44,6 +44,11 @@ export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) 
 
   if (isLoggedIn && isAdmin) {
     links.push(
+      {
+        href: '/admin/tenants',
+        label: locale === 'es' ? 'Gestión de Organizaciones' : 'Tenants Management',
+        icon: <Building size={14} />
+      },
       {
         href: '/admin/branding',
         label: locale === 'es' ? 'Marca Blanca' : 'White-Labeling',

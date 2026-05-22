@@ -44,7 +44,7 @@ export class AuditService {
       return logs.map(doc => {
         const obj = doc.toObject();
         if (obj._id) obj._id = obj._id.toString();
-        return obj as unknown as IAuditLog;
+        return obj as IAuditLog;
       });
     } catch (err) {
       console.error('[AUDIT_SAAS_READ_ERROR] Failed to query remote logs database:', err);

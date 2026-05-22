@@ -79,9 +79,6 @@ export class TenantService {
       throw new Error(`Fallo al actualizar el tenant con ID: ${tenantId}`);
     }
 
-    // Registrar en auditoría de consola e inmutable de logs remotos
-    console.log(`[AUDIT] [UPDATE_TENANT_CONFIG] Tenant: ${tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
-    
     // Obtener delta limpio de auditoría
     const changedFields = { ...updateData };
     const prevObj = previousState.toObject();
@@ -172,9 +169,7 @@ export class TenantService {
       insertData.billing = billing;
     }
 
-    const createdDoc = await tenantRepository.create(insertData as unknown as Parameters<typeof tenantRepository.create>[0]);
-
-    console.log(`[AUDIT] [CREATE_TENANT] Tenant: ${validated.tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
+    const createdDoc = await tenantRepository.create(insertData as Parameters<typeof tenantRepository.create>[0]);
 
     // Registrar auditoría remota SaaS
     const auditFields = { ...validated };
@@ -211,9 +206,8 @@ export class TenantService {
       throw new Error(`Tenant con ID ${id} no encontrado.`);
     }
 
-    console.log(`[AUDIT] [DELETE_TENANT] ID: ${id} | TenantId: ${updatedDoc.tenantId} | PerformedBy: ${performedBy} | Time: ${new Date().toISOString()}`);
+    const auditFields = { isActive: false };
 
-    // Registrar auditoría remota SaaS
     AuditService.logEvent({
       tenantId: updatedDoc.tenantId,
       action: 'DELETE_TENANT',

@@ -60,7 +60,7 @@ export default async function MarketplacePage({
           />
         </div>
 
-        <Footer label="ABD suite • Marketplace v1.0.0" opacity="high" />
+        <Footer label="ABD suite • Marketplace v1.0.0" />
       </div>
     </main>
   );

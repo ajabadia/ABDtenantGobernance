@@ -2,8 +2,10 @@ import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '../lib/database/tenant-model';
 
 export interface ISpaceCollaborator {
-  userId: string;
+  subjectId: string;
+  subjectType: 'USER' | 'GROUP';
   role: 'VIEWER' | 'EDITOR' | 'ADMIN';
+  propagates: boolean;
   joinedAt: Date;
 }
 
@@ -31,8 +33,10 @@ const SpaceMongooseSchema = new Schema<ISpace>({
   tenantId: { type: String, required: true, index: true },
   ownerUserId: { type: String },
   collaborators: [{
-    userId: { type: String, required: true },
+    subjectId: { type: String, required: true },
+    subjectType: { type: String, enum: ['USER', 'GROUP'], default: 'USER' },
     role: { type: String, enum: ['VIEWER', 'EDITOR', 'ADMIN'], default: 'VIEWER' },
+    propagates: { type: Boolean, default: true },
     joinedAt: { type: Date, default: Date.now }
   }],
   parentSpaceId: { type: String, index: true },
