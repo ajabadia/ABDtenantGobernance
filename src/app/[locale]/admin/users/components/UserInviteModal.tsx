@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { inviteUserAction } from '../actions';
+import { updateUserGroupsAction } from '../memberships-actions';
 import { X, UserPlus, ChevronDown } from 'lucide-react';
 
 interface Group {
@@ -66,10 +67,14 @@ export function UserInviteModal({
         tenantId,
         role,
         allowedApps: ['quiz'],
-        groupIds: selectedGroups,
       });
 
       if (result?.error) throw new Error(result.error);
+
+      if (result?.data && selectedGroups.length > 0) {
+        const membershipResult = await updateUserGroupsAction(tenantId, result.data._id, selectedGroups);
+        if (membershipResult?.error) throw new Error(membershipResult.error);
+      }
 
       toast.success('Usuario invitado correctamente');
       onSuccess();

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { Shield, ArrowLeft, Plus, RefreshCw, Trash2, Edit2, ChevronRight, FileText } from 'lucide-react';
+import { Shield, ArrowLeft, Plus, RefreshCw, Trash2, Edit2, ChevronRight, FileText, Users } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   fetchGroupsAction,
@@ -13,6 +13,7 @@ import {
 } from './actions';
 import { GroupFormModal } from './components/GroupFormModal';
 import { PolicyFormModal } from './components/PolicyFormModal';
+import { ManageGroupMembersModal } from './components/ManageGroupMembersModal';
 import { AdminPageHeader } from '@abd/styles';
 
 interface Group {
@@ -60,12 +61,14 @@ function GroupTreeNode({
   depth = 0,
   onEdit,
   onDelete,
+  onManageMembers,
   policies,
 }: {
   node: GroupNode;
   depth?: number;
   onEdit: (group: Group) => void;
   onDelete: (groupId: string, groupName: string) => void;
+  onManageMembers: (groupId: string, groupName: string) => void;
   policies: Policy[];
 }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -126,6 +129,12 @@ function GroupTreeNode({
 
         {/* Actions */}
           <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+            <button aria-label={`Miembros del grupo ${node.name}`}
+              onClick={() => onManageMembers(node._id, node.name)}
+              className="p-1.5 text-muted-foreground hover:text-primary border border-transparent hover:border-border transition-all rounded-none"
+            >
+              <Users size={11} />
+            </button>
             <button aria-label={`Editar grupo ${node.name}`}
               onClick={() => onEdit(node)}
               className="p-1.5 text-muted-foreground hover:text-foreground border border-transparent hover:border-border transition-all rounded-none"
@@ -151,6 +160,7 @@ function GroupTreeNode({
               depth={depth + 1}
               onEdit={onEdit}
               onDelete={onDelete}
+              onManageMembers={onManageMembers}
               policies={policies}
             />
           ))}
@@ -175,6 +185,7 @@ export default function PermissionsPage() {
   const [groupModalOpen, setGroupModalOpen] = useState(false);
   const [policyModalOpen, setPolicyModalOpen] = useState(false);
   const [editingGroup, setEditingGroup] = useState<Group | null>(null);
+  const [manageMembersGroup, setManageMembersGroup] = useState<{id: string, name: string} | null>(null);
 
   const availableApps = ['quiz', 'rag', 'governance'];
 
@@ -335,6 +346,7 @@ export default function PermissionsPage() {
                     node={node}
                     onEdit={handleEditGroup}
                     onDelete={handleDeleteGroup}
+                    onManageMembers={(id, name) => setManageMembersGroup({ id, name })}
                     policies={policies}
                   />
                 ))}
@@ -438,6 +450,17 @@ export default function PermissionsPage() {
         onClose={() => setPolicyModalOpen(false)}
         onSuccess={fetchData}
       />
+
+      {manageMembersGroup && (
+        <ManageGroupMembersModal
+          tenantId={tenantId}
+          groupId={manageMembersGroup.id}
+          groupName={manageMembersGroup.name}
+          isOpen={!!manageMembersGroup}
+          onClose={() => setManageMembersGroup(null)}
+          onSuccess={fetchData}
+        />
+      )}
     </main>
   );
 }

@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid } from 'lucide-react';
+import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SpaceData } from './CreateEditSpaceModal';
 
@@ -11,6 +11,7 @@ interface SpaceTreeViewProps {
   onEdit: (space: SpaceData) => void;
   onDelete: (spaceId: string) => void;
   onAddChild: (parentId: string) => void;
+  onManageCollaborators: (space: SpaceData) => void;
   customSpaceLabels: string[];
 }
 
@@ -19,7 +20,7 @@ interface TreeNode extends SpaceData {
   depth: number;
 }
 
-export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, customSpaceLabels }: SpaceTreeViewProps) {
+export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCollaborators, customSpaceLabels }: SpaceTreeViewProps) {
   const t = useTranslations('dashboard.spaces');
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
 
@@ -106,6 +107,9 @@ export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, customSpac
           </div>
 
           <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => onManageCollaborators(node)} title={t('manage_collaborators', { defaultMessage: 'Gobernanza' })}>
+              <Users size={14} />
+            </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary/20" onClick={() => onAddChild(node._id!)} title={t('new_space')}>
               <Plus size={14} />
             </Button>

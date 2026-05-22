@@ -1,0 +1,42 @@
+import mongoose, { Schema, Document, Model } from 'mongoose';
+import { getTenantModel } from '../lib/database/tenant-model';
+
+export interface IDelegatedRole extends Document {
+  tenantId: string;
+  delegatorId: string;
+  delegateeId: string;
+  groupIds: mongoose.Types.ObjectId[];
+  policyIds: mongoose.Types.ObjectId[];
+  startsAt: Date;
+  expiresAt: Date;
+  isActive: boolean;
+  reason?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const DelegatedRoleSchema = new Schema<IDelegatedRole>(
+  {
+    tenantId: { type: String, required: true, index: true },
+    delegatorId: { type: String, required: true, index: true },
+    delegateeId: { type: String, required: true, index: true },
+    groupIds: [{ type: Schema.Types.ObjectId, ref: 'PermissionGroup' }],
+    policyIds: [{ type: Schema.Types.ObjectId, ref: 'PermissionPolicy' }],
+    startsAt: { type: Date, required: true, index: true },
+    expiresAt: { type: Date, required: true, index: true },
+    isActive: { type: Boolean, default: true, index: true },
+    reason: { type: String },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+// Helper para consultas rápidas de delegaciones temporales activas
+DelegatedRoleSchema.index({ tenantId: 1, delegateeId: 1, isActive: 1, startsAt: 1, expiresAt: 1 });
+
+const DelegatedRole: Model<IDelegatedRole> =
+  mongoose.models.DelegatedRole ||
+  getTenantModel<IDelegatedRole>('DelegatedRole', DelegatedRoleSchema);
+
+export default DelegatedRole;

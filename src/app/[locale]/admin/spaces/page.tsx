@@ -1,9 +1,11 @@
 'use client';
 
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Plus, FolderOpen, ArrowLeft } from 'lucide-react';
 import { SpaceTreeView } from '@/components/admin/spaces/SpaceTreeView';
 import { CreateEditSpaceModal } from '@/components/admin/spaces/CreateEditSpaceModal';
+import { ManageSpaceCollaboratorsModal } from '@/components/admin/spaces/ManageSpaceCollaboratorsModal';
 import { useSearchParams, useRouter, usePathname, useParams } from 'next/navigation';
 import { useSpacesManager, SpaceData } from '@/hooks/useSpacesManager';
 import Link from 'next/link';
@@ -34,6 +36,8 @@ export default function SpacesPage() {
     handleDelete,
   } = useSpacesManager(explicitTenantId);
 
+  const [collaboratorsModalOpen, setCollaboratorsModalOpen] = useState(false);
+
   const handleCreateRoot = () => {
     setSpaceToEdit(null);
     setModalOpen(true);
@@ -53,6 +57,11 @@ export default function SpacesPage() {
   const handleEdit = (space: SpaceData) => {
     setSpaceToEdit(space);
     setModalOpen(true);
+  };
+
+  const handleManageCollaborators = (space: SpaceData) => {
+    setSpaceToEdit(space);
+    setCollaboratorsModalOpen(true);
   };
 
   return (
@@ -96,6 +105,7 @@ export default function SpacesPage() {
             onEdit={handleEdit}
             onDelete={handleDelete}
             onAddChild={handleAddChild}
+            onManageCollaborators={handleManageCollaborators}
           />
         )}
         </div>
@@ -108,6 +118,14 @@ export default function SpacesPage() {
           spaceToEdit={spaceToEdit}
           onSaved={fetchSpaces}
           customSpaceLabels={customSpaceLabels}
+        />
+
+        <ManageSpaceCollaboratorsModal
+          isOpen={collaboratorsModalOpen}
+          onClose={() => setCollaboratorsModalOpen(false)}
+          tenantId={tenantId}
+          space={spaceToEdit}
+          onSuccess={fetchSpaces}
         />
       </div>
     </main>

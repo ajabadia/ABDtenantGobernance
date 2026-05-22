@@ -8,6 +8,7 @@ import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
 import { X, UserPlus, ChevronDown } from 'lucide-react';
 import { inviteUserAction } from '../actions';
+import { updateUserGroupsAction } from '../memberships-actions';
 
 interface Group {
   _id: string;
@@ -73,9 +74,14 @@ export function AddExistingUserModal({
         tenantId,
         role,
         allowedApps: ['quiz'], // adjust as needed
-        groupIds: selectedGroups,
       });
+      
       if (result?.error) throw new Error(result.error);
+
+      if (result?.data && selectedGroups.length > 0) {
+        const membershipResult = await updateUserGroupsAction(tenantId, result.data._id, selectedGroups);
+        if (membershipResult?.error) throw new Error(membershipResult.error);
+      }
       toast.success('Usuario procesado correctamente');
       onSuccess();
       onClose();

@@ -16,7 +16,6 @@ export interface InviteUserPayload {
   tenantId: string;
   role: string;
   allowedApps: string[];
-  groupIds?: string[];
 }
 
 export interface UpdateUserPayload {
@@ -26,7 +25,6 @@ export interface UpdateUserPayload {
     status?: 'active' | 'suspended';
     role?: 'admin' | 'student';
     allowedApps?: string[];
-    groupIds?: string[];
   };
 }
 

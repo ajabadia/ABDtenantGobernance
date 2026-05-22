@@ -3,6 +3,7 @@ import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import type { QueryFilter } from 'mongoose';
 import type { ISpace } from '@/models/Space';
 import { AuditService } from './audit-service';
+import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
 
 const spaceRepository = new SpaceRepository();
 
@@ -76,14 +77,27 @@ export class SpaceService {
     } = {}
   ): Promise<Space[]> {
     
+    // 1. Obtener a qué grupos pertenece el usuario en este tenant
+    const memberships = await userGroupMembershipRepository.findByUserId(tenantId, userId);
+    const groupIds = memberships.map(m => m.groupId.toString());
+
     // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
     const accessibilityQuery: QueryFilter<ISpace> = {
       tenantId,
       $or: [
         // 1. Espacios personales del usuario
         { type: 'PERSONAL', ownerUserId: userId },
-        // 2. Colaboraciones directas
-        { 'collaborators.userId': userId } as unknown as QueryFilter<ISpace>,
+        // 2. Colaboraciones directas (Como Usuario individual o a través de sus Grupos)
+        { 
+          collaborators: {
+            $elemMatch: {
+              $or: [
+                { subjectId: userId, subjectType: 'USER' },
+                { subjectId: { $in: groupIds }, subjectType: 'GROUP' }
+              ]
+            }
+          }
+        } as unknown as QueryFilter<ISpace>,
         // 3. Espacios públicos del tenant
         { type: 'TENANT', visibility: 'PUBLIC' },
         // 4. Espacios internos (privados) creados por el propio usuario

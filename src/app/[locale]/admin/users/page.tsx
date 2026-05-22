@@ -7,9 +7,11 @@ import Link from 'next/link';
 import { Users, ArrowLeft, Plus, RefreshCw, Shield, UserPlus } from 'lucide-react';
 import { fetchUsersAction, updateUserAction } from './actions';
 import { fetchGroupsAction } from '../permissions/actions';
+import { fetchTenantMembershipsAction } from './memberships-actions';
 import { UserStatusBadge } from './components/UserStatusBadge';
 import { AddExistingUserModal } from './components/AddExistingUserModal';
 import { UserInviteModal } from './components/UserInviteModal';
+import { ManageUserGroupsModal } from './components/ManageUserGroupsModal';
 import { toast } from 'sonner';
 import { AdminPageHeader } from '@abd/styles';
 import { IamUser } from '@/lib/services/iamClient';
@@ -38,20 +40,24 @@ export default function UsersPage() {
 
   const [users, setUsers] = useState<IamUser[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
+  const [memberships, setMemberships] = useState<{userId: string, groupId: string}[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [modalOpenExisting, setModalOpenExisting] = useState(false);
+  const [manageGroupsUser, setManageGroupsUser] = useState<{ id: string; name: string } | null>(null);
 
   const fetchData = async () => {
     setLoading(true);
-    const [usersRes, groupsRes] = await Promise.all([
+    const [usersRes, groupsRes, membershipsRes] = await Promise.all([
       fetchUsersAction(tenantId),
       fetchGroupsAction(tenantId),
+      fetchTenantMembershipsAction(tenantId),
     ]);
     if (usersRes.error) toast.error('Error al cargar usuarios');
     else setUsers(usersRes.data || []);
 
     if (!groupsRes.error) setGroups((groupsRes.data as Group[]) || []);
+    if (!membershipsRes.error) setMemberships(membershipsRes.data as {userId: string, groupId: string}[] || []);
     setLoading(false);
   };
 
@@ -161,7 +167,7 @@ export default function UsersPage() {
                     t => (t as unknown as TenantMembership).tenantId === tenantId
                   ) as unknown as TenantMembership | undefined;
                   const isSuspended = membership?.status === 'suspended';
-                  const memberGroupIds = membership?.groupIds || [];
+                  const memberGroupIds = memberships.filter(m => m.userId === u._id).map(m => m.groupId);
                   const memberGroups = groups.filter(g => memberGroupIds.includes(g._id));
 
                   return (
@@ -200,13 +206,20 @@ export default function UsersPage() {
                       <td className="px-6 py-4">
                         <UserStatusBadge status={membership?.status || 'active'} active={u.active} />
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 flex flex-col gap-2">
                         <button
                           aria-label={isSuspended ? 'Reactivar usuario' : 'Suspender usuario'}
                           onClick={() => toggleUserStatus(u._id, membership?.status || 'active')}
-                          className="px-3 py-1.5 bg-transparent border border-border hover:border-primary/50 hover:text-primary font-mono text-[9px] uppercase tracking-wider text-muted-foreground rounded-none transition-colors"
+                          className="w-full px-3 py-1.5 bg-transparent border border-border hover:border-primary/50 hover:text-primary font-mono text-[9px] uppercase tracking-wider text-muted-foreground rounded-none transition-colors"
                         >
                           {isSuspended ? 'REACTIVAR' : 'SUSPENDER'}
+                        </button>
+                        <button
+                          aria-label="Gestionar grupos"
+                          onClick={() => setManageGroupsUser({ id: u._id, name: `${u.name} ${u.surname}` })}
+                          className="w-full px-3 py-1.5 bg-primary/10 border border-primary/40 hover:border-primary hover:bg-primary/20 text-primary font-mono text-[9px] uppercase tracking-wider rounded-none transition-colors"
+                        >
+                          GESTIONAR GRUPOS
                         </button>
                       </td>
                     </tr>
@@ -231,6 +244,18 @@ export default function UsersPage() {
           onSuccess={fetchData}
           availableGroups={groups}
         />
+        {manageGroupsUser && (
+          <ManageUserGroupsModal
+            tenantId={tenantId}
+            userId={manageGroupsUser.id}
+            userName={manageGroupsUser.name}
+            isOpen={!!manageGroupsUser}
+            onClose={() => setManageGroupsUser(null)}
+            onSuccess={fetchData}
+            availableGroups={groups}
+            initialGroupIds={memberships.filter(m => m.userId === manageGroupsUser.id).map(m => m.groupId)}
+          />
+        )}
       </div>
     </main>
   );

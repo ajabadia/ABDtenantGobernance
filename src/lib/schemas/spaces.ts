@@ -16,8 +16,10 @@ export const SpaceSchema = z.object({
   tenantId: TenantIdSchema,
   ownerUserId: z.string().optional(),
   collaborators: z.array(z.object({
-    userId: z.string(),
+    subjectId: z.string(), // ID del usuario o del grupo
+    subjectType: z.enum(['USER', 'GROUP']).default('USER'),
     role: z.enum(['VIEWER', 'EDITOR', 'ADMIN']).default('VIEWER'),
+    propagates: z.boolean().default(true), // Propagación jerárquica hacia los hijos
     joinedAt: z.coerce.date().default(() => new Date()),
   })).default([]),
   parentSpaceId: z.string().nullable().optional(),
@@ -29,3 +31,16 @@ export const SpaceSchema = z.object({
 });
 
 export type Space = z.infer<typeof SpaceSchema>;
+
+export const AssetSpaceLinkSchema = z.object({
+  _id: z.any().optional(),
+  tenantId: TenantIdSchema,
+  assetId: z.string(),
+  spaceId: z.string(),
+  spacePath: z.string(), // Denormalizado para búsqueda rápida por jerarquía
+  isPrimary: z.boolean().default(true),
+  createdAt: z.coerce.date().default(() => new Date()),
+  createdBy: z.string().optional(),
+});
+
+export type AssetSpaceLink = z.infer<typeof AssetSpaceLinkSchema>;

@@ -529,7 +529,21 @@
       "save": "Guardar",
       "cancel": "Cancelar",
       "hierarchy_levels": "Niveles de Jerarquía de Espacios",
-      "hierarchy_help": "Separa los niveles por coma. Se asignarán por profundidad."
+      "hierarchy_help": "Separa los niveles por coma. Se asignarán por profundidad.",
+      "manage_collaborators": "Gobernanza",
+      "space_label": "Espacio:",
+      "loading_tenant_data": "CARGANDO DATOS DEL TENANT...",
+      "add_user_group": "Añadir Usuario o Grupo",
+      "assigned_collaborators": "Colaboradores Asignados",
+      "no_explicit_collaborators": "Sin colaboradores explícitos",
+      "heritage_title": "Herencia a sub-espacios",
+      "heritage": "Herencia",
+      "role_viewer": "VIEWER",
+      "role_editor": "EDITOR",
+      "role_admin": "ADMIN",
+      "collaborators_updated": "Colaboradores actualizados",
+      "cascade_label": "Heredar recursivamente",
+      "cascade_desc": "Propaga la visibilidad seleccionada a todos los sub-espacios descendientes."
     }
   }
 }

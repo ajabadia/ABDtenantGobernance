@@ -529,7 +529,21 @@
       "save": "Save",
       "cancel": "Cancel",
       "hierarchy_levels": "Space Hierarchy Levels",
-      "hierarchy_help": "Separate levels by comma. They will be assigned by depth."
+      "hierarchy_help": "Separate levels by comma. They will be assigned by depth.",
+      "manage_collaborators": "Governance",
+      "space_label": "Space:",
+      "loading_tenant_data": "LOADING TENANT DATA...",
+      "add_user_group": "Add User or Group",
+      "assigned_collaborators": "Assigned Collaborators",
+      "no_explicit_collaborators": "No explicit collaborators",
+      "heritage_title": "Heritage to sub-spaces",
+      "heritage": "Heritage",
+      "role_viewer": "VIEWER",
+      "role_editor": "EDITOR",
+      "role_admin": "ADMIN",
+      "collaborators_updated": "Collaborators updated",
+      "cascade_label": "Inherit recursively",
+      "cascade_desc": "Propagates the selected visibility to all descendant sub-spaces."
     }
   }
 }

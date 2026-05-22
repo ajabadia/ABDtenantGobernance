@@ -18,6 +18,12 @@ export interface SpaceData {
   visibility: string;
   parentSpaceId?: string | null;
   materializedPath?: string;
+  collaborators?: {
+    subjectId: string;
+    subjectType: 'USER' | 'GROUP';
+    role: 'VIEWER' | 'EDITOR' | 'ADMIN';
+    propagates: boolean;
+  }[];
 }
 
 interface SpaceFormProps {
