@@ -135,24 +135,7 @@ export function TenantBrandingForm({ tenantId, initialBranding, allTenants }: Te
           </p>
         </div>
 
-        {/* 🏢 Selector de Tenant Activo (para SuperAdmins con múltiples tenants) */}
-        {allTenants && allTenants.length > 1 && (
-          <div className="flex flex-col gap-2 p-4 bg-secondary/20 border border-border rounded-xl max-w-md">
-            <label className="text-[10px] font-black uppercase tracking-wider text-primary flex items-center gap-2">
-              <Database size={12} aria-hidden="true" />
-              Organización Seleccionada
-            </label>
-            <select
-              value={tenantId}
-              onChange={(e) => router.push(`/${locale}/admin/branding?tenantId=${e.target.value}`)}
-              className="w-full bg-background border border-border hover:border-primary/40 text-foreground rounded-lg px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all cursor-pointer font-bold"
-            >
-              {allTenants.map(ten => (
-                <option key={ten.tenantId} value={ten.tenantId}>{ten.name}</option>
-              ))}
-            </select>
-          </div>
-        )}
+
 
         {/* 🏞️ Cargas de Imagen */}
         <ImageUploadGroup 

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
-import { Shield, ArrowLeft, Plus, RefreshCw, Trash2, Edit2, ChevronRight, FileText, Users } from 'lucide-react';
+import { Shield, ArrowLeft, Plus, RefreshCw, FileText } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   fetchGroupsAction,
@@ -14,6 +14,8 @@ import {
 import { GroupFormModal } from './components/GroupFormModal';
 import { PolicyFormModal } from './components/PolicyFormModal';
 import { ManageGroupMembersModal } from './components/ManageGroupMembersModal';
+import { GroupTreeView } from './components/GroupTreeView';
+import { PoliciesTable } from './components/PoliciesTable';
 import { AdminPageHeader } from '@abd/styles';
 
 interface Group {
@@ -26,8 +28,6 @@ interface Group {
   allowedApps?: string[];
 }
 
-type GroupNode = Group & { children: GroupNode[] };
-
 interface Policy {
   _id: string;
   name: string;
@@ -38,140 +38,9 @@ interface Policy {
   isActive: boolean;
 }
 
-// Build a tree from flat group list
-function buildTree(groups: Group[]): GroupNode[] {
-  const map = new Map<string, GroupNode>();
-  groups.forEach(g => map.set(g._id, { ...g, children: [] }));
-
-  const roots: GroupNode[] = [];
-
-  map.forEach(node => {
-    if (node.parentId && map.has(node.parentId)) {
-      map.get(node.parentId)!.children.push(node);
-    } else {
-      roots.push(node);
-    }
-  });
-
-  return roots;
-}
-
-function GroupTreeNode({
-  node,
-  depth = 0,
-  onEdit,
-  onDelete,
-  onManageMembers,
-  policies,
-}: {
-  node: GroupNode;
-  depth?: number;
-  onEdit: (group: Group) => void;
-  onDelete: (groupId: string, groupName: string) => void;
-  onManageMembers: (groupId: string, groupName: string) => void;
-  policies: Policy[];
-}) {
-  const [collapsed, setCollapsed] = useState(false);
-  const hasChildren = node.children.length > 0;
-  const assignedPolicies = policies.filter(p => node.policyIds?.includes(p._id));
-
-  return (
-    <div className="group">
-      <div
-        className={`flex items-center gap-2 px-4 py-3 hover:bg-primary/[0.03] transition-colors border-b border-border/40 ${
-          depth === 0 ? 'pl-4' : depth === 1 ? 'pl-12' : depth === 2 ? 'pl-20' : 'pl-28'
-        }`}
-      >
-        {/* Expand toggle */}
-        <button aria-label={collapsed ? 'Expandir grupo' : 'Colapsar grupo'}
-          onClick={() => setCollapsed(!collapsed)}
-          className={`flex-shrink-0 transition-transform duration-150 ${!hasChildren ? 'opacity-0 pointer-events-none' : ''}`}
-        >
-          <ChevronRight
-            size={12}
-            className={`text-muted-foreground transition-transform duration-200 ${!collapsed && hasChildren ? 'rotate-90' : ''}`}
-          />
-        </button>
-
-        {/* Group info */}
-        <div className="flex-1 min-w-0 flex flex-col gap-0.5">
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-foreground truncate">{node.name}</span>
-            <span className="font-mono text-[9px] text-muted-foreground/60 uppercase">{node.slug}</span>
-          </div>
-          {node.description && (
-            <span className="font-mono text-[9px] text-muted-foreground/70 truncate">{node.description}</span>
-          )}
-          {/* Policies & apps badges */}
-          <div className="flex flex-wrap gap-1 mt-1">
-            {assignedPolicies.slice(0, 3).map(p => (
-              <span
-                key={p._id}
-                className={`font-mono text-[8px] uppercase px-1.5 py-0.5 border ${
-                  p.effect === 'ALLOW' ? 'border-green-500/30 text-green-400 bg-green-500/5' : 'border-red-500/30 text-red-400 bg-red-500/5'
-                }`}
-              >
-                {p.name}
-              </span>
-            ))}
-            {assignedPolicies.length > 3 && (
-              <span className="font-mono text-[8px] uppercase px-1.5 py-0.5 border border-border text-muted-foreground">
-                +{assignedPolicies.length - 3}
-              </span>
-            )}
-            {node.allowedApps?.map(app => (
-              <span key={app} className="font-mono text-[8px] uppercase px-1.5 py-0.5 border border-primary/20 text-primary/70 bg-primary/5">
-                {app}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Actions */}
-          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-            <button aria-label={`Miembros del grupo ${node.name}`}
-              onClick={() => onManageMembers(node._id, node.name)}
-              className="p-1.5 text-muted-foreground hover:text-primary border border-transparent hover:border-border transition-all rounded-none"
-            >
-              <Users size={11} />
-            </button>
-            <button aria-label={`Editar grupo ${node.name}`}
-              onClick={() => onEdit(node)}
-              className="p-1.5 text-muted-foreground hover:text-foreground border border-transparent hover:border-border transition-all rounded-none"
-            >
-              <Edit2 size={11} />
-            </button>
-            <button aria-label={`Eliminar grupo ${node.name}`}
-              onClick={() => onDelete(node._id, node.name)}
-              className="p-1.5 text-muted-foreground hover:text-red-400 border border-transparent hover:border-red-500/30 transition-all rounded-none"
-            >
-              <Trash2 size={11} />
-            </button>
-          </div>
-      </div>
-
-      {/* Children */}
-      {!collapsed && hasChildren && (
-        <div>
-          {node.children.map(child => (
-            <GroupTreeNode
-              key={child._id}
-              node={child}
-              depth={depth + 1}
-              onEdit={onEdit}
-              onDelete={onDelete}
-              onManageMembers={onManageMembers}
-              policies={policies}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
-}
-
 export default function PermissionsPage() {
-  const t = useTranslations('admin');
+  const tAdmin = useTranslations('admin');
+  const tPerm = useTranslations('admin.permissions');
   const searchParams = useSearchParams();
   const params = useParams();
   const locale = params?.locale as string || 'en';
@@ -210,14 +79,14 @@ export default function PermissionsPage() {
   }, [tenantId]);
 
   const handleDeleteGroup = async (groupId: string, groupName: string) => {
-    if (!confirm(`¿Eliminar el grupo "${groupName}"? Esta acción no es reversible.`)) return;
+    if (!confirm(tPerm('confirmDelete', { name: groupName }))) return;
     const res = await deleteGroupAction(groupId, tenantId);
     if (res.error) {
       toast.error(res.error === 'DEPENDENT_SUBGROUPS_EXIST'
-        ? 'No se puede eliminar: tiene subgrupos dependientes activos'
+        ? tPerm('deleteDependentError')
         : res.error);
     } else {
-      toast.success('Grupo eliminado');
+      toast.success(tPerm('deleteSuccess'));
       fetchData();
     }
   };
@@ -227,17 +96,14 @@ export default function PermissionsPage() {
     setGroupModalOpen(true);
   };
 
-  const groupTree = buildTree(groups);
-
   return (
     <main className="min-h-screen bg-background text-foreground p-6 md:p-12 selection:bg-primary/30" role="main">
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
 
-        {/* Header */}
         <AdminPageHeader
           icon={Shield}
-          breadcrumb={<>{t('controlConsole')} • {'PERMISOS'}</>}
-          title="Grupos y Permisos"
+          breadcrumb={<>{tAdmin('controlConsole')} • {tPerm('title').toUpperCase()}</>}
+          title={tPerm('title')}
           backButton={
               <Link
                 href={`/${locale}/admin`}
@@ -247,7 +113,7 @@ export default function PermissionsPage() {
                 <ArrowLeft size={14} aria-hidden="true" />
               </Link>
           }
-          description={<>Gestiona grupos de acceso con jerarquía recursiva y políticas ABAC para el tenant{' '}
+          description={<>{tPerm('subtitle')}
               <span className="text-primary font-bold">{tenantId}</span>.</>}
         >
             <button
@@ -259,28 +125,27 @@ export default function PermissionsPage() {
             </button>
             {activeTab === 'groups' ? (
               <button
-                aria-label="Crear nuevo grupo"
+                aria-label={tPerm('newGroup')}
                 onClick={() => { setEditingGroup(null); setGroupModalOpen(true); }}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent text-primary border border-primary/40 hover:border-primary hover:bg-primary/10 font-mono text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer rounded-none active:scale-[0.98] focus:outline-none focus:ring-1 focus:ring-primary/50"
               >
                 <Plus className="h-4 w-4" />
-                NUEVO GRUPO
+                {tPerm('newGroup')}
               </button>
             ) : (
               <button
-                aria-label="Crear nueva política"
+                aria-label={tPerm('newPolicy')}
                 onClick={() => setPolicyModalOpen(true)}
                 className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-transparent text-primary border border-primary/40 hover:border-primary hover:bg-primary/10 font-mono text-[10px] font-black uppercase tracking-wider transition-all duration-200 cursor-pointer rounded-none active:scale-[0.98] focus:outline-none focus:ring-1 focus:ring-primary/50"
               >
                 <Plus className="h-4 w-4" />
-                NUEVA POLÍTICA
+                {tPerm('newPolicy')}
               </button>
             )}
         </AdminPageHeader>
 
-        {/* Tabs */}
         <div className="flex border-b border-border gap-0" role="tablist">
-        <button aria-label="Pestaña grupos de permisos"
+        <button aria-label={tPerm('tabs.groups')}
           role="tab"
           aria-selected={activeTab === 'groups'}
           onClick={() => setActiveTab('groups')}
@@ -292,10 +157,10 @@ export default function PermissionsPage() {
         >
           <span className="flex items-center gap-2">
             <Shield size={11} />
-            {'Grupos'} ({groups.length})
+            {tPerm('tabs.groups')} ({groups.length})
           </span>
         </button>
-        <button aria-label="Pestaña políticas ABAC"
+        <button aria-label={tPerm('tabs.policies')}
           role="tab"
           aria-selected={activeTab === 'policies'}
           onClick={() => setActiveTab('policies')}
@@ -307,132 +172,28 @@ export default function PermissionsPage() {
         >
           <span className="flex items-center gap-2">
             <FileText size={11} />
-            {'Políticas ABAC'} ({policies.length})
+            {tPerm('tabs.policies')} ({policies.length})
           </span>
         </button>
         </div>
 
-        {/* Tab: Groups Tree */}
         {activeTab === 'groups' && (
-          <div className="border border-border rounded-none bg-card/40 backdrop-blur-sm overflow-hidden">
-            {loading ? (
-              <div className="px-6 py-12 text-center text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
-                {'CARGANDO ESTRUCTURA DE GRUPOS...'}
-              </div>
-            ) : groups.length === 0 ? (
-              <div className="px-6 py-16 flex flex-col items-center gap-4 text-muted-foreground/50">
-                <Shield size={32} strokeWidth={1} />
-                <span className="font-mono text-[10px] uppercase tracking-widest">
-                  {'No hay grupos definidos para este tenant'}
-                </span>
-                <button aria-label="Crear primer grupo de permisos"
-                  onClick={() => { setEditingGroup(null); setGroupModalOpen(true); }}
-                  className="mt-2 px-5 py-2.5 bg-transparent text-primary border border-primary/40 hover:border-primary hover:bg-primary/10 font-mono text-[10px] font-black uppercase tracking-wider transition-all rounded-none"
-                >
-                  {'Crear Primer Grupo'}
-                </button>
-              </div>
-            ) : (
-              <div>
-                {/* Table header */}
-                <div className="grid grid-cols-1 px-4 py-3 bg-secondary/40 border-b border-border">
-                  <span className="font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">
-                    {'JERARQUÍA DE GRUPOS'}
-                  </span>
-                </div>
-                {groupTree.map(node => (
-                  <GroupTreeNode
-                    key={node._id}
-                    node={node}
-                    onEdit={handleEditGroup}
-                    onDelete={handleDeleteGroup}
-                    onManageMembers={(id, name) => setManageMembersGroup({ id, name })}
-                    policies={policies}
-                  />
-                ))}
-              </div>
-            )}
-          </div>
+          <GroupTreeView
+            groups={groups}
+            policies={policies}
+            loading={loading}
+            onEdit={handleEditGroup}
+            onDelete={handleDeleteGroup}
+            onManageMembers={(id, name) => setManageMembersGroup({ id, name })}
+            onCreateFirst={() => { setEditingGroup(null); setGroupModalOpen(true); }}
+          />
         )}
 
-        {/* Tab: Policies Table */}
         {activeTab === 'policies' && (
-          <div className="overflow-x-auto border border-border rounded-none bg-card/40 backdrop-blur-sm">
-            <table className="w-full text-left divide-y divide-border/60">
-              <thead className="bg-secondary/40">
-              <tr>
-                <th className="px-6 py-4 font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">{'POLÍTICA'}</th>
-                <th className="px-6 py-4 font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">{'EFECTO'}</th>
-                <th className="px-6 py-4 font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">{'RECURSOS'}</th>
-                <th className="px-6 py-4 font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">{'ACCIONES'}</th>
-                <th className="px-6 py-4 font-mono text-[9px] font-black uppercase tracking-widest text-muted-foreground">{'ESTADO'}</th>
-              </tr>
-            </thead>
-              <tbody className="divide-y divide-border/60">
-                {loading ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
-                      {'CARGANDO POLÍTICAS...'}
-                    </td>
-                  </tr>
-                ) : policies.length === 0 ? (
-                  <tr>
-                    <td colSpan={5} className="px-6 py-12 text-center text-muted-foreground font-mono text-[10px] uppercase tracking-widest">
-                      NO HAY POLÍTICAS DEFINIDAS
-                    </td>
-                  </tr>
-                ) : (
-                  policies.map(p => (
-                    <tr key={p._id} className="hover:bg-primary/[0.02] transition-colors duration-150">
-                      <td className="px-6 py-4">
-                        <span className="text-xs font-sans text-foreground/90 font-bold block">{p.name}</span>
-                        {p.description && (
-                          <span className="font-mono text-[9px] text-muted-foreground">{p.description}</span>
-                        )}
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`font-mono text-[10px] font-black uppercase px-2 py-1 border ${
-                          p.effect === 'ALLOW'
-                            ? 'border-green-500/30 text-green-400 bg-green-500/5'
-                            : 'border-red-500/30 text-red-400 bg-red-500/5'
-                        }`}>
-                          {p.effect}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex flex-col gap-0.5">
-                          {p.resources.slice(0, 2).map((r, i) => (
-                            <span key={i} className="font-mono text-[9px] text-muted-foreground">{r}</span>
-                          ))}
-                          {p.resources.length > 2 && (
-                            <span className="font-mono text-[9px] text-muted-foreground/50">+{p.resources.length - 2} más</span>
-                          )}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className="font-mono text-[9px] text-muted-foreground uppercase">
-                          {p.actions.join(', ')}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <span className={`font-mono text-[9px] uppercase font-black px-2 py-1 border ${
-                          p.isActive
-                            ? 'border-green-500/30 text-green-400 bg-green-500/5'
-                            : 'border-border text-muted-foreground'
-                        }`}>
-                          {p.isActive ? 'ACTIVA' : 'INACTIVA'}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+          <PoliciesTable policies={policies} loading={loading} />
         )}
       </div>
 
-      {/* Modals */}
       <GroupFormModal
         tenantId={tenantId}
         isOpen={groupModalOpen}

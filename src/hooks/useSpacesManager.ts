@@ -29,7 +29,7 @@ export function useSpacesManager(explicitTenantId: string | null) {
   const fetchSpaces = async () => {
     setLoading(true);
     try {
-      const activeTenantId = tenantId;
+      const activeTenantId = resolvedTenantId;
       const url = activeTenantId ? `/api/admin/spaces?tenantId=${activeTenantId}` : `/api/admin/spaces`;
       
       const res = await fetch(url);
@@ -91,7 +91,7 @@ export function useSpacesManager(explicitTenantId: string | null) {
   return {
     spaces,
     loading,
-    tenantId,
+    tenantId: resolvedTenantId,
     setTenantId,
     allTenants,
     customSpaceLabels,

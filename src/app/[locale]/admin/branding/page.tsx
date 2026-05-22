@@ -55,6 +55,7 @@ export default async function AdminBrandingPage({
 
         {/* Formulario de personalización premium con Live Preview */}
         <TenantBrandingForm 
+          key={targetTenantId}
           tenantId={targetTenantId} 
           initialBranding={tenantConfig.branding} 
           allTenants={JSON.parse(JSON.stringify(allTenants))}
