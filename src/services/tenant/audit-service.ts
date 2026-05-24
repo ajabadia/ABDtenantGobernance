@@ -21,7 +21,9 @@ export class AuditService {
         ipAddress: params.ipAddress,
         userAgent: params.userAgent,
       });
-      console.log(`[AUDIT_SAAS_LOG] Sent ${params.action} event to central service successfully.`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[AUDIT_SAAS_LOG] Sent ${params.action} event to central service successfully.`);
+      }
     } catch (err) {
       // 🛡️ Enfoque Fail-Safe: Evitar bloquear transacciones si el microservicio de logs está inaccesible
       console.error('[AUDIT_SAAS_ERROR] Fail-safe active. Logs client failed:', err);

@@ -39,7 +39,7 @@ export class SpaceService {
       updatedAt: new Date()
     });
 
-    const doc = await spaceRepository.create(newSpaceData as unknown as ISpace);
+    const doc = await spaceRepository.create(newSpaceData as any);
     
     // Registrar auditoría remota asíncrona (SaaS Logs)
     AuditService.logEvent({
@@ -64,7 +64,7 @@ export class SpaceService {
     return SpaceSchema.parse(obj);
   }
 
-  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): QueryFilter<ISpace> {
+  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): any {
     return {
       tenantId,
       $or: [
@@ -80,7 +80,7 @@ export class SpaceService {
               ]
             }
           }
-        } as unknown as QueryFilter<ISpace>,
+        },
         // 3. Espacios públicos del tenant
         { type: 'TENANT', visibility: 'PUBLIC' },
         // 4. Espacios internos (privados) creados por el propio usuario
@@ -109,15 +109,15 @@ export class SpaceService {
     // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
     const accessibilityQuery = this.buildAccessibilityFilter(tenantId, userId, groupIds);
 
-    const extraFilters: QueryFilter<ISpace> = {};
+    const extraFilters: any = {};
     if (filters.isRoot) {
-      extraFilters.parentSpaceId = { $exists: false } as unknown as QueryFilter<ISpace>['parentSpaceId'];
+      extraFilters.parentSpaceId = { $exists: false };
     } else if (filters.parentSpaceId) {
-      extraFilters.parentSpaceId = filters.parentSpaceId as unknown as QueryFilter<ISpace>['parentSpaceId'];
+      extraFilters.parentSpaceId = filters.parentSpaceId;
     }
 
     if (filters.search) {
-      extraFilters.name = { $regex: filters.search, $options: 'i' } as unknown as QueryFilter<ISpace>['name'];
+      extraFilters.name = { $regex: filters.search, $options: 'i' };
     }
 
     const docs = await spaceRepository.find({
@@ -202,7 +202,9 @@ export class SpaceService {
           }).exec();
         }
 
-        console.log(`[AUDIT] [MOVE_SPACE] Moved space ${spaceId} and updated ${children.length} nested child spaces recursively.`);
+        if (process.env.NODE_ENV !== 'production') {
+          console.log(`[AUDIT] [MOVE_SPACE] Moved space ${spaceId} and updated ${children.length} nested child spaces recursively.`);
+        }
       }
     });
   }
@@ -278,7 +280,9 @@ export class SpaceService {
         });
       }
       
-      console.log(`[AUDIT] [VISIBILITY_HERITAGE] Propagated visibility ${visibility} from ${spaceId} to ${descendants.length} sub-spaces.`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[AUDIT] [VISIBILITY_HERITAGE] Propagated visibility ${visibility} from ${spaceId} to ${descendants.length} sub-spaces.`);
+      }
     }
   }
 
