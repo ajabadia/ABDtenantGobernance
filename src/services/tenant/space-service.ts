@@ -39,7 +39,7 @@ export class SpaceService {
       updatedAt: new Date()
     });
 
-    const doc = await spaceRepository.create(newSpaceData as any);
+    const doc = await spaceRepository.create(newSpaceData as unknown as ISpace);
     
     // Registrar auditoría remota asíncrona (SaaS Logs)
     AuditService.logEvent({
@@ -64,7 +64,7 @@ export class SpaceService {
     return SpaceSchema.parse(obj);
   }
 
-  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): any {
+  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): Record<string, unknown> {
     return {
       tenantId,
       $or: [
@@ -109,7 +109,7 @@ export class SpaceService {
     // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
     const accessibilityQuery = this.buildAccessibilityFilter(tenantId, userId, groupIds);
 
-    const extraFilters: any = {};
+    const extraFilters: Record<string, unknown> = {};
     if (filters.isRoot) {
       extraFilters.parentSpaceId = { $exists: false };
     } else if (filters.parentSpaceId) {
