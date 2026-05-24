@@ -293,7 +293,7 @@ La validación `logoFile.name !== 'undefined'` (string literal) es frágil. Un a
 Los inputs con atributo `required` no tienen `aria-required="true"` para lectores de pantalla.
 
 ### MIN-7: Sin tests automatizados
-No se encontraron archivos de test (`.test.ts`, `.spec.ts`, carpeta `tests/`) en el proyecto. La auditoría `abd-audit.ps1` existe pero no hay tests unitarios o de integración.
+**Estado verificado:** ✅ **CORREGIDO** — Se han implementado 26 tests unitarios y de integración completos en Vitest cubriendo `GuardianEngine`, `TenantService` y `SpaceService`.
 
 ---
 
@@ -366,7 +366,7 @@ Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@abd/style
 | MIN-4 | Overlay de modal sin stopPropagation | 🟢 Baja | Bajo | UX | **✅ REPARADO** |
 | MIN-5 | Validación frágil nombre de archivo | 🟢 Baja | Bajo | Robustez | **✅ REPARADO** |
 | MIN-6 | Sin aria-required en formularios | 🟢 Baja | Bajo | A11y | **✅ REPARADO** |
-| MIN-7 | Sin tests automatizados | 🟡 Alta | Alto | Calidad | ⛔ Omitido |
+| MIN-7 | Sin tests automatizados | 🟡 Alta | Alto | Calidad | **✅ REPARADO** |
 
 ---
 
@@ -507,9 +507,10 @@ Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@abd/style
 
 **Riesgo mitigado:** Ya no existe vulnerabilidad de fallos silenciados en el runtime por type casting en la capa de persistencia de Mongoose.
 
-### ✅ Issues CRIT-2, CRIT-3, QUAL-1–QUAL-10, MIN-1–MIN-6 — Verificados como CORRECTAMENTE CORREGIDOS
+### ✅ Issues CRIT-2, CRIT-3, QUAL-1–QUAL-10, MIN-1–MIN-7 — Verificados como CORRECTAMENTE CORREGIDOS
 
 - Schema Space inconsistente: usa `subjectId`/`subjectType` uniformemente ✅
 - Validación Zod en APIs: implementada ✅
 - `AuditHistoryPanel` imports: migrados ✅
+- Cobertura de tests automatizados (Vitest): 26 tests unitarios/integración implementados y pasando exitosamente ✅
 - Resto de issues QUAL y MIN: verificados ✅
