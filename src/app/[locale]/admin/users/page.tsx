@@ -115,7 +115,7 @@ export default function UsersPage() {
           title="Gestión de Usuarios"
           backButton={
             <Link
-              href={`/${locale}/admin${tenantId ? `?tenantId=${tenantId}` : ''}`}
+              href={`/${locale}/admin${searchParams.toString() ? `?${searchParams.toString()}` : ''}`}
               className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
               aria-label="Volver al dashboard"
             >

@@ -14,17 +14,23 @@ export default async function AdminBrandingPage({
   searchParams,
   params,
 }: {
-  searchParams: Promise<{ tenantId?: string }>;
+  searchParams: Promise<{ tenantId?: string; contextId?: string; contextType?: string }>;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
+  const sParams = await searchParams;
   const tAdmin = await getTranslations('admin');
 
   // 1. Garantizar acceso seguro y ROL mínimo de administrador
   const user = await ensureIndustrialAccess('ADMIN');
   
-  const { tenantId } = await searchParams;
-  const targetTenantId = tenantId || user.tenantId;
+  const targetTenantId = sParams.tenantId || user.tenantId;
+
+  const queryStr = Object.entries(sParams)
+    .filter(([_, v]) => v !== undefined)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&');
+  const querySuffix = queryStr ? `?${queryStr}` : '';
   
   // 2. Recuperar la configuración de marca viva desde MongoDB
   await connectDB();
@@ -42,7 +48,7 @@ export default async function AdminBrandingPage({
           title={tAdmin('brandCardTitle')}
           backButton={
               <Link 
-                href={`/${locale}/admin${targetTenantId ? `?tenantId=${targetTenantId}` : ''}`}
+                href={`/${locale}/admin${querySuffix}`}
                 className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
                 aria-label="Back to Admin Dashboard"
                 title="Back to Dashboard"

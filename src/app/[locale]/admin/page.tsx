@@ -14,7 +14,7 @@ export default async function AdminPortalPage({
   searchParams
 }: {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ tenantId?: string }>;
+  searchParams: Promise<{ tenantId?: string; contextId?: string; contextType?: string }>;
 }) {
   const { locale } = await params;
   const sParams = await searchParams;
@@ -26,7 +26,14 @@ export default async function AdminPortalPage({
   const user = await ensureIndustrialAccess('ADMIN');
 
   const activeTenantId = sParams?.tenantId || user.tenantId;
-  const tenantQuery = activeTenantId ? `?tenantId=${activeTenantId}` : '';
+  const activeContextId = sParams?.contextId;
+  const activeContextType = sParams?.contextType;
+
+  const queryParts = [];
+  if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
+  if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
+  if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
+  const tenantQuery = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
   return (
     <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">

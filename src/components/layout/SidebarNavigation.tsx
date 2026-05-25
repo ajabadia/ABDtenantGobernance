@@ -33,7 +33,14 @@ export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) 
   const searchParams = useSearchParams();
 
   const activeTenantId = searchParams.get('tenantId');
-  const tenantQuery = activeTenantId ? `?tenantId=${activeTenantId}` : '';
+  const activeContextId = searchParams.get('contextId');
+  const activeContextType = searchParams.get('contextType');
+
+  const queryParts = [];
+  if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
+  if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
+  if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
+  const tenantQuery = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
   const isLoggedIn = session.authenticated && !!session.user;
   const user = session.user;

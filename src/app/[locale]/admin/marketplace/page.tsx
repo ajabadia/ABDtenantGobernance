@@ -12,7 +12,7 @@ export default async function MarketplacePage({
   searchParams 
 }: { 
   params: Promise<{ locale: string }>;
-  searchParams: Promise<{ tenantId?: string }>;
+  searchParams: Promise<{ tenantId?: string; contextId?: string; contextType?: string }>;
 }) {
   const { locale } = await params;
   const sp = await searchParams;
@@ -24,6 +24,12 @@ export default async function MarketplacePage({
   const targetTenantId = (user.role === 'SUPER_ADMIN' && sp?.tenantId) 
     ? sp.tenantId 
     : user.tenantId;
+
+  const queryStr = Object.entries(sp)
+    .filter(([_, v]) => v !== undefined)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&');
+  const querySuffix = queryStr ? `?${queryStr}` : '';
 
   // Fetch tenant licensing info
   const marketplaceData = await fetchMarketplaceData(targetTenantId);
@@ -45,7 +51,7 @@ export default async function MarketplacePage({
           tenantId={targetTenantId}
           backButton={
             <Link 
-              href={`/${locale}/admin${targetTenantId ? `?tenantId=${targetTenantId}` : ''}`}
+              href={`/${locale}/admin${querySuffix}`}
               className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
               aria-label="Back to Admin Dashboard"
               title="Back to Dashboard"

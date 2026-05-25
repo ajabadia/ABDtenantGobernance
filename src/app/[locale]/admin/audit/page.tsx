@@ -14,6 +14,8 @@ export const revalidate = 0; // Evitar el cacheado estático de la página admin
 
 interface SearchParams {
   tenantId?: string;
+  contextId?: string;
+  contextType?: string;
 }
 
 export default async function AdminAuditPage({
@@ -24,8 +26,15 @@ export default async function AdminAuditPage({
   searchParams: Promise<SearchParams>;
 }) {
   const { locale } = await params;
-  const { tenantId } = await searchParams;
+  const sParams = await searchParams;
+  const { tenantId } = sParams;
   const t = await getTranslations('admin');
+  
+  const queryStr = Object.entries(sParams)
+    .filter(([_, v]) => v !== undefined)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&');
+  const querySuffix = queryStr ? `?${queryStr}` : '';
 
   // 1. Garantizar acceso seguro y ROL mínimo de administrador
   const user = await ensureIndustrialAccess('ADMIN');
@@ -57,7 +66,7 @@ export default async function AdminAuditPage({
           title={t('auditTitle')}
           backButton={
               <Link 
-                href={`/${locale}/admin${targetTenantId ? `?tenantId=${targetTenantId}` : ''}`}
+                href={`/${locale}/admin${querySuffix}`}
                 className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
                 aria-label="Back to Admin Dashboard"
                 title="Back to Dashboard"

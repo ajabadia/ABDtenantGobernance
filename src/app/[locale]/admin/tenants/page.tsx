@@ -8,15 +8,28 @@ import { ArrowLeft, Building2 } from 'lucide-react';
 import type { TenantManagementTranslations } from '@/components/admin/tenants/types';
 import { redirect } from 'next/navigation';
 import { AdminPageHeader } from '@abd/styles';
-export default async function TenantsAdminPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function TenantsAdminPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ tenantId?: string; contextId?: string; contextType?: string }>;
+}) {
   const { locale } = await params;
+  const sParams = await searchParams;
+  
+  const queryStr = Object.entries(sParams)
+    .filter(([_, v]) => v !== undefined)
+    .map(([k, v]) => `${k}=${v}`)
+    .join('&');
+  const querySuffix = queryStr ? `?${queryStr}` : '';
   
   // 🛡️ Ecosystem Identity Guard with redirect fallback
   try {
     await ensureIndustrialAccess('ADMIN');
   } catch (e) {
     // If access check fails, send user back to admin home
-    redirect(`/${locale}/admin`);
+    redirect(`/${locale}/admin${querySuffix}`);
   }
   
   await connectDB();
@@ -68,7 +81,7 @@ export default async function TenantsAdminPage({ params }: { params: Promise<{ l
           title={t('title')}
           backButton={
               <Link 
-                href={`/${locale}/admin`}
+                href={`/${locale}/admin${querySuffix}`}
                 className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
                 aria-label="Back to Admin Dashboard"
                 title="Back to Dashboard"
