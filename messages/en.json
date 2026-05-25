@@ -646,7 +646,10 @@
       "role_admin": "ADMIN",
       "collaborators_updated": "Collaborators updated",
       "cascade_label": "Inherit recursively",
-      "cascade_desc": "Propagates the selected visibility to all descendant sub-spaces."
+      "cascade_desc": "Propagates the selected visibility to all descendant sub-spaces.",
+      "groups_tab": "Groups",
+      "users_tab": "Users",
+      "add": "Add"
     }
   },
   "widgets": {

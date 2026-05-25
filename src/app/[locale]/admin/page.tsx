@@ -9,14 +9,24 @@ import { Footer, AdminPageHeader } from '@abd/styles';
  * 🛰️ Central Admin Governance Portal Page (Federated Server Component)
  * Rediseñado específicamente para la Gobernanza de Tenants y Marca Blanca.
  */
-export default async function AdminPortalPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function AdminPortalPage({
+  params,
+  searchParams
+}: {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{ tenantId?: string }>;
+}) {
   const { locale } = await params;
+  const sParams = await searchParams;
   const t = await getTranslations('admin');
   const ap = await getTranslations('adminPortal');
 
   // 🛡️ Ecosystem Identity Guard
   // Only users authenticated via ABDAuth with ADMIN privileges can enter.
   const user = await ensureIndustrialAccess('ADMIN');
+
+  const activeTenantId = sParams?.tenantId || user.tenantId;
+  const tenantQuery = activeTenantId ? `?tenantId=${activeTenantId}` : '';
 
   return (
     <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">
@@ -49,7 +59,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('multiTenancy')}
             footerValue={ap('activo')}
             buttonText={t('tenantCardBtn')}
-            href={`/${locale}/admin/tenants`}
+            href={`/${locale}/admin/tenants${tenantQuery}`}
           />
 
           {/* Card 2: Visual Branding Customizer */}
@@ -61,7 +71,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('yiqContrast')}
             footerValue={ap('activo')}
             buttonText={t('brandCardBtn')}
-            href={`/${locale}/admin/branding`}
+            href={`/${locale}/admin/branding${tenantQuery}`}
           />
 
           {/* Card 3: Space Hierarchy Management */}
@@ -73,7 +83,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('materializedPaths')}
             footerValue={ap('activo')}
             buttonText={t('spaceCardBtn')}
-            href={`/${locale}/admin/spaces`}
+            href={`/${locale}/admin/spaces${tenantQuery}`}
           />
 
           {/* Card 4: Chain Auditing Logs */}
@@ -85,7 +95,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('prodReady')}
             footerValue={ap('activo')}
             buttonText={t('auditTitle')}
-            href={`/${locale}/admin/audit`}
+            href={`/${locale}/admin/audit${tenantQuery}`}
           />
 
           {/* Card 5: Permission Groups (Phase 3) */}
@@ -97,7 +107,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('abacPolicies')}
             footerValue={ap('activo')}
             buttonText={t('permissionsCardBtn')}
-            href={`/${locale}/admin/permissions`}
+            href={`/${locale}/admin/permissions${tenantQuery}`}
           />
 
           {/* Card 6: Marketplace de Satélites */}
@@ -109,7 +119,7 @@ export default async function AdminPortalPage({ params }: { params: Promise<{ lo
             footerLabel={t('marketplace.title')}
             footerValue={ap('activo')}
             buttonText={t('marketplace.title')}
-            href={`/${locale}/admin/marketplace`}
+            href={`/${locale}/admin/marketplace${tenantQuery}`}
           />
 
         </div>

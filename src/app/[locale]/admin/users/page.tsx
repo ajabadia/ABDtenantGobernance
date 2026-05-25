@@ -36,7 +36,7 @@ export default function UsersPage() {
   const searchParams = useSearchParams();
   const params = useParams();
   const locale = params?.locale as string || 'en';
-  const tenantId = searchParams.get('tenantId') || 'academia-alfa';
+  const [tenantId, setTenantId] = useState<string>('');
 
   const [users, setUsers] = useState<IamUser[]>([]);
   const [groups, setGroups] = useState<Group[]>([]);
@@ -46,7 +46,30 @@ export default function UsersPage() {
   const [modalOpenExisting, setModalOpenExisting] = useState(false);
   const [manageGroupsUser, setManageGroupsUser] = useState<{ id: string; name: string } | null>(null);
 
+  useEffect(() => {
+    const resolveTenant = async () => {
+      const explicit = searchParams.get('tenantId');
+      if (explicit) {
+        setTenantId(explicit);
+      } else {
+        try {
+          const { getIndustrialSession } = await import('@/lib/session');
+          const session = await getIndustrialSession();
+          if (session?.user?.tenantId) {
+            setTenantId(session.user.tenantId);
+          } else {
+            setTenantId('academia-alfa');
+          }
+        } catch {
+          setTenantId('academia-alfa');
+        }
+      }
+    };
+    resolveTenant();
+  }, [searchParams]);
+
   const fetchData = async () => {
+    if (!tenantId) return;
     setLoading(true);
     const [usersRes, groupsRes, membershipsRes] = await Promise.all([
       fetchUsersAction(tenantId),
@@ -64,7 +87,6 @@ export default function UsersPage() {
   useEffect(() => {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [tenantId]);
 
   const toggleUserStatus = async (userId: string, currentStatus: string) => {
@@ -93,7 +115,7 @@ export default function UsersPage() {
           title="Gestión de Usuarios"
           backButton={
             <Link
-              href={`/${locale}/admin`}
+              href={`/${locale}/admin${tenantId ? `?tenantId=${tenantId}` : ''}`}
               className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
               aria-label="Volver al dashboard"
             >

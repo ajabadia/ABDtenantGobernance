@@ -646,7 +646,10 @@
       "role_admin": "ADMIN",
       "collaborators_updated": "Colaboradores actualizados",
       "cascade_label": "Heredar recursivamente",
-      "cascade_desc": "Propaga la visibilidad seleccionada a todos los sub-espacios descendientes."
+      "cascade_desc": "Propaga la visibilidad seleccionada a todos los sub-espacios descendientes.",
+      "groups_tab": "Grupos",
+      "users_tab": "Usuarios",
+      "add": "Agregar"
     }
   },
   "widgets": {

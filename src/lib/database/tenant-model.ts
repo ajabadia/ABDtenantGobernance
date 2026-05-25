@@ -161,10 +161,14 @@ export async function withTenantContext<T>(
 ): Promise<T> {
   const activeStore = tenantStorage.getStore();
   if (activeStore) {
+    const conn = getTenantConnection(activeStore.dbPrefix, activeStore.isolationStrategy);
+    await ensureConnectionReady(conn);
     return callback();
   }
   
   if (explicitContext) {
+    const conn = getTenantConnection(explicitContext.dbPrefix, explicitContext.isolationStrategy);
+    await ensureConnectionReady(conn);
     return tenantStorage.run(explicitContext, callback);
   }
   
@@ -176,6 +180,8 @@ export async function withTenantContext<T>(
         dbPrefix: session.user.dbPrefix || session.user.tenantId.toLowerCase().replace(/[^a-z0-9]/g, ''),
         isolationStrategy: session.user.isolationStrategy || 'COLLECTION_PREFIX',
       };
+      const conn = getTenantConnection(context.dbPrefix, context.isolationStrategy);
+      await ensureConnectionReady(conn);
       return tenantStorage.run(context, callback);
     }
   } catch (err) {

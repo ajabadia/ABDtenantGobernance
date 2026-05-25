@@ -5,6 +5,7 @@ import { Home, Palette, Folder, Terminal, ShieldCheck, Building } from 'lucide-r
 import { useTranslations, useLocale } from 'next-intl';
 import { Link, usePathname } from '@/i18n/routing';
 import { TacticalSidebar as SharedTacticalSidebar } from '@abd/styles';
+import { useSearchParams } from 'next/navigation';
 
 interface UserSession {
   authenticated: boolean;
@@ -29,6 +30,10 @@ export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) 
   const t = useTranslations('common');
   const locale = useLocale();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const activeTenantId = searchParams.get('tenantId');
+  const tenantQuery = activeTenantId ? `?tenantId=${activeTenantId}` : '';
 
   const isLoggedIn = session.authenticated && !!session.user;
   const user = session.user;
@@ -36,7 +41,7 @@ export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) 
 
   const links = [
     {
-      href: '/',
+      href: `/${tenantQuery}`,
       label: locale === 'es' ? 'Bienvenida' : 'Welcome',
       icon: <Home size={14} />
     }
@@ -45,27 +50,27 @@ export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) 
   if (isLoggedIn && isAdmin) {
     links.push(
       {
-        href: '/admin/tenants',
+        href: `/admin/tenants${tenantQuery}`,
         label: locale === 'es' ? 'Gestión de Organizaciones' : 'Tenants Management',
         icon: <Building size={14} />
       },
       {
-        href: '/admin/branding',
+        href: `/admin/branding${tenantQuery}`,
         label: locale === 'es' ? 'Marca Blanca' : 'White-Labeling',
         icon: <Palette size={14} />
       },
       {
-        href: '/admin/spaces',
+        href: `/admin/spaces${tenantQuery}`,
         label: locale === 'es' ? 'Jerarquía de Espacios' : 'Spaces Hierarchy',
         icon: <Folder size={14} />
       },
       {
-        href: '/admin/audit',
+        href: `/admin/audit${tenantQuery}`,
         label: locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing',
         icon: <ShieldCheck size={14} />
       },
       {
-        href: '/admin',
+        href: `/admin${tenantQuery}`,
         label: t('adminMenu'),
         icon: <Terminal size={14} />
       }

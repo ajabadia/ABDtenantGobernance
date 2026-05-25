@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
@@ -13,7 +13,37 @@ export default function DelegationsPage() {
   const searchParams = useSearchParams();
   const params = useParams();
   const locale = params?.locale as string || 'en';
-  const tenantId = searchParams.get('tenantId') || 'academia-alfa'; 
+  const [tenantId, setTenantId] = useState<string>('');
+
+  useEffect(() => {
+    const resolveTenant = async () => {
+      const explicit = searchParams.get('tenantId');
+      if (explicit) {
+        setTenantId(explicit);
+      } else {
+        try {
+          const { getIndustrialSession } = await import('@/lib/session');
+          const session = await getIndustrialSession();
+          if (session?.user?.tenantId) {
+            setTenantId(session.user.tenantId);
+          } else {
+            setTenantId('academia-alfa');
+          }
+        } catch {
+          setTenantId('academia-alfa');
+        }
+      }
+    };
+    resolveTenant();
+  }, [searchParams]);
+
+  if (!tenantId) {
+    return (
+      <div className="min-h-screen bg-background text-foreground p-6 md:p-12 flex items-center justify-center font-mono text-[10px] uppercase tracking-widest">
+        Cargando datos del tenant...
+      </div>
+    );
+  }
   
   return (
     <main className="min-h-screen bg-background text-foreground p-6 md:p-12 selection:bg-primary/30" role="main">

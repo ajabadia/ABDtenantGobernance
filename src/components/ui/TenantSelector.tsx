@@ -85,13 +85,13 @@ export function TenantSelector({ sessionUser }: TenantSelectorProps) {
         ]);
 
         if (spacesRes.ok) {
-          const data = await spacesRes.json();
-          const items = Array.isArray(data) ? data : (data.items || []);
+          const resJson = await spacesRes.json();
+          const items = Array.isArray(resJson) ? resJson : (resJson.data || resJson.items || []);
           setSpaces(items.map((s: { _id?: string; id?: string; name: string }) => ({ id: s._id || s.id || '', name: s.name })));
         }
         if (groupsRes.ok) {
-          const data = await groupsRes.json();
-          const items = Array.isArray(data) ? data : (data.items || []);
+          const resJson = await groupsRes.json();
+          const items = Array.isArray(resJson) ? resJson : (resJson.data || resJson.items || []);
           setGroups(items.map((g: { _id?: string; id?: string; name: string }) => ({ id: g._id || g.id || '', name: g.name })));
         }
       } catch (error) {

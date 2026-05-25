@@ -1,10 +1,11 @@
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@/lib/session';
-import { ShoppingBag } from 'lucide-react';
+import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { AdminPageHeader, Footer } from '@abd/styles';
 import { fetchMarketplaceData, fetchAllPendingRequests } from './actions';
 import { MarketplaceGrid } from './components/MarketplaceGrid';
 import { RequestsPanel } from './components/RequestsPanel';
+import Link from 'next/link';
 
 export default async function MarketplacePage({ 
   params,
@@ -42,6 +43,16 @@ export default async function MarketplacePage({
           title={t('title')}
           description={t('subtitle')}
           tenantId={targetTenantId}
+          backButton={
+            <Link 
+              href={`/${locale}/admin${targetTenantId ? `?tenantId=${targetTenantId}` : ''}`}
+              className="inline-flex items-center justify-center p-2 bg-transparent text-muted-foreground hover:text-foreground border border-border hover:border-border/80 transition-all duration-200 cursor-pointer rounded-none active:scale-[0.95] shrink-0 focus:outline-none focus:ring-1 focus:ring-primary/50"
+              aria-label="Back to Admin Dashboard"
+              title="Back to Dashboard"
+            >
+              <ArrowLeft size={14} aria-hidden="true" />
+            </Link>
+          }
         />
 
         {user.role === 'SUPER_ADMIN' && superAdminRequests.length > 0 && (

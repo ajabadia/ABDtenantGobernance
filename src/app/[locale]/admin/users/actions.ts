@@ -1,8 +1,8 @@
 'use server'
 
-import { iamClient, InviteUserPayload, UpdateUserPayload } from '@/lib/services/iamClient';
+import { iamClient, InviteUserPayload, UpdateUserPayload, IamUser } from '@/lib/services/iamClient';
 
-export async function fetchUsersAction(tenantId: string) {
+export async function fetchUsersAction(tenantId: string): Promise<{ data?: IamUser[]; error?: string; }> {
   try {
     const users = await iamClient.listUsers(tenantId);
     return { data: users, error: undefined };
