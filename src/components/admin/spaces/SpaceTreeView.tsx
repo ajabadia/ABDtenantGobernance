@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users } from 'lucide-react';
+import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users, Globe, Building, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SpaceData } from './CreateEditSpaceModal';
 
@@ -73,10 +73,35 @@ export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCo
     return `L${(depth + 1).toString().padStart(2, '0')}`;
   };
 
+  const getVisibilityIconAndStyles = (visibility: string) => {
+    switch (visibility) {
+      case 'PUBLIC':
+        return {
+          icon: <Globe size={10} className="text-emerald-500 mr-1" />,
+          text: t('vis_public', { defaultMessage: 'Público' }),
+          badgeClass: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+        };
+      case 'PRIVATE':
+        return {
+          icon: <Lock size={10} className="text-rose-500 mr-1" />,
+          text: t('vis_private', { defaultMessage: 'Privado' }),
+          badgeClass: 'bg-rose-500/10 text-rose-500 border-rose-500/20'
+        };
+      case 'INTERNAL':
+      default:
+        return {
+          icon: <Building size={10} className="text-blue-500 mr-1" />,
+          text: t('vis_internal', { defaultMessage: 'Interno' }),
+          badgeClass: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+        };
+    }
+  };
+
   const renderNode = (node: TreeNode) => {
     const isExpanded = expandedNodes.has(node._id!);
     const hasChildren = node.children.length > 0;
     const levelLabel = getLabelForDepth(node.depth);
+    const vis = getVisibilityIconAndStyles(node.visibility);
 
     const paddingClasses = ['pl-2', 'pl-8', 'pl-14', 'pl-20', 'pl-24', 'pl-28'];
     const paddingClass = paddingClasses[node.depth] || 'pl-32';
@@ -99,6 +124,10 @@ export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCo
               <span className="font-bold text-sm tracking-wide truncate text-foreground">{node.name}</span>
               <span className="text-[9px] px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest font-mono">
                 {levelLabel}
+              </span>
+              <span className={`text-[9px] px-2 py-0.5 rounded border uppercase tracking-widest font-mono flex items-center ${vis.badgeClass}`}>
+                {vis.icon}
+                {vis.text}
               </span>
               <span className="text-[10px] text-muted-foreground font-mono truncate hidden md:inline-block">
                 {node.materializedPath}

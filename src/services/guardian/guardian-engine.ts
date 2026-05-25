@@ -49,16 +49,9 @@ export class GuardianEngine {
     }
 
     // 4. Resolución de espacios permitidos
-    const { SpaceRepository } = await import('@/lib/repositories/SpaceRepository');
-    const spaceRepo = new SpaceRepository();
-    const userSpaces = await spaceRepo.find({
-      tenantId,
-      $or: [
-        { ownerUserId: userId },
-        { 'collaborators.subjectId': userId }
-      ]
-    });
-    const allowedSpaceIds = userSpaces.map(s => s._id.toString());
+    const { SpaceService } = await import('@/services/tenant/space-service');
+    const userSpaces = await SpaceService.getAccessibleSpaces(tenantId, userId);
+    const allowedSpaceIds = userSpaces.map(s => s._id!.toString());
     const allowedGroupIds = Array.from(groupIds);
 
     // 5. Resolver políticas efectivas desde los grupos (Resolución BFS Jerárquica)

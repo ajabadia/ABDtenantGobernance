@@ -63,16 +63,12 @@ vi.mock('@/models/Space', () => {
 });
 
 // Import mock references
-import {
-  mockFindByTenantId,
-  mockFind,
-  mockCreate,
-  mockUpdate,
-  mockFindOneAndUpdate,
-  mockExec,
-} from '@/lib/repositories/TenantRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
+import { mockFindByTenantId, mockFind, mockCreate, mockUpdate, mockFindOneAndUpdate, mockExec } from '@/lib/repositories/TenantRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockLogEvent } from './audit-service';
 import { SecurityService } from '@/lib/security';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockAggregate } from '@/models/Space';
 
 describe('TenantService', () => {
@@ -202,7 +198,7 @@ describe('TenantService', () => {
       }));
 
       // 2. Branding updates
-      await TenantService.updateConfig(tenantId, { branding: { colors: { primary: '#ff0000' } } }, 'user-admin');
+      await TenantService.updateConfig(tenantId, { branding: { colors: { primary: '#ff0000' }, rounded: true, radius: '0.375rem' } }, 'user-admin');
       expect(mockLogEvent).toHaveBeenLastCalledWith(expect.objectContaining({
         action: 'UPDATE_BRANDING',
       }));

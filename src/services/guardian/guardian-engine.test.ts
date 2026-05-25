@@ -54,11 +54,30 @@ vi.mock('@/services/tenant/permission-service', () => {
   };
 });
 
+vi.mock('@/services/tenant/audit-service', () => {
+  return {
+    AuditService: {
+      logEvent: vi.fn(),
+    },
+  };
+});
+
+vi.mock('@/lib/database/tenant-model', () => {
+  return {
+    withTenantContext: vi.fn(async (callback) => await callback()),
+  };
+});
+
 // Import mock references
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockFindByUserId } from '@/lib/repositories/UserGroupMembershipRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockFindActiveByDelegatee } from '@/lib/repositories/DelegatedRoleRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockFindSpaces } from '@/lib/repositories/SpaceRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockFindPolicies } from '@/lib/repositories/PermissionPolicyRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockResolveEffectivePolicies } from '@/services/tenant/permission-service';
 
 describe('GuardianEngine', () => {
@@ -113,7 +132,18 @@ describe('GuardianEngine', () => {
       ]);
       mockFindActiveByDelegatee.mockResolvedValue([]);
       
-      const mockSpaceDoc = { _id: 'space-101' };
+      const mockSpaceDoc = {
+        _id: 'space-101',
+        name: 'Space 101',
+        slug: 'space-101',
+        tenantId: 'tenant-1',
+        type: 'TENANT' as const,
+        visibility: 'PUBLIC' as const,
+        materializedPath: '/space-101',
+        collaborators: [],
+        isActive: true,
+        toObject: function() { return this; },
+      };
       mockFindSpaces.mockResolvedValue([mockSpaceDoc]);
 
       const mockPolicy = {

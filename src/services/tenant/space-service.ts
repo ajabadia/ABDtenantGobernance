@@ -64,29 +64,74 @@ export class SpaceService {
     return SpaceSchema.parse(obj);
   }
 
-  private static buildAccessibilityFilter(tenantId: string, userId: string, groupIds: string[]): Record<string, unknown> {
-    return {
-      tenantId,
-      $or: [
-        // 1. Espacios personales del usuario
-        { type: 'PERSONAL', ownerUserId: userId },
-        // 2. Colaboraciones directas (Como Usuario individual o a través de sus Grupos)
-        { 
-          collaborators: {
-            $elemMatch: {
-              $or: [
-                { subjectId: userId, subjectType: 'USER' },
-                { subjectId: { $in: groupIds }, subjectType: 'GROUP' }
-              ]
-            }
-          }
-        },
-        // 3. Espacios públicos del tenant
-        { type: 'TENANT', visibility: 'PUBLIC' },
-        // 4. Espacios internos (privados) creados por el propio usuario
-        { type: 'TENANT', visibility: 'INTERNAL', ownerUserId: userId }
-      ]
+  private static hasAccessToSpace(
+    space: ISpace,
+    allSpacesMap: Map<string, ISpace>,
+    userId: string,
+    groupIds: string[]
+  ): boolean {
+    if (space.type === 'PERSONAL') {
+      return space.ownerUserId === userId;
+    }
+
+    // Un usuario tiene acceso explícito a un nodo si es el dueño, colaborador directo o grupo colaborador
+    const hasExplicitAccessAtNode = (s: ISpace): boolean => {
+      if (s.ownerUserId === userId) return true;
+      return s.collaborators.some(c => 
+        (c.subjectType === 'USER' && c.subjectId === userId) ||
+        (c.subjectType === 'GROUP' && groupIds.includes(c.subjectId))
+      );
     };
+
+    // Un usuario tiene acceso heredado por propagación en un nodo si algún ancestro por encima de él
+    // tiene un colaborador (usuario o grupo) con propagates: true
+    const hasPropagatingAccessAboveNode = (s: ISpace): boolean => {
+      if (!s.materializedPath) return false;
+      const parts = s.materializedPath.split('/').filter(Boolean);
+      let currentPath = '';
+      // Recorremos los ancestros superiores
+      for (let i = 0; i < parts.length - 1; i++) {
+        currentPath += '/' + parts[i];
+        const ancestor = Array.from(allSpacesMap.values()).find(x => x.materializedPath === currentPath);
+        if (ancestor) {
+          const matchingPropagatingCollab = ancestor.collaborators.some(c => 
+            c.propagates && 
+            ((c.subjectType === 'USER' && c.subjectId === userId) ||
+             (c.subjectType === 'GROUP' && groupIds.includes(c.subjectId)))
+          );
+          if (matchingPropagatingCollab) {
+            return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    // Evaluamos el camino completo desde la raíz hasta el espacio
+    if (!space.materializedPath) return false;
+    const pathParts = space.materializedPath.split('/').filter(Boolean);
+    let currentPath = '';
+
+    for (let i = 0; i < pathParts.length; i++) {
+      currentPath += '/' + pathParts[i];
+      const node = Array.from(allSpacesMap.values()).find(x => x.materializedPath === currentPath);
+      
+      // Si un nodo intermedio de la ruta no existe o no está activo, denegar
+      if (!node || !node.isActive) {
+        return false;
+      }
+
+      // Si el nodo evaluado es PRIVATE
+      if (node.visibility === 'PRIVATE') {
+        const hasDirect = hasExplicitAccessAtNode(node);
+        const hasInherited = hasPropagatingAccessAboveNode(node);
+        if (!hasDirect && !hasInherited) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -106,25 +151,34 @@ export class SpaceService {
     const memberships = await userGroupMembershipRepository.findByUserId(tenantId, userId);
     const groupIds = memberships.map(m => m.groupId.toString());
 
-    // Filtro de accesibilidad perimetral (matriz de colaboración y privacidad)
-    const accessibilityQuery = this.buildAccessibilityFilter(tenantId, userId, groupIds);
+    // Obtenemos todos los espacios del tenant
+    const docs = await spaceRepository.find({ tenantId, isActive: true });
+    
+    // Mapeamos los espacios para búsquedas jerárquicas rápidas
+    const allSpacesMap = new Map<string, ISpace>();
+    docs.forEach(doc => {
+      allSpacesMap.set(doc._id.toString(), doc);
+    });
 
-    const extraFilters: Record<string, unknown> = {};
+    // Filtramos dinámicamente según la visibilidad recursiva
+    const accessibleDocs = docs.filter(doc => 
+      this.hasAccessToSpace(doc, allSpacesMap, userId, groupIds)
+    );
+
+    // Aplicamos filtros adicionales en memoria
+    let filteredDocs = accessibleDocs;
     if (filters.isRoot) {
-      extraFilters.parentSpaceId = { $exists: false };
+      filteredDocs = filteredDocs.filter(doc => !doc.parentSpaceId);
     } else if (filters.parentSpaceId) {
-      extraFilters.parentSpaceId = filters.parentSpaceId;
+      filteredDocs = filteredDocs.filter(doc => doc.parentSpaceId === filters.parentSpaceId);
     }
 
     if (filters.search) {
-      extraFilters.name = { $regex: filters.search, $options: 'i' };
+      const searchRegex = new RegExp(filters.search, 'i');
+      filteredDocs = filteredDocs.filter(doc => searchRegex.test(doc.name));
     }
 
-    const docs = await spaceRepository.find({
-      $and: [accessibilityQuery, extraFilters]
-    });
-
-    return docs.map(doc => {
+    return filteredDocs.map(doc => {
       const obj = doc.toObject();
       if (obj._id) obj._id = obj._id.toString();
       return SpaceSchema.parse(obj);

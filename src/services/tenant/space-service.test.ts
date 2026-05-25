@@ -65,14 +65,11 @@ vi.mock('./audit-service', () => {
 });
 
 // Import mock references
-import {
-  mockFindById,
-  mockFind,
-  mockCreate,
-  mockFindByPath,
-  mockFindByIdAndUpdate,
-} from '@/lib/repositories/SpaceRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
+import { mockFindById, mockFind, mockCreate, mockFindByPath, mockFindByIdAndUpdate } from '@/lib/repositories/SpaceRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockFindByUserId } from '@/lib/repositories/UserGroupMembershipRepository';
+// @ts-expect-error - mock exports only exist in runtime mock
 import { mockLogEvent } from './audit-service';
 
 describe('SpaceService', () => {
@@ -82,18 +79,7 @@ describe('SpaceService', () => {
 
   describe('createSpace', () => {
     it('should create a root space and calculate materialized path', async () => {
-      const mockDoc = {
-        _id: 'space-root-id',
-        name: 'Root Space',
-        slug: 'root-space',
-        type: 'TENANT' as const,
-        tenantId: 'tenant-1',
-        ownerUserId: 'user-1',
-        materializedPath: '/root-space',
-        visibility: 'PUBLIC' as const,
-        isActive: true,
-        toObject: function() { return this; },
-      };
+      const mockDoc = { _id: 'space-root-id', name: 'Root Space', slug: 'root-space', type: 'TENANT' as const, tenantId: 'tenant-1', ownerUserId: 'user-1', materializedPath: '/root-space', visibility: 'PUBLIC' as const, isActive: true, toObject: function() { return this; } };
 
       mockCreate.mockResolvedValueOnce(mockDoc);
 
@@ -136,28 +122,11 @@ describe('SpaceService', () => {
     });
 
     it('should create a nested space and calculate hierarchical materialized path', async () => {
-      const mockParent = {
-        _id: 'parent-id',
-        name: 'Parent Space',
-        slug: 'parent',
-        materializedPath: '/parent',
-      };
+      const mockParent = { _id: 'parent-id', name: 'Parent Space', slug: 'parent', materializedPath: '/parent' };
 
       mockFindById.mockResolvedValueOnce(mockParent);
 
-      const mockSubDoc = {
-        _id: 'sub-id',
-        name: 'Sub Space',
-        slug: 'sub',
-        type: 'TENANT' as const,
-        tenantId: 'tenant-1',
-        ownerUserId: 'user-1',
-        parentSpaceId: 'parent-id',
-        materializedPath: '/parent/sub',
-        visibility: 'INTERNAL' as const,
-        isActive: true,
-        toObject: function() { return this; },
-      };
+      const mockSubDoc = { _id: 'sub-id', name: 'Sub Space', slug: 'sub', type: 'TENANT' as const, tenantId: 'tenant-1', ownerUserId: 'user-1', parentSpaceId: 'parent-id', materializedPath: '/parent/sub', visibility: 'INTERNAL' as const, isActive: true, toObject: function() { return this; } };
 
       mockCreate.mockResolvedValueOnce(mockSubDoc);
 
@@ -176,71 +145,68 @@ describe('SpaceService', () => {
   });
 
   describe('getAccessibleSpaces', () => {
-    it('should query spaces utilizing accessibility filters based on user type, group membership, and collaborator list', async () => {
-      mockFindByUserId.mockResolvedValueOnce([
-        { groupId: 'group-a' },
-        { groupId: 'group-b' },
-      ]);
+    it('should query all active tenant spaces and filter them correctly in-memory', async () => {
+      mockFindByUserId.mockResolvedValueOnce([{ groupId: 'group-a' }, { groupId: 'group-b' }]);
 
       const mockSpaces = [
-        {
-          _id: 'space-1',
-          name: 'Public Space',
-          slug: 'public',
-          type: 'TENANT' as const,
-          tenantId: 'tenant-1',
-          visibility: 'PUBLIC' as const,
-          toObject: function() { return this; },
-        },
-        {
-          _id: 'space-2',
-          name: 'Personal Space',
-          slug: 'personal',
-          type: 'PERSONAL' as const,
-          tenantId: 'tenant-1',
-          ownerUserId: 'user-1',
-          toObject: function() { return this; },
-        }
+        { _id: 'space-1', name: 'Public Space', slug: 'public', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PUBLIC' as const, materializedPath: '/public', collaborators: [], isActive: true, toObject: function() { return this; } },
+        { _id: 'space-2', name: 'Personal Space', slug: 'personal', type: 'PERSONAL' as const, tenantId: 'tenant-1', ownerUserId: 'user-1', materializedPath: '/personal', collaborators: [], isActive: true, toObject: function() { return this; } },
+        { _id: 'space-3', name: 'Other Personal Space', slug: 'other-personal', type: 'PERSONAL' as const, tenantId: 'tenant-1', ownerUserId: 'user-2', materializedPath: '/other-personal', collaborators: [], isActive: true, toObject: function() { return this; } }
       ];
 
       mockFind.mockResolvedValueOnce(mockSpaces);
 
-      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1', {
-        isRoot: true,
-        search: 'space',
-      });
+      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1', { isRoot: true, search: 'public' });
 
       expect(mockFindByUserId).toHaveBeenCalledWith('tenant-1', 'user-1');
-      expect(mockFind).toHaveBeenCalledWith({
-        $and: [
-          {
-            tenantId: 'tenant-1',
-            $or: [
-              { type: 'PERSONAL', ownerUserId: 'user-1' },
-              {
-                collaborators: {
-                  $elemMatch: {
-                    $or: [
-                      { subjectId: 'user-1', subjectType: 'USER' },
-                      { subjectId: { $in: ['group-a', 'group-b'] }, subjectType: 'GROUP' },
-                    ]
-                  }
-                }
-              },
-              { type: 'TENANT', visibility: 'PUBLIC' },
-              { type: 'TENANT', visibility: 'INTERNAL', ownerUserId: 'user-1' },
-            ],
-          },
-          {
-            parentSpaceId: { $exists: false },
-            name: { $regex: 'space', $options: 'i' },
-          }
-        ]
-      });
-
-      expect(result).toHaveLength(2);
+      expect(mockFind).toHaveBeenCalledWith({ tenantId: 'tenant-1', isActive: true });
+      expect(result).toHaveLength(1);
       expect(result[0]._id).toBe('space-1');
-      expect(result[1]._id).toBe('space-2');
+    });
+
+    it('should block access to a public child space if its parent space is private and the user has no access to the parent', async () => {
+      mockFindByUserId.mockResolvedValueOnce([]);
+
+      const mockSpaces = [
+        { _id: 'parent-private', name: 'Parent Private', slug: 'parent-private', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PRIVATE' as const, materializedPath: '/parent-private', collaborators: [], isActive: true, toObject: function() { return this; } },
+        { _id: 'child-public', name: 'Child Public', slug: 'child-public', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PUBLIC' as const, parentSpaceId: 'parent-private', materializedPath: '/parent-private/child-public', collaborators: [], isActive: true, toObject: function() { return this; } }
+      ];
+
+      mockFind.mockResolvedValueOnce(mockSpaces);
+
+      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      expect(result).toHaveLength(0);
+    });
+
+    it('should allow access to a private child space if user is collaborator on parent space and propagates is true', async () => {
+      mockFindByUserId.mockResolvedValueOnce([]);
+
+      const mockSpaces = [
+        { _id: 'parent-private', name: 'Parent Private', slug: 'parent-private', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PRIVATE' as const, materializedPath: '/parent-private', collaborators: [{ subjectId: 'user-1', subjectType: 'USER' as const, role: 'VIEWER' as const, propagates: true }], isActive: true, toObject: function() { return this; } },
+        { _id: 'child-private', name: 'Child Private', slug: 'child-private', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PRIVATE' as const, parentSpaceId: 'parent-private', materializedPath: '/parent-private/child-private', collaborators: [], isActive: true, toObject: function() { return this; } }
+      ];
+
+      mockFind.mockResolvedValueOnce(mockSpaces);
+
+      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      expect(result).toHaveLength(2);
+      expect(result.map(x => x._id)).toContain('parent-private');
+      expect(result.map(x => x._id)).toContain('child-private');
+    });
+
+    it('should deny access to a private child space if user is collaborator on parent space but propagates is false', async () => {
+      mockFindByUserId.mockResolvedValueOnce([]);
+
+      const mockSpaces = [
+        { _id: 'parent-private', name: 'Parent Private', slug: 'parent-private', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PRIVATE' as const, materializedPath: '/parent-private', collaborators: [{ subjectId: 'user-1', subjectType: 'USER' as const, role: 'VIEWER' as const, propagates: false }], isActive: true, toObject: function() { return this; } },
+        { _id: 'child-private', name: 'Child Private', slug: 'child-private', type: 'TENANT' as const, tenantId: 'tenant-1', visibility: 'PRIVATE' as const, parentSpaceId: 'parent-private', materializedPath: '/parent-private/child-private', collaborators: [], isActive: true, toObject: function() { return this; } }
+      ];
+
+      mockFind.mockResolvedValueOnce(mockSpaces);
+
+      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      expect(result).toHaveLength(1);
+      expect(result[0]._id).toBe('parent-private');
     });
   });
 
