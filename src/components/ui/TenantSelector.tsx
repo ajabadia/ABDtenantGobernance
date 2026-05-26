@@ -103,24 +103,23 @@ export function TenantSelector({ sessionUser }: TenantSelectorProps) {
   }, [activeTenantId]);
 
   const handleTenantChange = (newTenantId: string) => {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    // Set the cookie immediately on client side
+    document.cookie = `active_tenant_id=${newTenantId}; path=/; max-age=2592000; SameSite=Lax`;
+
+    const current = new URLSearchParams(window.location.search);
     current.set("tenantId", newTenantId);
     current.delete("contextId");
     current.delete("contextType");
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-    router.refresh();
+    const query = current.toString() ? `?${current.toString()}` : "";
+    window.location.href = `${window.location.pathname}${query}`;
   };
 
   const handleContextChange = (newContextId: string, type: 'space' | 'group') => {
-    const current = new URLSearchParams(Array.from(searchParams.entries()));
+    const current = new URLSearchParams(window.location.search);
     current.set("contextId", newContextId);
     current.set("contextType", type);
-    const search = current.toString();
-    const query = search ? `?${search}` : "";
-    router.push(`${pathname}${query}`);
-    router.refresh();
+    const query = current.toString() ? `?${current.toString()}` : "";
+    window.location.href = `${window.location.pathname}${query}`;
   };
 
   if (!sessionUser) return null;

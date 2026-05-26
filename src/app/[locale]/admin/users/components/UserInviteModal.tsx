@@ -61,28 +61,42 @@ export function UserInviteModal({
     setError('');
 
     try {
-      const result = await inviteUserAction({
+      // Primera llamada: invitar usuario (envía groupIds para que IAM las almacene)
+      const invitePromise = inviteUserAction({
         email,
         name,
         tenantId,
         role,
         allowedApps: ['quiz'],
+        groupIds: selectedGroups.length > 0 ? selectedGroups : undefined,
+      }).then(result => {
+        if (result?.error) throw new Error(result.error);
+        return result;
       });
 
-      if (result?.error) throw new Error(result.error);
+      // Segunda llamada (encadenada): asignar grupos localmente si se seleccionaron
+      const groupsPromise = invitePromise.then(result => {
+        if (result?.data && selectedGroups.length > 0) {
+          return updateUserGroupsAction(tenantId, result.data._id, selectedGroups);
+        }
+      });
 
-      if (result?.data && selectedGroups.length > 0) {
-        const membershipResult = await updateUserGroupsAction(tenantId, result.data._id, selectedGroups);
-        if (membershipResult?.error) throw new Error(membershipResult.error);
-      }
+      // Promise.all espera a que ambas se resuelvan (la segunda depende de la primera)
+      await toast.promise(
+        Promise.all([invitePromise, groupsPromise]),
+        {
+          loading: 'Enviando invitación…',
+          success: 'Usuario invitado correctamente',
+          error: (err) =>
+            `Error: ${err instanceof Error ? err.message : 'Fallo la invitación'}`,
+        }
+      );
 
-      toast.success('Usuario invitado correctamente');
       onSuccess();
       onClose();
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error al invitar al usuario';
       setError(msg);
-      toast.error('Fallo la invitación');
     } finally {
       setIsLoading(false);
     }

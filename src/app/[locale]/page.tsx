@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { ArrowRight, Cpu, Sliders, Database, ShieldCheck, Palette, Layers, KeyRound, Globe, UserCheck } from 'lucide-react';
+import { ArrowRight, ShieldCheck, Palette, Layers } from 'lucide-react';
 import { HeroHeader } from '@abd/styles';
 import Link from 'next/link';
-import { Footer } from '@abd/styles';
+import { GlobalFooter } from '@abd/ecosystem-widgets';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -10,7 +10,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
   const h = await getTranslations('home');
   
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center pt-24 pb-12 px-6 md:px-24 bg-background text-foreground selection:bg-primary/30 overflow-hidden relative z-10" role="main">
+    <main className="flex min-h-screen flex-col items-center justify-center pb-12 px-6 md:px-24 bg-background text-foreground selection:bg-primary/30 overflow-hidden relative z-10" role="main">
       {/* Tactical grid background layer */}
       <div className="absolute inset-0 bg-industrial-grid mask-industrial-fade pointer-events-none opacity-50" aria-hidden="true" />
 
@@ -92,7 +92,7 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
         </div>
 
         {/* Telemetry Footer */}
-        <Footer 
+        <GlobalFooter 
           telemetryItems={[
             { label: 'Control Plane', value: h('version') },
             { label: 'Estilo', value: h('style') }

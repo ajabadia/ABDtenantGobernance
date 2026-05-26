@@ -17,6 +17,7 @@ import { ManageGroupMembersModal } from './components/ManageGroupMembersModal';
 import { GroupTreeView } from './components/GroupTreeView';
 import { PoliciesTable } from './components/PoliciesTable';
 import { AdminPageHeader } from '@abd/styles';
+import { ConfirmDialog, useConfirmDialog } from '@abd/ecosystem-widgets';
 
 interface Group {
   _id: string;
@@ -101,17 +102,23 @@ export default function PermissionsPage() {
     fetchData();
   }, [tenantId]);
 
-  const handleDeleteGroup = async (groupId: string, groupName: string) => {
-    if (!confirm(tPerm('confirmDelete', { name: groupName }))) return;
-    const res = await deleteGroupAction(groupId, tenantId);
-    if (res.error) {
-      toast.error(res.error === 'DEPENDENT_SUBGROUPS_EXIST'
-        ? tPerm('deleteDependentError')
-        : res.error);
-    } else {
-      toast.success(tPerm('deleteSuccess'));
-      fetchData();
-    }
+  const deleteGroupDialog = useConfirmDialog<{ id: string; name: string }>({
+    onConfirm: async (group) => {
+      if (!group) return;
+      const res = await deleteGroupAction(group.id, tenantId);
+      if (res.error) {
+        toast.error(res.error === 'DEPENDENT_SUBGROUPS_EXIST'
+          ? tPerm('deleteDependentError')
+          : res.error);
+      } else {
+        toast.success(tPerm('deleteSuccess'));
+        fetchData();
+      }
+    },
+  });
+
+  const handleDeleteGroup = (groupId: string, groupName: string) => {
+    deleteGroupDialog.trigger({ id: groupId, name: groupName });
   };
 
   const handleEditGroup = (group: Group) => {
@@ -245,6 +252,18 @@ export default function PermissionsPage() {
           onSuccess={fetchData}
         />
       )}
+
+      <ConfirmDialog
+        open={deleteGroupDialog.open}
+        title="ELIMINAR GRUPO"
+        message={deleteGroupDialog.data ? tPerm('confirmDelete', { name: deleteGroupDialog.data.name }) : ''}
+        confirmLabel="ELIMINAR"
+        cancelLabel="CANCELAR"
+        variant="danger"
+        isLoading={deleteGroupDialog.isLoading}
+        onConfirm={deleteGroupDialog.confirm}
+        onCancel={deleteGroupDialog.cancel}
+      />
     </main>
   );
 }

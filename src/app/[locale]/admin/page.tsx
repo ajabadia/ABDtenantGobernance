@@ -3,7 +3,8 @@ import { ensureIndustrialAccess } from '@/lib/session';
 import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
-import { Footer, AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@abd/styles';
+import { GlobalFooter } from '@abd/ecosystem-widgets';
 
 /**
  * 🛰️ Central Admin Governance Portal Page (Federated Server Component)
@@ -36,7 +37,7 @@ export default async function AdminPortalPage({
   const tenantQuery = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
 
   return (
-    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">
+    <main className="min-h-screen bg-background text-foreground pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
         
         {/* Header */}
@@ -132,7 +133,7 @@ export default async function AdminPortalPage({
         </div>
 
         {/* Footer */}
-        <Footer label={t('footer')} />
+        <GlobalFooter label={t('footer')} />
 
       </div>
     </main>

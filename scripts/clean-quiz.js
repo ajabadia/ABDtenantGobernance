@@ -40,6 +40,12 @@ const targetPaths = [
   'src/lib/corpus',
   'src/lib/validation',
 
+  // Obsolete i18n quiz residual
+  'src/messages/en/quiz.json',
+  'src/messages/en/common.json',
+  'src/messages/es/quiz.json',
+  'src/messages/es/common.json',
+
   // Obsolete types and hooks
   'src/types/quiz.ts',
   'src/hooks/useQuizTimer.ts',

@@ -1,7 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@/lib/session';
 import { ShoppingBag, ArrowLeft } from 'lucide-react';
-import { AdminPageHeader, Footer } from '@abd/styles';
+import { AdminPageHeader } from '@abd/styles';
+import { GlobalFooter } from '@abd/ecosystem-widgets';
 import { fetchMarketplaceData, fetchAllPendingRequests } from './actions';
 import { MarketplaceGrid } from './components/MarketplaceGrid';
 import { RequestsPanel } from './components/RequestsPanel';
@@ -41,7 +42,7 @@ export default async function MarketplacePage({
   }
 
   return (
-    <main className="min-h-screen bg-background text-foreground pt-24 pb-12 px-6 md:px-12 relative z-10" role="main">
+    <main className="min-h-screen bg-background text-foreground pb-12 px-6 md:px-12 relative z-10" role="main">
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
         <AdminPageHeader
           icon={ShoppingBag}
@@ -77,7 +78,7 @@ export default async function MarketplacePage({
           />
         </div>
 
-        <Footer label="ABD suite • Marketplace v1.0.0" />
+        <GlobalFooter label="ABD suite • Marketplace v1.0.0" />
       </div>
     </main>
   );

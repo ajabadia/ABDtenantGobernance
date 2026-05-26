@@ -3,9 +3,8 @@
 import React from 'react';
 import { Home, Palette, Folder, Terminal, ShieldCheck, Building } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
-import { Link, usePathname } from '@/i18n/routing';
-import { TacticalSidebar as SharedTacticalSidebar } from '@abd/styles';
-import { useSearchParams } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
+import { SmartNavbar, buildSidebarLinks } from '@abd/ecosystem-widgets';
 
 interface UserSession {
   authenticated: boolean;
@@ -24,100 +23,107 @@ interface UserSession {
 interface SidebarNavigationProps {
   session: UserSession;
   logoUrl?: string | null;
+  tenantSelectorSlot?: React.ReactNode;
+  settingsSlot?: React.ReactNode;
 }
 
-export function SidebarNavigation({ session, logoUrl }: SidebarNavigationProps) {
+export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settingsSlot }: SidebarNavigationProps) {
   const t = useTranslations('common');
   const locale = useLocale();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
+  const router = useRouter();
+  const [tenantQuery, setTenantQuery] = React.useState('');
 
-  const activeTenantId = searchParams.get('tenantId');
-  const activeContextId = searchParams.get('contextId');
-  const activeContextType = searchParams.get('contextType');
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const activeTenantId = params.get('tenantId');
+    const activeContextId = params.get('contextId');
+    const activeContextType = params.get('contextType');
 
-  const queryParts = [];
-  if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
-  if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
-  if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
-  const tenantQuery = queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+    const queryParts = [];
+    if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
+    if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
+    if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
+    setTenantQuery(queryParts.length > 0 ? `?${queryParts.join('&')}` : '');
+  }, []);
 
   const isLoggedIn = session.authenticated && !!session.user;
   const user = session.user;
-  const isAdmin = isLoggedIn && user && (user.role === 'ADMIN' || user.role === 'SUPER_ADMIN');
 
-  const links = [
+  const allLinks = [
     {
       href: `/${tenantQuery}`,
       label: locale === 'es' ? 'Bienvenida' : 'Welcome',
       icon: <Home size={14} />
+    },
+    {
+      href: `/admin/tenants${tenantQuery}`,
+      label: locale === 'es' ? 'Gestión de Organizaciones' : 'Tenants Management',
+      icon: <Building size={14} />,
+      requiresAdmin: true
+    },
+    {
+      href: `/admin/branding${tenantQuery}`,
+      label: locale === 'es' ? 'Marca Blanca' : 'White-Labeling',
+      icon: <Palette size={14} />,
+      requiresAdmin: true
+    },
+    {
+      href: `/admin/spaces${tenantQuery}`,
+      label: locale === 'es' ? 'Jerarquía de Espacios' : 'Spaces Hierarchy',
+      icon: <Folder size={14} />,
+      requiresAdmin: true
+    },
+    {
+      href: `/admin/audit${tenantQuery}`,
+      label: locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing',
+      icon: <ShieldCheck size={14} />,
+      requiresAdmin: true
+    },
+    {
+      href: `/admin${tenantQuery}`,
+      label: t('adminMenu'),
+      icon: <Terminal size={14} />,
+      requiresAdmin: true
     }
-  ];
+  ] as const;
 
-  if (isLoggedIn && isAdmin) {
-    links.push(
-      {
-        href: `/admin/tenants${tenantQuery}`,
-        label: locale === 'es' ? 'Gestión de Organizaciones' : 'Tenants Management',
-        icon: <Building size={14} />
-      },
-      {
-        href: `/admin/branding${tenantQuery}`,
-        label: locale === 'es' ? 'Marca Blanca' : 'White-Labeling',
-        icon: <Palette size={14} />
-      },
-      {
-        href: `/admin/spaces${tenantQuery}`,
-        label: locale === 'es' ? 'Jerarquía de Espacios' : 'Spaces Hierarchy',
-        icon: <Folder size={14} />
-      },
-      {
-        href: `/admin/audit${tenantQuery}`,
-        label: locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing',
-        icon: <ShieldCheck size={14} />
-      },
-      {
-        href: `/admin${tenantQuery}`,
-        label: t('adminMenu'),
-        icon: <Terminal size={14} />
-      }
-    );
-  }
-
-  const navUser = isLoggedIn && user ? {
-    name: `${user.name} ${user.surname}`,
-    role: user.role,
-    tenantId: user.tenantId,
-    email: user.email
-  } : {
-    name: locale === 'es' ? 'Invitado' : 'Guest',
-    role: 'PUBLIC',
-    tenantId: 'GLOBAL',
-    email: ''
-  };
+  const links = buildSidebarLinks(allLinks, user?.role, isLoggedIn);
 
   const finalLogoUrl = logoUrl || (isLoggedIn && user?.branding ? user.branding.logoUrl : null);
 
-  const LocalizedLink = ({ href, onClick, className, children }: { href: string; onClick?: () => void; className?: string; children: React.ReactNode }) => (
-    <Link href={href} onClick={onClick} className={className}>
-      {children}
-    </Link>
-  );
+  const handleLocaleChange = (newLocale: string) => {
+    let domainSuffix = "";
+    const hostname = window.location.hostname;
+    if (hostname !== "localhost" && hostname !== "127.0.0.1") {
+      const parts = hostname.split('.');
+      if (parts.length >= 2) {
+        domainSuffix = `; domain=.${parts.slice(-2).join('.')}`;
+      }
+    }
+    document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax${domainSuffix}`;
+    const search = typeof window !== 'undefined' ? window.location.search : '';
+    router.replace(`${pathname}${search}`, { locale: newLocale });
+  };
 
   return (
-    <SharedTacticalSidebar
-      user={navUser}
+    <SmartNavbar
+      session={session}
       links={links}
       logoUrl={finalLogoUrl}
-      onLogout={() => {
-        window.location.href = '/api/auth/logout';
-      }}
-      brandName={user?.tenantId || t('appTitle') || 'ABD SYSTEM'}
-      LinkComponent={LocalizedLink}
+      onLogout={() => { window.location.href = '/api/auth/logout'; }}
+      locale={locale}
+      brandName={t('appTitle') || 'ABD SYSTEM'}
       activeHref={pathname}
+      tenantSelectorSlot={tenantSelectorSlot}
+      settingsSlot={settingsSlot}
+      onLocaleChange={handleLocaleChange}
+      onSearchTrigger={() => {
+        window.dispatchEvent(new CustomEvent('abd-command-palette-open'));
+      }}
       translations={{
         brandFallback: t('appTitle') || 'ABD SYSTEM',
-        logoutBtn: locale === 'es' ? 'TERMINAR SESIÓN' : 'SIGN OUT',
+        logoutBtn: t('logout') || (locale === 'es' ? 'TERMINAR SESIÓN' : 'SIGN OUT'),
         identityProvider: locale === 'es' ? 'PROVEEDOR DE IDENTIDAD' : 'IDENTITY PROVIDER',
         statusOnline: locale === 'es' ? 'EN LÍNEA' : 'ONLINE',
         emailLabel: locale === 'es' ? 'CORREO' : 'EMAIL'

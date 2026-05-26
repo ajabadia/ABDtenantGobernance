@@ -38,7 +38,11 @@
     "homeMenu": "Examinar",
     "adminMenu": "Administración",
     "historyMenu": "Historial & Analíticas",
-    "addOrInviteUser": "Agregar / Invitar Usuario"
+    "addOrInviteUser": "Agregar / Invitar Usuario",
+    "roleStudent": "Estudiante / Operario",
+    "roleAdmin": "Administrador (Tenant)",
+    "processing": "Procesando...",
+    "cancel": "Cancelar"
   },
   "home": {
     "status": "Estado del Sistema: Operativo",

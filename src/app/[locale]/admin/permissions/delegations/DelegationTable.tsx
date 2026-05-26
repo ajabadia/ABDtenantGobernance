@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
+import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { ConfirmDialog, useConfirmDialog } from '@abd/ecosystem-widgets';
 import { fetchDelegationsAction, revokeDelegationAction } from './actions';
 
 export interface DelegationUI {
@@ -32,15 +34,19 @@ export function DelegationTable({ tenantId }: { tenantId: string }) {
     loadDelegations();
   }, [tenantId]);
 
-  const handleRevoke = async (id: string) => {
-    if (confirm('¿Estás seguro de que deseas revocar esta delegación de forma anticipada?')) {
+  const revokeDialog = useConfirmDialog<string>({
+    onConfirm: async (id) => {
       const res = await revokeDelegationAction(id, tenantId);
       if (res.success) {
         await loadDelegations();
       } else {
-        alert(res.error || 'Error al revocar');
+        toast.error(res.error || 'Error al revocar');
       }
-    }
+    },
+  });
+
+  const handleRevoke = (id: string) => {
+    revokeDialog.trigger(id);
   };
 
   return (
@@ -111,6 +117,17 @@ export function DelegationTable({ tenantId }: { tenantId: string }) {
           </div>
         )}
       </CardContent>
+      <ConfirmDialog
+        open={revokeDialog.open}
+        title="REVOCAR DELEGACIÓN"
+        message="¿Estás seguro de que deseas revocar esta delegación de forma anticipada?"
+        confirmLabel="REVOCAR"
+        cancelLabel="CANCELAR"
+        variant="danger"
+        isLoading={revokeDialog.isLoading}
+        onConfirm={revokeDialog.confirm}
+        onCancel={revokeDialog.cancel}
+      />
     </Card>
   );
 }

@@ -93,42 +93,42 @@ export function SpaceForm({
     e.preventDefault();
     setLoading(true);
 
-    try {
-      const payload = {
-        ...formData,
-        tenantId,
-        parentSpaceId: formData.parentSpaceId === '' ? null : formData.parentSpaceId,
-        cascade: cascadeVisibility
-      };
+    const payload = {
+      ...formData,
+      tenantId,
+      parentSpaceId: formData.parentSpaceId === '' ? null : formData.parentSpaceId,
+      cascade: cascadeVisibility
+    };
 
-      const url = spaceToEdit ? `/api/admin/spaces/${spaceToEdit._id}` : `/api/admin/spaces`;
-      const method = spaceToEdit ? 'PATCH' : 'POST';
+    const url = spaceToEdit ? `/api/admin/spaces/${spaceToEdit._id}` : `/api/admin/spaces`;
+    const method = spaceToEdit ? 'PATCH' : 'POST';
 
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
+    const promise = fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(async res => {
       if (!res.ok) {
         const data = await res.json();
         throw new Error(data.error || 'Failed to save space');
       }
-
-      toast.success(
-        spaceToEdit 
-          ? t('space_updated', { defaultMessage: 'Espacio actualizado' }) 
-          : t('space_created', { defaultMessage: 'Espacio creado' })
-      );
       onSaved();
       onClose();
-    } catch (err: unknown) {
-      if (err instanceof Error) {
-        toast.error(err.message || 'Error saving space');
-      }
-    } finally {
-      setLoading(false);
-    }
+      return res;
+    });
+
+    toast.promise(promise, {
+      loading: spaceToEdit 
+        ? (t('saving', { defaultMessage: 'Actualizando espacio...' }))
+        : (t('saving', { defaultMessage: 'Creando espacio...' })),
+      success: spaceToEdit 
+        ? (t('space_updated', { defaultMessage: 'Espacio actualizado' }))
+        : (t('space_created', { defaultMessage: 'Espacio creado' })),
+      error: (err: Error) => err.message || 'Error saving space',
+    });
+
+    await promise.catch(() => {});
+    setLoading(false);
   };
 
   const parentId = formData.parentSpaceId || null;

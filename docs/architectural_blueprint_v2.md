@@ -123,13 +123,12 @@ El motor de White-Label resuelve la latencia estética y cumple los estándares 
 
 El usuario ha copiado parte de **ABDQuiz** a este directorio para usarlo como punto de partida. Tras la inspección del árbol de archivos, identificamos lo siguiente:
 
-### Módulos del Boilerplate que debemos LIMPIAR (Específicos de Quiz)
-*   `src/components/admin/*` (Manejadores de preguntas, intentos, alegaciones como `AttemptsManager`, `QuestionsManager`, `AllegationsClientTerminal`, etc.).
-*   `src/app/[locale]/exams`, `src/app/[locale]/quiz`, `src/app/[locale]/examinar` (Páginas específicas de ejecución y visualización de exámenes).
+### Módulos del Boilerplate (Histórico)
+El proyecto fue inicializado a partir de un scaffold de ABDQuiz. Los módulos específicos de Quiz (rutas de exámenes, componentes de preguntas, servicios de corpus) fueron eliminados durante las fases de sanitización inicial y mediante `scripts/clean-quiz.js`.
 
-### Módulos del Boilerplate a MANTENER y REFACTORIZAR (Infraestructura Core)
-*   **`src/app/layout.tsx` y `src/app/[locale]/layout.tsx`**: Ya implementan la detección de subdominios, la inyección SSR del estilo dinámico con `@abd/styles` y la inicialización de traducción `next-intl`.
-*   **`src/lib/session.ts` y `src/lib/auth-bridge.ts`**: Ya resuelven la extracción perimetral de la cookie `abd_session` e implementan los assertions de seguridad (`ensureIndustrialAccess`).
+### Infraestructura Core Actual
+*   **`src/app/layout.tsx` y `src/app/[locale]/layout.tsx`**: Implementan detección de subdominios, inyección SSR de estilo dinámico con `@abd/styles` e inicialización de `next-intl`.
+*   **`src/lib/session.ts`**: Extracción perimetral de la cookie `abd_session` y aserciones de seguridad (`ensureIndustrialAccess`). (Nota: `auth-bridge.ts` fue eliminado — su funcionalidad fue reemplazada por `@abd/satellite-sdk`).
 *   **Sistema de Carpetas de Localización (`messages/`, `src/i18n/`)**: Soporte nativo multi-idioma ya integrado.
 
 ### Componentes Clave a IMPORTAR/CREAR (Gobernanza de Tenants)
@@ -191,9 +190,9 @@ La inspección de la base de código en `D:\desarrollos\ABDAgRAG` revela que ya 
 
 Una vez aprobada esta contextualización por el usuario, el orden ideal de ejecución será:
 
-- [ ] **Fase 1: Sanitización**: Eliminar el código muerto de ABDQuiz del directorio de componentes y rutas.
-- [ ] **Fase 2: Capa de Persistencia**: Crear el repositorio `TenantRepository` heredando de `TenantAwareRepository` y configurar las colecciones en MongoDB.
-- [ ] **Fase 3: Motor Estético**: Instalar e integrar `@abd/styles` y comprobar la inyección SSR en `layout.tsx`.
-- [ ] **Fase 4: Consola de Branding**: Implementar el formulario interactivo `TenantBrandingForm.tsx` con su Live Preview y soporte para Vercel Blob Storage.
-- [ ] **Fase 5: Panel de Control de Tenants**: Diseñar el CRUD de administración global (crear organizaciones, definir estrategias de aislamiento y activar/desactivar tenants).
-- [ ] **Fase 6: Pruebas de Integración**: Validar el hand-shake y el Active Verification Guard de extremo a extremo.
+- [x] **Fase 1: Sanitización**: Eliminado el código muerto de ABDQuiz.
+- [x] **Fase 2: Capa de Persistencia**: Creado `TenantRepository` y configuradas las colecciones.
+- [x] **Fase 3: Motor Estético**: Integrado `@abd/styles` con inyección SSR.
+- [x] **Fase 4: Consola de Branding**: Implementado `TenantBrandingForm.tsx` con Live Preview y Cloudinary.
+- [x] **Fase 5: Panel de Control de Tenants**: CRUD de administración global completado.
+- [x] **Fase 6: Pruebas de Integración**: Validadas.

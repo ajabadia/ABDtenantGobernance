@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
+import { useConfirmDialog } from '@abd/ecosystem-widgets';
 import { SpaceData } from '@/components/admin/spaces/SpaceForm';
 
 export function useSpacesManager(explicitTenantId: string | null) {
@@ -25,6 +26,23 @@ export function useSpacesManager(explicitTenantId: string | null) {
   
   const [modalOpen, setModalOpen] = useState(false);
   const [spaceToEdit, setSpaceToEdit] = useState<SpaceData | null>(null);
+
+  // Confirm delete dialog (managed by useConfirmDialog)
+  const deleteDialog = useConfirmDialog<string>({
+    onConfirm: async (id) => {
+      try {
+        const res = await fetch(`/api/admin/spaces/${id}`, { method: 'DELETE' });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error || 'Error deleting space');
+        }
+        toast.success('Espacio eliminado');
+        fetchSpaces();
+      } catch (err: unknown) {
+        if (err instanceof Error) toast.error(err.message);
+      }
+    },
+  });
 
   const fetchSpaces = async () => {
     setLoading(true);
@@ -72,21 +90,13 @@ export function useSpacesManager(explicitTenantId: string | null) {
     }
   }, [resolvedTenantId]);
 
-  const handleDelete = async (spaceId: string) => {
-    if (!window.confirm(t('delete_confirm'))) return;
-
-    try {
-      const res = await fetch(`/api/admin/spaces/${spaceId}`, { method: 'DELETE' });
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || 'Error deleting space');
-      }
-      toast.success('Espacio eliminado');
-      fetchSpaces();
-    } catch (err: unknown) {
-      if (err instanceof Error) toast.error(err.message);
-    }
+  const handleDelete = (spaceId: string) => {
+    deleteDialog.trigger(spaceId);
   };
+
+  const handleConfirmDelete = deleteDialog.confirm;
+
+  const handleCancelDelete = deleteDialog.cancel;
 
   return {
     spaces,
@@ -101,6 +111,10 @@ export function useSpacesManager(explicitTenantId: string | null) {
     setSpaceToEdit,
     fetchSpaces,
     handleDelete,
+    deleteTargetId: deleteDialog.data,
+    handleConfirmDelete,
+    handleCancelDelete,
+    isDeleting: deleteDialog.isLoading,
   };
 }
 export type { SpaceData };

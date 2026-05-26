@@ -8,6 +8,7 @@ import { CreateEditSpaceModal } from '@/components/admin/spaces/CreateEditSpaceM
 import { ManageSpaceCollaboratorsModal } from '@/components/admin/spaces/ManageSpaceCollaboratorsModal';
 import { useSearchParams, useRouter, usePathname, useParams } from 'next/navigation';
 import { useSpacesManager, SpaceData } from '@/hooks/useSpacesManager';
+import { ConfirmDialog } from '@abd/ecosystem-widgets';
 import Link from 'next/link';
 import { AdminPageHeader } from '@abd/styles';
 
@@ -34,6 +35,10 @@ export default function SpacesPage() {
     setSpaceToEdit,
     fetchSpaces,
     handleDelete,
+    deleteTargetId,
+    handleConfirmDelete,
+    handleCancelDelete,
+    isDeleting,
   } = useSpacesManager(explicitTenantId);
 
   const [collaboratorsModalOpen, setCollaboratorsModalOpen] = useState(false);
@@ -126,6 +131,18 @@ export default function SpacesPage() {
           tenantId={tenantId}
           space={spaceToEdit}
           onSuccess={fetchSpaces}
+        />
+
+        <ConfirmDialog
+          open={deleteTargetId !== null}
+          title="ELIMINAR ESPACIO"
+          message={t('delete_confirm')}
+          confirmLabel="ELIMINAR"
+          cancelLabel="CANCELAR"
+          variant="danger"
+          isLoading={isDeleting}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
         />
       </div>
     </main>

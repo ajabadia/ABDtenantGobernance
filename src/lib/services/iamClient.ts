@@ -16,6 +16,7 @@ export interface InviteUserPayload {
   tenantId: string;
   role: string;
   allowedApps: string[];
+  groupIds?: string[];
 }
 
 export interface UpdateUserPayload {

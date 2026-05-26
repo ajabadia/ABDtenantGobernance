@@ -38,7 +38,11 @@
     "homeMenu": "Exams",
     "adminMenu": "Administration",
     "historyMenu": "History & Analytics",
-    "addOrInviteUser": "Add / Invite User"
+    "addOrInviteUser": "Add / Invite User",
+    "roleStudent": "Student / Operator",
+    "roleAdmin": "Tenant Administrator",
+    "processing": "Processing...",
+    "cancel": "Cancel"
   },
   "home": {
     "status": "System Status: Operational",

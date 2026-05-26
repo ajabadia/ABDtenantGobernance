@@ -24,15 +24,16 @@ Este documento detalla la planificación estratégica, las fases del ecosistema 
 - **Fase 9: Jerarquía de Espacios & Rutas Materializadas**
   - Integrar el servicio backend `SpaceService` (con actualización recursiva en cascada) con la interfaz de usuario.
   - Modelo de tipología aséptica mediante `customSpaceLabels` derivado de la profundidad de cada nodo raíz.
-
-### 🟨 En Curso (Active Development)
 - **Fase 9.5: Refinamiento de Permisos Espaciales**
-  - Preparar la gestión de visibilidad (`INTERNAL`, `PRIVATE`, `PUBLIC`) por espacio materializado.
-
-### 🟦 Próximamente (Future Roadmap)
+  - Gestión de visibilidad (`INTERNAL`, `PRIVATE`, `PUBLIC`) por espacio materializado.
+  - Propagación recursiva de visibilidad perimetral en `materializedPath`.
+  - Formulario de edición con control "Heredar recursivamente".
 - **Fase 10: Auditoría en Cadena en MongoDB Atlas**
-  - Registro de auditoría centralizado para capturar cada cambio de marca y espacio.
-  - Visualización del historial de configuraciones por tenant.
+  - Conector secundario `connectLogsDB` para persistencia de logs.
+  - Mapeo estandarizado de telemetría a colecciones centralizadas.
+  - Ingesta asíncrona con enmascaramiento de campos sensibles.
+  - Panel visual `AuditHistoryPanel` con historial de configuraciones por tenant.
+  - Página de auditoría dedicada (`/admin/audit`) con selector de tenants para SuperAdmin.
 
 ---
 

@@ -34,8 +34,12 @@ export async function connectLogsDB(): Promise<Connection> {
     };
 
     // Usar mongoose.createConnection para evitar colisiones con la conexión por defecto
-    cached.promise = mongoose.createConnection(MONGODB_LOGS_URI, opts).asPromise();
-    console.log(`✅ Secondary Mongoose connected successfully to ${opts.dbName}`);
+    cached.promise = mongoose.createConnection(MONGODB_LOGS_URI, opts).asPromise().then((conn) => {
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[DEV] Secondary Mongoose connected to ${opts.dbName}`);
+      }
+      return conn;
+    });
   }
 
   try {

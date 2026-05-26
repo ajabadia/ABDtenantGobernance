@@ -83,7 +83,9 @@ export function getTenantConnection(dbPrefix: string, isolationStrategy: string)
     if (oldestKey) {
       const evicted = connectionPool[oldestKey];
       delete connectionPool[oldestKey];
-      console.log(`[MultiTenant] Evicting LRU connection from cache: ${oldestKey}`);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log(`[MultiTenant] Evicting LRU connection from cache: ${oldestKey}`);
+      }
       evicted.connection.close().catch(err => {
         console.error(`[MultiTenant] Error closing evicted connection ${oldestKey}:`, err);
       });
@@ -101,7 +103,9 @@ export function getTenantConnection(dbPrefix: string, isolationStrategy: string)
     targetUri = resolveTenantUri(baseUri, dbName);
   }
   
-  console.log(`[MultiTenant] Creating connection for ${cacheKey} (Strategy: ${isolationStrategy})`);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log(`[MultiTenant] Creating connection for ${cacheKey} (Strategy: ${isolationStrategy})`);
+  }
   
   const opts = {
     bufferCommands: false,
@@ -113,7 +117,9 @@ export function getTenantConnection(dbPrefix: string, isolationStrategy: string)
   const conn = mongoose.createConnection(targetUri, opts);
   
   conn.on('connected', () => {
-    console.log(`[MultiTenant] Connection established for ${cacheKey}`);
+    if (process.env.NODE_ENV !== 'production') {
+      console.log(`[MultiTenant] Connection established for ${cacheKey}`);
+    }
   });
   conn.on('error', (err) => {
     console.error(`[MultiTenant] Connection error for ${cacheKey}:`, err);
