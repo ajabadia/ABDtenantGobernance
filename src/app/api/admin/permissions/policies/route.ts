@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionService } from '@/services/tenant/permission-service';
 import { PermissionPolicyRepository } from '@/lib/repositories/PermissionPolicyRepository';
-import connectDB from '@/lib/database/mongodb';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 
 const policyRepository = new PermissionPolicyRepository();
 

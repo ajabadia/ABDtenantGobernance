@@ -1,6 +1,6 @@
 import { connectLogsDB } from '@/lib/database/mongodb-logs';
 import { getAuditLogModel, IAuditLog } from '@/models/AuditLog';
-import { LogsClient } from '@/lib/logs-client';
+import { logger } from '@ajabadia/satellite-sdk';
 
 export class AuditService {
   /**
@@ -9,7 +9,7 @@ export class AuditService {
    */
   static async logEvent(params: IAuditLog): Promise<void> {
     try {
-      await LogsClient.log({
+      await logger.audit({
         tenantId: params.tenantId,
         action: params.action,
         entityType: params.entityType,
@@ -22,7 +22,7 @@ export class AuditService {
         userAgent: params.userAgent,
       });
       if (process.env.NODE_ENV !== 'production') {
-        console.log(`[AUDIT_SAAS_LOG] Sent ${params.action} event to central service successfully.`);
+        
       }
     } catch (err) {
       // 🛡️ Enfoque Fail-Safe: Evitar bloquear transacciones si el microservicio de logs está inaccesible

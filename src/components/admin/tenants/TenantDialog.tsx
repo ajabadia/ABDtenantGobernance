@@ -9,7 +9,7 @@ import type { Tenant } from "@/lib/schemas/tenant"
 import type { SaveTenantAction } from "./types"
 import { IndustrialModalHeader } from "@/components/ui/industrial/ModalHeader"
 import { TenantForm } from "./TenantForm"
-import { ANIM_DURATION } from "@abd/ecosystem-widgets"
+import { ANIM_DURATION } from "@ajabadia/ecosystem-widgets"
 
 interface TenantDialogProps {
   isOpen: boolean;

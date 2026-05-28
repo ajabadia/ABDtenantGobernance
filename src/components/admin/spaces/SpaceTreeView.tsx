@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users, Globe, Building, Lock } from 'lucide-react';
+import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users, Globe, Building, Lock, Link2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { SpaceData } from './CreateEditSpaceModal';
 
@@ -12,6 +12,7 @@ interface SpaceTreeViewProps {
   onDelete: (spaceId: string) => void;
   onAddChild: (parentId: string) => void;
   onManageCollaborators: (space: SpaceData) => void;
+  onManageAssets: (space: SpaceData) => void;
   customSpaceLabels: string[];
 }
 
@@ -20,9 +21,13 @@ interface TreeNode extends SpaceData {
   depth: number;
 }
 
-export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCollaborators, customSpaceLabels }: SpaceTreeViewProps) {
+export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCollaborators, onManageAssets, customSpaceLabels }: SpaceTreeViewProps) {
   const t = useTranslations('dashboard.spaces');
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
+  
+  // (Remaining code keeps same structure...)
+  // We locate line 138-152 of original code and inject the Link2 button.
+  // Let's replace the whole props destructuring and node button render block to be safe.
 
   // Construir el árbol recursivamente
   const tree = useMemo(() => {
@@ -136,6 +141,9 @@ export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCo
           </div>
 
           <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => onManageAssets(node)} title={t('manage_assets', { defaultMessage: 'Gestionar Activos' })}>
+              <Link2 size={14} />
+            </Button>
             <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => onManageCollaborators(node)} title={t('manage_collaborators', { defaultMessage: 'Gobernanza' })}>
               <Users size={14} />
             </Button>

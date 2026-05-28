@@ -121,9 +121,9 @@ La suite soporta dos niveles de aislamiento de datos en MongoDB según el nivel 
 
 ---
 
-## 🎨 6. Tematización Dinámica de Marca Blanca (`@abd/styles`)
+## 🎨 6. Tematización Dinámica de Marca Blanca (`@ajabadia/styles`)
 
-El motor `@abd/styles` implementa un flujo libre de latencia para aplicar identidades visuales dynamic-on-demand:
+El motor `@ajabadia/styles` implementa un flujo libre de latencia para aplicar identidades visuales dynamic-on-demand:
 
 *   **Conversión Hex-to-HSL plano**: Convierte los colores seleccionados por el administrador en hexadecimal (`#3b82f6`) a cadenas separadas por espacios (`217 91.2% 59.8%`), permitiendo que Tailwind CSS v4 aplique opacidades dinámicas (`bg-primary/20`) sin parpadeo.
 *   **Algoritmo YIQ Contrast**: Calcula automáticamente la luminancia del color primario. Si el color seleccionado es muy claro, tiñe el texto del botón de negro (`#000000`); si es oscuro, lo tiñe de blanco (`#ffffff`), asegurando accesibilidad WCAG nativa.
@@ -138,7 +138,7 @@ El motor `@abd/styles` implementa un flujo libre de latencia para aplicar identi
 Para permitir a los usuarios con múltiples membresías organizacionales (especialmente a los administradores globales `SUPER_ADMIN`) conmutar entre diferentes inquilinos de manera dinámica y sin necesidad de cerrar sesión, se dispone de un mecanismo de conmutación en caliente coordinado:
 
 ### Componente Transversal `TenantSelector`
-*   **Definición**: Componente UI premium centralizado en la librería compartida `@abd/styles` e integrado globalmente en la barra de controles flotante superior derecha (`fixed top-6 right-6`) de los layouts principales (`ABDtenantGobernance`, `ABDLogs`).
+*   **Definición**: Componente UI premium centralizado en la librería compartida `@ajabadia/styles` e integrado globalmente en la barra de controles flotante superior derecha (`fixed top-6 right-6`) de los layouts principales (`ABDtenantGobernance`, `ABDLogs`).
 *   **Modo Lectura (Estéril)**: Para usuarios con rol `ADMIN` estándar o inferiores, el componente se renderiza como un badge informativo de solo lectura que expone de forma inerte su inquilino activo asignado, previniendo cualquier alteración visual.
 *   **Modo Interactivo (Buscador)**: Para usuarios con rol `SUPER_ADMIN`, renderiza un disparador que abre una interfaz flotante con buscador interactivo y carga dinámicamente los tenants activos para permitir la conmutación al vuelo.
 

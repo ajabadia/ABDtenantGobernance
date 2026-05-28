@@ -13,7 +13,7 @@ import { AddExistingUserModal } from './components/AddExistingUserModal';
 import { UserInviteModal } from './components/UserInviteModal';
 import { ManageUserGroupsModal } from './components/ManageUserGroupsModal';
 import { toast } from 'sonner';
-import { AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@ajabadia/styles';
 import { IamUser } from '@/lib/services/iamClient';
 
 interface TenantMembership {
@@ -52,17 +52,7 @@ export default function UsersPage() {
       if (explicit) {
         setTenantId(explicit);
       } else {
-        try {
-          const { getIndustrialSession } = await import('@/lib/session');
-          const session = await getIndustrialSession();
-          if (session?.user?.tenantId) {
-            setTenantId(session.user.tenantId);
-          } else {
-            setTenantId('academia-alfa');
-          }
-        } catch {
-          setTenantId('academia-alfa');
-        }
+        setTenantId('academia-alfa');
       }
     };
     resolveTenant();

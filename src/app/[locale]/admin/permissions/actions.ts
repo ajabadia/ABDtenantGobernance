@@ -1,11 +1,11 @@
 'use server'
 
-import connectDB from '@/lib/database/mongodb';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
 import { PermissionPolicyRepository } from '@/lib/repositories/PermissionPolicyRepository';
 import { PermissionService } from '@/services/tenant/permission-service';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 
 const groupRepository = new PermissionGroupRepository();

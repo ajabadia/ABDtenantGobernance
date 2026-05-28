@@ -3,7 +3,7 @@
 import * as React from "react"
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'
-import { ConfirmDialog, useConfirmDialog } from '@abd/ecosystem-widgets'
+import { ConfirmDialog, useConfirmDialog } from '@ajabadia/ecosystem-widgets'
 import type { Tenant } from "@/lib/schemas/tenant"
 import { TenantDialog } from "./TenantDialog"
 import { TenantCard } from "./TenantCard"

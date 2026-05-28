@@ -1,4 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.hoisted(() => {
+  process.env.MONGODB_URI = 'mongodb://test:27017/test';
+});
+
 import { GuardianEngine } from './guardian-engine';
 
 // 1. Mock repositories and services
@@ -63,8 +68,12 @@ vi.mock('@/services/tenant/audit-service', () => {
 });
 
 vi.mock('@/lib/database/tenant-model', () => {
+  const mongoose = require('mongoose');
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
+    getTenantModel: (modelName: string, schema: any) =>
+      mongoose.models[modelName] || mongoose.model(modelName, schema),
+    tenantStorage: { getStore: vi.fn(), run: vi.fn() },
   };
 });
 

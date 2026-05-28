@@ -1,9 +1,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
-import { uploadBrandingAsset, deleteFromCloudinary } from '@/lib/cloudinary';
+import { uploadBrandingAsset, deleteCloudinaryAsset } from '@ajabadia/satellite-sdk';
 
 export interface UpdateBrandingResponse {
   success: boolean;
@@ -30,6 +30,22 @@ export async function updateTenantBrandingAction(
     const roundedStr = formData.get('rounded') as string;
     const rounded = roundedStr === 'true';
     const radius = formData.get('radius') as string || '0.75rem';
+
+    // Extraer literales de roles contextuales
+    const roleLiterals = {
+      CREATOR: {
+        es: formData.get('roleLiteral_CREATOR_es') as string || 'Creador',
+        en: formData.get('roleLiteral_CREATOR_en') as string || 'Creator',
+      },
+      RECIPIENT: {
+        es: formData.get('roleLiteral_RECIPIENT_es') as string || 'Destinatario',
+        en: formData.get('roleLiteral_RECIPIENT_en') as string || 'Recipient',
+      },
+      AUDITOR: {
+        es: formData.get('roleLiteral_AUDITOR_es') as string || 'Auditor',
+        en: formData.get('roleLiteral_AUDITOR_en') as string || 'Auditor',
+      },
+    };
     
     const logoFile = formData.get('logo') as File | null;
     const faviconFile = formData.get('favicon') as File | null;
@@ -43,7 +59,7 @@ export async function updateTenantBrandingAction(
     if (logoFile && logoFile.size > 0 && logoFile.name !== 'undefined') {
       // Eliminar logotipo anterior en Cloudinary para mantener el CDN libre de basura
       if (logo?.publicId) {
-        await deleteFromCloudinary(logo.publicId);
+        await deleteCloudinaryAsset(logo.publicId);
       }
       const buffer = Buffer.from(await logoFile.arrayBuffer());
       const upload = await uploadBrandingAsset(buffer, logoFile.name, tenantId, 'logo');
@@ -57,7 +73,7 @@ export async function updateTenantBrandingAction(
     if (faviconFile && faviconFile.size > 0 && faviconFile.name !== 'undefined') {
       // Eliminar favicon anterior en Cloudinary
       if (favicon?.publicId) {
-        await deleteFromCloudinary(favicon.publicId);
+        await deleteCloudinaryAsset(favicon.publicId);
       }
       const buffer = Buffer.from(await faviconFile.arrayBuffer());
       const upload = await uploadBrandingAsset(buffer, faviconFile.name, tenantId, 'favicon');
@@ -86,7 +102,10 @@ export async function updateTenantBrandingAction(
     };
 
     // 7. Persistir atómicamente en base de datos
-    await TenantService.updateConfig(tenantId, brandingUpdate, user.id);
+    await TenantService.updateConfig(tenantId, {
+      ...brandingUpdate,
+      roleCustomization: { roleLiterals },
+    }, user.id);
 
     // 8. Revalidar el cache global de layouts en Next.js (Zero-FOUC en caliente)
     revalidatePath('/', 'layout');

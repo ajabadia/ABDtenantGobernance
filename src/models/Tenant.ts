@@ -21,6 +21,16 @@ export interface ITenantBranding {
   radius?: string;
 }
 
+export interface ITenantRoleLiterals {
+  CREATOR: { es: string; en: string };
+  RECIPIENT: { es: string; en: string };
+  AUDITOR: { es: string; en: string };
+}
+
+export interface ITenantRoleCustomization {
+  roleLiterals: ITenantRoleLiterals;
+}
+
 export interface ITenantBilling {
   fiscalName?: string;
   taxId?: string;
@@ -40,6 +50,7 @@ export interface ITenant extends Document {
   isolationStrategy: 'COLLECTION_PREFIX' | 'DATABASE_PER_TENANT';
   active: boolean;
   branding?: ITenantBranding;
+  roleCustomization?: ITenantRoleCustomization;
   billing?: ITenantBilling;
   customSpaceLabels?: string[];
   allowedApps?: string[];
@@ -77,6 +88,22 @@ const TenantMongooseSchema = new Schema<ITenant>({
     autoDarkMode: { type: Boolean, default: true },
     rounded: { type: Boolean, default: true },
     radius: { type: String, default: '0.75rem' }
+  },
+  roleCustomization: {
+    roleLiterals: {
+      CREATOR: {
+        es: { type: String, default: 'Creador' },
+        en: { type: String, default: 'Creator' }
+      },
+      RECIPIENT: {
+        es: { type: String, default: 'Destinatario' },
+        en: { type: String, default: 'Recipient' }
+      },
+      AUDITOR: {
+        es: { type: String, default: 'Auditor' },
+        en: { type: String, default: 'Auditor' }
+      }
+    }
   },
   billing: {
     fiscalName: { type: String },

@@ -5,7 +5,7 @@ import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ConfirmDialog, useConfirmDialog } from '@abd/ecosystem-widgets';
+import { ConfirmDialog, useConfirmDialog } from '@ajabadia/ecosystem-widgets';
 import { fetchDelegationsAction, revokeDelegationAction } from './actions';
 
 export interface DelegationUI {

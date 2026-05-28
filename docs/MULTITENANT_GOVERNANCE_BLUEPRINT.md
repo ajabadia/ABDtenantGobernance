@@ -95,7 +95,7 @@ export abstract class TenantAwareRepository<T extends Document> extends BaseRepo
 ---
 
 ### 🎨 C. Motor de Estilos Dinámicos (White Label Engine)
-Ubicación original: `@abd/styles` (`dist/utils/color-utils.js` y `dist/engine/css-generator.js`)
+Ubicación original: `@ajabadia/styles` (`dist/utils/color-utils.js` y `dist/engine/css-generator.js`)
 
 #### I. Utilidades Matemáticas de Color (`color-utils.js`):
 Calcula contrastes YIQ accesibles y manipulación bitwise en hexadecimal para el modo oscuro:

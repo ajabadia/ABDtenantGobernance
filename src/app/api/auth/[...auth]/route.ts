@@ -1,4 +1,4 @@
-import { createAuthRouteHandler } from '@abd/satellite-sdk';
+import { createAuthRouteHandler } from '@ajabadia/satellite-sdk';
 
 const handler = createAuthRouteHandler({
   appId: process.env.NEXT_PUBLIC_APP_ID || 'gobernanza',

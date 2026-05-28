@@ -1,10 +1,10 @@
 'use server'
 
 import mongoose from 'mongoose';
-import connectDB from '@/lib/database/mongodb';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { delegatedRoleRepository } from '@/lib/repositories/DelegatedRoleRepository';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 
 export async function fetchDelegationsAction(tenantId: string) {
   return withTenantContext(async () => {

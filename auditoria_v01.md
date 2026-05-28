@@ -73,7 +73,7 @@ Cada operación CRUD en el sistema dispara logs de auditoría:
 - `IamClient` para CRUD de usuarios vía API interna del IdP
 - `LogsClient` para envío de eventos al servicio central de logs
 - `ResendEmailService` para invitaciones y reseteo de contraseñas
-- Sidebar y CommandPalette reutilizando componentes de `@abd/styles`
+- Sidebar y CommandPalette reutilizando componentes de `@ajabadia/styles`
 
 ### 8. 📚 Documentación Excepcional
 **`LESSONS_LEARNED.md`** con 15 lecciones industriales detalladas cubriendo:
@@ -218,10 +218,10 @@ t as unknown as TenantMembership
 
 ## 🟡 Problemas de Calidad de Código (10)
 
-### QUAL-1: `AuditHistoryPanel` importa `LiveLogViewer` y `featureFlags` desde `@abd/styles`
+### QUAL-1: `AuditHistoryPanel` importa `LiveLogViewer` y `featureFlags` desde `@ajabadia/styles`
 **Ubicación:** `src/components/admin/audit/AuditHistoryPanel.tsx:6`  
-**Descripción:** El componente de auditoría importa hooks de negocio (`LiveLogViewer`, `featureFlags`) desde el paquete de design system `@abd/styles`. Esto viola la arquitectura definida, donde `@abd/styles` debe ser un paquete presentacional puro.  
-**Impacto:** Acoplamiento incorrecto; estos imports deben venir de `@abd/ecosystem-widgets` o ser locales.  
+**Descripción:** El componente de auditoría importa hooks de negocio (`LiveLogViewer`, `featureFlags`) desde el paquete de design system `@ajabadia/styles`. Esto viola la arquitectura definida, donde `@ajabadia/styles` debe ser un paquete presentacional puro.  
+**Impacto:** Acoplamiento incorrecto; estos imports deben venir de `@ajabadia/ecosystem-widgets` o ser locales.  
 **Nota:** Este es el mismo problema documentado en las auditorías de `ABDStyles` y `ABDEcosystemWidgets`.
 
 ### QUAL-2: `UserProfileWidget.tsx` — dead code
@@ -250,9 +250,9 @@ translations={{
 **Ubicación:** `src/lib/database/mongodb-logs.ts:33`  
 **Descripción:** `mongoose.createConnection()` ya retorna una promesa (se resuelve a Connection). Envolverlo en `Promise.resolve()` es redundante.
 
-### QUAL-6: `Auth-bridge.ts` duplica tipos de `@abd/satellite-sdk`
+### QUAL-6: `Auth-bridge.ts` duplica tipos de `@ajabadia/satellite-sdk`
 **Ubicación:** `src/lib/auth-bridge.ts`  
-**Descripción:** Define interfaces `FederatedSession` que ya existen en `@abd/satellite-sdk` y en `session-types.ts`. El archivo `session.ts` es un wrapper mínimo que re-exporta del SDK, pero `auth-bridge.ts` tiene su propia implementación con tipos duplicados. ¿Se usa `auth-bridge.ts` en algún lado?
+**Descripción:** Define interfaces `FederatedSession` que ya existen en `@ajabadia/satellite-sdk` y en `session-types.ts`. El archivo `session.ts` es un wrapper mínimo que re-exporta del SDK, pero `auth-bridge.ts` tiene su propia implementación con tipos duplicados. ¿Se usa `auth-bridge.ts` en algún lado?
 
 ### QUAL-7: `cloudinary.ts` — carpeta hardcodeada
 **Ubicación:** `src/lib/cloudinary.ts:22`  
@@ -268,7 +268,7 @@ translations={{
 
 ### QUAL-10: `generateTenantCss` duplicado localmente
 **Ubicación:** `src/lib/branding/css-generator.ts` y `src/lib/branding/color-utils.ts`  
-**Descripción:** Estos archivos son copias casi idénticas de los que existen en `@abd/styles`. El formulario de branding de hecho importa `generateTenantCss` desde `@abd/styles`, pero los archivos locales persisten. Si no se usan, deberían eliminarse; si se usan, deberían importarse del paquete.
+**Descripción:** Estos archivos son copias casi idénticas de los que existen en `@ajabadia/styles`. El formulario de branding de hecho importa `generateTenantCss` desde `@ajabadia/styles`, pero los archivos locales persisten. Si no se usan, deberían eliminarse; si se usan, deberían importarse del paquete.
 
 ---
 
@@ -303,7 +303,7 @@ Los inputs con atributo `required` no tienen `aria-required="true"` para lectore
 Crear una capa de mapeo que garantice que los schemas Zod y los modelos Mongoose estén siempre sincronizados. Actualmente hay divergencias (colaboradores de Space) que causan bugs silenciosos.
 
 ### ARCH-2: Extraer `AuditHistoryPanel` a `ABDEcosystemWidgets`
-El componente que importa `LiveLogViewer` y `featureFlags` desde `@abd/styles` debería moverse a `ABDEcosystemWidgets` como parte de la migración planificada. El `AuditHistoryPanel` local pasaría a ser un wrapper del widget.
+El componente que importa `LiveLogViewer` y `featureFlags` desde `@ajabadia/styles` debería moverse a `ABDEcosystemWidgets` como parte de la migración planificada. El `AuditHistoryPanel` local pasaría a ser un wrapper del widget.
 
 ### ARCH-3: Middleware de validación Zod para API routes
 Crear un wrapper tipo `validateBody(Schema)` que valide el cuerpo de las peticiones antes de que lleguen al handler, devolviendo errores 400 descriptivos:
@@ -336,8 +336,8 @@ const tenantRepository = new TenantRepository();
 ```
 Un contenedor DI ligero (o factory pattern) facilitaría testing y permitiría mocks.
 
-### ARCH-6: Eliminar código duplicado con `@abd/styles`
-Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@abd/styles`. Si la funcionalidad es idéntica, eliminar los locales y usar el paquete. Si hay diferencias, documentarlas.
+### ARCH-6: Eliminar código duplicado con `@ajabadia/styles`
+Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@ajabadia/styles`. Si la funcionalidad es idéntica, eliminar los locales y usar el paquete. Si hay diferencias, documentarlas.
 
 ---
 
@@ -350,7 +350,7 @@ Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@abd/style
 | CRIT-3 | Sin validación Zod en APIs | 🔴 Crítica | Alto | Seguridad + DX | **✅ REPARADO** |
 | CRIT-4 | console.log con datos sensibles | 🔴 Crítica | Bajo | Cumplimiento | **✅ REPARADO** |
 | CRIT-5 | Type casting inseguro generalizado | 🟡 Alta | Alto | Type Safety | **✅ REPARADO** |
-| QUAL-1 | AuditHistoryPanel importa de @abd/styles | 🟡 Alta | Medio | Arquitectura | **✅ REPARADO** |
+| QUAL-1 | AuditHistoryPanel importa de @ajabadia/styles | 🟡 Alta | Medio | Arquitectura | **✅ REPARADO** |
 | QUAL-2 | Dead code (UserProfileWidget) | 🟢 Baja | Bajo | Mantenibilidad | **✅ REPARADO** |
 | QUAL-3 | Strings hardcodeados en TenantSelector | 🟡 Alta | Medio | i18n | **✅ REPARADO** |
 | QUAL-4 | DB name hardcodeado en mongodb-logs | 🟡 Alta | Bajo | Configuración | **✅ REPARADO** |
@@ -462,9 +462,9 @@ Los archivos `css-generator.ts` y `color-utils.ts` son duplicados de `@abd/style
 | Resend | — | Email transaccional |
 | Lucide React | — | Iconografía |
 | Sonner | — | Toast notifications |
-| @abd/styles | — | Design system, componentes, CSS generator |
-| @abd/satellite-sdk | — | Auth federada, session, branding |
-| @abd/ecosystem-widgets | — | Widgets compartidos (SystemSettings, TenantSelector) |
+| @ajabadia/styles | — | Design system, componentes, CSS generator |
+| @ajabadia/satellite-sdk | — | Auth federada, session, branding |
+| @ajabadia/ecosystem-widgets | — | Widgets compartidos (SystemSettings, TenantSelector) |
 
 ---
 

@@ -33,7 +33,7 @@
 ### ✅ CRIT-3 — Sin validación Zod en APIs: CORREGIDO Y VERIFICADO
 ### ✅ CRIT-4 — console.log con datos sensibles: CORREGIDO Y VERIFICADO
 ### ✅ CRIT-5 — Type casting inseguro (as unknown as): CORREGIDO Y VERIFICADO
-### ✅ QUAL-1 — AuditHistoryPanel importa de @abd/styles: CORREGIDO
+### ✅ QUAL-1 — AuditHistoryPanel importa de @ajabadia/styles: CORREGIDO
 ### ✅ QUAL-2 — UserProfileWidget dead code: CORREGIDO Y VERIFICADO
 ### ✅ QUAL-3 — Strings hardcodeados en TenantSelector: CORREGIDO
 ### ✅ QUAL-4 — DB name hardcodeado en mongodb-logs: CORREGIDO
@@ -75,7 +75,7 @@ Directorios `src/messages/en/` y `src/messages/es/` contenían 4 archivos JSON c
 | Dependencia | Razón |
 |---|---|
 | `papaparse`/`@types/papaparse` | CSV parsing — 0 imports en producción |
-| `jose` | JWT — funcionalidad vía `@abd/satellite-sdk` (dependencia transitiva) |
+| `jose` | JWT — funcionalidad vía `@ajabadia/satellite-sdk` (dependencia transitiva) |
 | `shadcn` | CLI tool — 0 imports, no usado en el proyecto |
 
 ### ✅ DEP-2 — Dependencias redundantes eliminadas (v04)
@@ -116,9 +116,9 @@ El fallback por defecto sigue siendo el nombre canónico del servicio de logs. Y
 | `mongoose` | ^9.6.2 | = |
 | `cloudinary` | ^2.5.1 | = |
 | `zod` | ^4.4.3 | = |
-| `@abd/styles` | file:../ABDStyles | = |
-| `@abd/satellite-sdk` | file:../ABDSatelliteSDK | = |
-| `@abd/ecosystem-widgets` | file:../ABDEcosystemWidgets | = |
+| `@ajabadia/styles` | file:../ABDStyles | = |
+| `@ajabadia/satellite-sdk` | file:../ABDSatelliteSDK | = |
+| `@ajabadia/ecosystem-widgets` | file:../ABDEcosystemWidgets | = |
 | `vitest` | ^4.1.7 | = |
 | (eliminadas) | `papaparse`, `jose`, `shadcn` | 🗑️ Eliminadas |
 
@@ -128,7 +128,7 @@ El fallback por defecto sigue siendo el nombre canónico del servicio de logs. Y
 
 ### 1. LogsClient ahora usa Logger centralizado del SDK
 ```typescript
-import { logger, configureLogger } from '@abd/satellite-sdk';
+import { logger, configureLogger } from '@ajabadia/satellite-sdk';
 ```
 Esto unifica la estrategia de logging con el resto del ecosistema.
 

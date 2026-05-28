@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Home, Palette, Folder, Terminal, ShieldCheck } from 'lucide-react';
+import { Home, Palette, Folder, Terminal, ShieldCheck, GraduationCap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/routing';
 
@@ -65,6 +65,18 @@ export function SidebarLinks({
         >
           <ShieldCheck className="w-4 h-4 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
           {locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing'}
+        </Link>
+      )}
+
+      {/* Link B: Administration (Only for admins) */}
+      {isLoggedIn && isAdmin && (
+        <Link
+          href="/admin"
+          onClick={toggleSidebar}
+          className="flex items-center gap-4 px-4 py-3 bg-muted/10 border border-border hover:border-primary/20 hover:bg-primary/5 text-muted-foreground hover:text-primary transition-all duration-200 uppercase font-mono text-[10px] font-bold tracking-wider rounded-none"
+        >
+          <GraduationCap className="w-4 h-4 text-muted-foreground group-hover:text-primary" aria-hidden="true" />
+          {locale === 'es' ? 'Roles Contextuales' : 'Contextual Roles'}
         </Link>
       )}
 

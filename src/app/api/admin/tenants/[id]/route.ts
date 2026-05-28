@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantRepository } from '@/lib/repositories/TenantRepository';
-import connectDB from '@/lib/database/mongodb';
+import { connectDB } from '@ajabadia/satellite-sdk';
 
 const tenantRepository = new TenantRepository();
 

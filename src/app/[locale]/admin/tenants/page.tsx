@@ -1,13 +1,13 @@
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantManagementContainer } from '@/components/admin/tenants/TenantManagementContainer';
-import connectDB from '@/lib/database/mongodb';
+import { connectDB } from '@ajabadia/satellite-sdk';
 import Link from 'next/link';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import type { TenantManagementTranslations } from '@/components/admin/tenants/types';
 import { redirect } from 'next/navigation';
-import { AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@ajabadia/styles';
 export default async function TenantsAdminPage({
   params,
   searchParams

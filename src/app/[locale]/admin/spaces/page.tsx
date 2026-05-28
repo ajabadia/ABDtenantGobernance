@@ -6,11 +6,12 @@ import { Plus, FolderOpen, ArrowLeft } from 'lucide-react';
 import { SpaceTreeView } from '@/components/admin/spaces/SpaceTreeView';
 import { CreateEditSpaceModal } from '@/components/admin/spaces/CreateEditSpaceModal';
 import { ManageSpaceCollaboratorsModal } from '@/components/admin/spaces/ManageSpaceCollaboratorsModal';
+import { ManageSpaceAssetsModal } from '@/components/admin/spaces/ManageSpaceAssetsModal';
 import { useSearchParams, useRouter, usePathname, useParams } from 'next/navigation';
 import { useSpacesManager, SpaceData } from '@/hooks/useSpacesManager';
-import { ConfirmDialog } from '@abd/ecosystem-widgets';
+import { ConfirmDialog } from '@ajabadia/ecosystem-widgets';
 import Link from 'next/link';
-import { AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@ajabadia/styles';
 
 export default function SpacesPage() {
   const t = useTranslations('dashboard.spaces');
@@ -42,6 +43,7 @@ export default function SpacesPage() {
   } = useSpacesManager(explicitTenantId);
 
   const [collaboratorsModalOpen, setCollaboratorsModalOpen] = useState(false);
+  const [assetsModalOpen, setAssetsModalOpen] = useState(false);
 
   const handleCreateRoot = () => {
     setSpaceToEdit(null);
@@ -67,6 +69,11 @@ export default function SpacesPage() {
   const handleManageCollaborators = (space: SpaceData) => {
     setSpaceToEdit(space);
     setCollaboratorsModalOpen(true);
+  };
+
+  const handleManageAssets = (space: SpaceData) => {
+    setSpaceToEdit(space);
+    setAssetsModalOpen(true);
   };
 
   return (
@@ -111,6 +118,7 @@ export default function SpacesPage() {
             onDelete={handleDelete}
             onAddChild={handleAddChild}
             onManageCollaborators={handleManageCollaborators}
+            onManageAssets={handleManageAssets}
           />
         )}
         </div>
@@ -128,6 +136,14 @@ export default function SpacesPage() {
         <ManageSpaceCollaboratorsModal
           isOpen={collaboratorsModalOpen}
           onClose={() => setCollaboratorsModalOpen(false)}
+          tenantId={tenantId}
+          space={spaceToEdit}
+          onSuccess={fetchSpaces}
+        />
+
+        <ManageSpaceAssetsModal
+          isOpen={assetsModalOpen}
+          onClose={() => setAssetsModalOpen(false)}
           tenantId={tenantId}
           space={spaceToEdit}
           onSuccess={fetchSpaces}

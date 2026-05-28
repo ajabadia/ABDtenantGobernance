@@ -1,10 +1,10 @@
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@/lib/session';
-import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag } from 'lucide-react';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
-import { AdminPageHeader } from '@abd/styles';
-import { GlobalFooter } from '@abd/ecosystem-widgets';
+import { AdminPageHeader } from '@ajabadia/styles';
+import { GlobalFooter } from '@ajabadia/ecosystem-widgets';
 
 /**
  * 🛰️ Central Admin Governance Portal Page (Federated Server Component)
@@ -104,6 +104,18 @@ export default async function AdminPortalPage({
             footerValue={ap('activo')}
             buttonText={t('auditTitle')}
             href={`/${locale}/admin/audit${tenantQuery}`}
+          />
+
+          {/* Card 5.5: Quiz Contextual Roles */}
+          <DashboardActionCard 
+            icon={GraduationCap}
+            category="Roles Contextuales"
+            title="Roles Contextuales (Quiz)"
+            description="Gestiona los roles contextuales del ecosistema de aprendizaje (CREATOR / AUDITOR) por ámbito (Space, Course, ExamConfig)."
+            footerLabel="Roles CREATOR/AUDITOR"
+            footerValue="Activo"
+            buttonText="Gestionar Roles"
+            href={`/${locale}/admin/quiz-roles${tenantQuery}`}
           />
 
           {/* Card 5: Permission Groups (Phase 3) */}

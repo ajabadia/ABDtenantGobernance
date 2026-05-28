@@ -1,12 +1,12 @@
 import React from 'react';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantBrandingForm } from '@/components/admin/TenantBrandingForm';
 import { getTranslations } from 'next-intl/server';
 import { ArrowLeft, Palette } from 'lucide-react';
 import Link from 'next/link';
-import connectDB from '@/lib/database/mongodb';
-import { AdminPageHeader } from '@abd/styles';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { AdminPageHeader } from '@ajabadia/styles';
 
 export const revalidate = 0; // Evitar el cacheado estático de la página administrativa
 
@@ -64,6 +64,7 @@ export default async function AdminBrandingPage({
           key={targetTenantId}
           tenantId={targetTenantId} 
           initialBranding={tenantConfig.branding} 
+          initialRoleCustomization={tenantConfig.roleCustomization}
           allTenants={JSON.parse(JSON.stringify(allTenants))}
         />
       </div>

@@ -1,7 +1,7 @@
 'use server';
 
-import { ensureIndustrialAccess } from '@/lib/session';
-import connectDB from '@/lib/database/mongodb';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { connectDB } from '@ajabadia/satellite-sdk';
 import LicenseRequest from '@/models/LicenseRequest';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { AuditService } from '@/services/tenant/audit-service';

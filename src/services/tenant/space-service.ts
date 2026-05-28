@@ -1,11 +1,13 @@
 import { SpaceSchema, type Space } from '@/lib/schemas/spaces';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
+import { AssetSpaceLinkRepository } from '@/lib/repositories/AssetSpaceLinkRepository';
 import type { QueryFilter } from 'mongoose';
 import type { ISpace } from '@/models/Space';
 import { AuditService } from './audit-service';
 import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 const spaceRepository = new SpaceRepository();
+const assetSpaceLinkRepository = new AssetSpaceLinkRepository();
 
 export class SpaceService {
   
@@ -221,6 +223,9 @@ export class SpaceService {
         }
       }).exec();
 
+      // Sincronizar caminos de los links del espacio movido
+      await assetSpaceLinkRepository.updateSpacePaths(tenantId, spaceId, newPath);
+
       // Registrar auditoría remota asíncrona (SaaS Logs)
       AuditService.logEvent({
         tenantId,
@@ -248,12 +253,17 @@ export class SpaceService {
 
         for (const child of children) {
           const childSubPath = child.materializedPath?.replace(oldPath, '') || '';
+          const newChildPath = `${newPath}${childSubPath}`;
+          
           await spaceRepository.model.findByIdAndUpdate(child._id, {
             $set: {
-              materializedPath: `${newPath}${childSubPath}`,
+              materializedPath: newChildPath,
               updatedAt: new Date()
             }
           }).exec();
+
+          // Sincronizar en cascada los links del sub-espacio descendiente
+          await assetSpaceLinkRepository.updateSpacePaths(tenantId, child._id.toString(), newChildPath);
         }
 
         if (process.env.NODE_ENV !== 'production') {

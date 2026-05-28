@@ -1,7 +1,7 @@
 import { Document } from 'mongoose';
 import type { QueryFilter } from 'mongoose';
 import { BaseRepository } from './BaseRepository';
-import type { FederatedSession } from '@/lib/session-types';
+import type { FederatedSession } from '@ajabadia/satellite-sdk';
 
 export abstract class TenantAwareRepository<T extends Document> extends BaseRepository<T> {
   

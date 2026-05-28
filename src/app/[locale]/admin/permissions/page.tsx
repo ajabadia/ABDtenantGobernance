@@ -16,8 +16,8 @@ import { PolicyFormModal } from './components/PolicyFormModal';
 import { ManageGroupMembersModal } from './components/ManageGroupMembersModal';
 import { GroupTreeView } from './components/GroupTreeView';
 import { PoliciesTable } from './components/PoliciesTable';
-import { AdminPageHeader } from '@abd/styles';
-import { ConfirmDialog, useConfirmDialog } from '@abd/ecosystem-widgets';
+import { AdminPageHeader } from '@ajabadia/styles';
+import { ConfirmDialog, useConfirmDialog } from '@ajabadia/ecosystem-widgets';
 
 interface Group {
   _id: string;
@@ -65,17 +65,7 @@ export default function PermissionsPage() {
       if (explicit) {
         setTenantId(explicit);
       } else {
-        try {
-          const { getIndustrialSession } = await import('@/lib/session');
-          const session = await getIndustrialSession();
-          if (session?.user?.tenantId) {
-            setTenantId(session.user.tenantId);
-          } else {
-            setTenantId('academia-alfa');
-          }
-        } catch {
-          setTenantId('academia-alfa');
-        }
+        setTenantId('academia-alfa');
       }
     };
     resolveTenant();

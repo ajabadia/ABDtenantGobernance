@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { resolveLicenseRequestAction } from '../actions';
 import { Check, X, Loader2, ShieldAlert, FileText } from 'lucide-react';
-import { AuditHistoryModal } from '@abd/ecosystem-widgets';
+import { AuditHistoryModal } from '@ajabadia/ecosystem-widgets';
 
 interface RequestsPanelProps {
   requests: { _id: string; tenantId: string; appId: string; requestedBy: string; comments?: string; createdAt: Date }[];

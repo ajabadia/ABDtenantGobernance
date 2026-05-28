@@ -5,7 +5,13 @@ export default defineConfig({
   test: {
     environment: 'node',
     globals: true,
-    include: ['src/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+    setupFiles: ['./src/test-setup.ts'],
+    server: {
+      deps: {
+        inline: [/@abd\/satellite-sdk/, /next/],
+      },
+    },
     coverage: {
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
@@ -14,7 +20,7 @@ export default defineConfig({
         'dist/**',
         '.next/**',
         'scripts/**',
-        '**/*.test.ts',
+        '**/*.test.ts{,x}',
         'vitest.config.ts',
         'next.config.mjs',
       ],
@@ -23,6 +29,8 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      'next/server': path.resolve(__dirname, 'node_modules/next/server.js'),
+      'next/headers': path.resolve(__dirname, 'node_modules/next/headers.js'),
     },
   },
 });

@@ -19,6 +19,22 @@ export const TenantSchema = z.object({
     (val) => typeof val === 'boolean' ? val : true,
     z.boolean().default(true)
   ),
+  roleCustomization: z.object({
+    roleLiterals: z.object({
+      CREATOR: z.object({
+        es: z.string().min(1, 'El literal CREATOR (es) no puede estar vacío').default('Creador'),
+        en: z.string().min(1, 'El literal CREATOR (en) no puede estar vacío').default('Creator'),
+      }),
+      RECIPIENT: z.object({
+        es: z.string().min(1, 'El literal RECIPIENT (es) no puede estar vacío').default('Destinatario'),
+        en: z.string().min(1, 'El literal RECIPIENT (en) no puede estar vacío').default('Recipient'),
+      }),
+      AUDITOR: z.object({
+        es: z.string().min(1, 'El literal AUDITOR (es) no puede estar vacío').default('Auditor'),
+        en: z.string().min(1, 'El literal AUDITOR (en) no puede estar vacío').default('Auditor'),
+      }),
+    }),
+  }).optional(),
   branding: z.object({
     logo: z.object({
       url: z.string().url().optional().or(z.null()).or(z.literal('')),

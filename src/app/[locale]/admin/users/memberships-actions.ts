@@ -1,9 +1,9 @@
 'use server'
 
-import connectDB from '@/lib/database/mongodb';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 import mongoose, { type QueryFilter } from 'mongoose';
 import { type IUserGroupMembership } from '@/models/UserGroupMembership';
 

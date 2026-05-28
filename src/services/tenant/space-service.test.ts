@@ -1,10 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+
+vi.hoisted(() => {
+  process.env.MONGODB_URI = 'mongodb://test:27017/test';
+});
+
 import { SpaceService } from './space-service';
 
 // Mock database contexts
 vi.mock('@/lib/database/tenant-model', () => {
+  const mockModel = new Proxy({}, {
+    get(target, prop) {
+      if (prop === 'modelName') return 'MockModel';
+      if (prop === 'schema') return ({ paths: {} });
+      if (prop === 'collection') return ({ name: 'mock_collection' });
+      if (typeof prop === 'string' && !['schema', 'collection', 'modelName', 'then', 'constructor'].includes(prop)) {
+        return vi.fn().mockReturnThis();
+      }
+      return Reflect.get(target, prop);
+    }
+  });
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
+    getTenantModel: () => mockModel,
+    tenantStorage: { getStore: vi.fn(), run: vi.fn() },
   };
 });
 

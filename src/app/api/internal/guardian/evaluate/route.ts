@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { GuardianEngine } from '@/services/guardian/guardian-engine';
-import connectDB from '@/lib/database/mongodb';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 
 export async function POST(req: Request) {
   return withTenantContext(async () => {

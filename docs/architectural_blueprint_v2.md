@@ -110,7 +110,7 @@ Soportamos dos modelos de segregación de base de datos en MongoDB Atlas:
 *   **`COLLECTION_PREFIX` (Aislamiento Lógico Compartido)**: Múltiples tenants comparten la misma base de datos, pero las colecciones se nombran de forma dinámica anteponiendo el `dbPrefix` (ej. `aca1_questions`, `aca2_questions`). Minimiza costes de infraestructura de forma óptima.
 *   **`DATABASE_PER_TENANT` (Aislamiento Físico Dedicado)**: Cada tenant tiene su base de datos física dedicada. El enrutador de conexión cambia dinámicamente el destino en base a `dbPrefix` para clientes corporativos de alto nivel de cumplimiento regulatorio (RGPD, SOC2).
 
-### 🎨 Pilar E: Motor Estético Dynamic-on-Demand (`@abd/styles`)
+### 🎨 Pilar E: Motor Estético Dynamic-on-Demand (`@ajabadia/styles`)
 El motor de White-Label resuelve la latencia estética y cumple los estándares de accesibilidad sin comprometer el rendimiento:
 1.  **Conversión Hex-to-HSL**: Traduce colores hexadecimales plano (`#06b6d4`) a componentes HSL separados por espacios (`188 86% 43%`) para que Tailwind CSS v4 aplique opacidades dinámicas sin generar FOUC (*Flash of Unstyled Content*).
 2.  **Algoritmo YIQ Contrast**: Calcula la luminancia del color primario. Si el administrador elige un color de marca muy claro, el texto de los botones principales cambia dinámicamente a negro (`#000000`); de lo contrario, se tiñe de blanco (`#ffffff`), asegurando accesibilidad WCAG.
@@ -127,8 +127,8 @@ El usuario ha copiado parte de **ABDQuiz** a este directorio para usarlo como pu
 El proyecto fue inicializado a partir de un scaffold de ABDQuiz. Los módulos específicos de Quiz (rutas de exámenes, componentes de preguntas, servicios de corpus) fueron eliminados durante las fases de sanitización inicial y mediante `scripts/clean-quiz.js`.
 
 ### Infraestructura Core Actual
-*   **`src/app/layout.tsx` y `src/app/[locale]/layout.tsx`**: Implementan detección de subdominios, inyección SSR de estilo dinámico con `@abd/styles` e inicialización de `next-intl`.
-*   **`src/lib/session.ts`**: Extracción perimetral de la cookie `abd_session` y aserciones de seguridad (`ensureIndustrialAccess`). (Nota: `auth-bridge.ts` fue eliminado — su funcionalidad fue reemplazada por `@abd/satellite-sdk`).
+*   **`src/app/layout.tsx` y `src/app/[locale]/layout.tsx`**: Implementan detección de subdominios, inyección SSR de estilo dinámico con `@ajabadia/styles` e inicialización de `next-intl`.
+*   **`src/lib/session.ts`**: Extracción perimetral de la cookie `abd_session` y aserciones de seguridad (`ensureIndustrialAccess`). (Nota: `auth-bridge.ts` fue eliminado — su funcionalidad fue reemplazada por `@ajabadia/satellite-sdk`).
 *   **Sistema de Carpetas de Localización (`messages/`, `src/i18n/`)**: Soporte nativo multi-idioma ya integrado.
 
 ### Componentes Clave a IMPORTAR/CREAR (Gobernanza de Tenants)
@@ -192,7 +192,7 @@ Una vez aprobada esta contextualización por el usuario, el orden ideal de ejecu
 
 - [x] **Fase 1: Sanitización**: Eliminado el código muerto de ABDQuiz.
 - [x] **Fase 2: Capa de Persistencia**: Creado `TenantRepository` y configuradas las colecciones.
-- [x] **Fase 3: Motor Estético**: Integrado `@abd/styles` con inyección SSR.
+- [x] **Fase 3: Motor Estético**: Integrado `@ajabadia/styles` con inyección SSR.
 - [x] **Fase 4: Consola de Branding**: Implementado `TenantBrandingForm.tsx` con Live Preview y Cloudinary.
 - [x] **Fase 5: Panel de Control de Tenants**: CRUD de administración global completado.
 - [x] **Fase 6: Pruebas de Integración**: Validadas.

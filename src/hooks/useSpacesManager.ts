@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';
-import { useConfirmDialog } from '@abd/ecosystem-widgets';
+import { useConfirmDialog } from '@ajabadia/ecosystem-widgets';
 import { SpaceData } from '@/components/admin/spaces/SpaceForm';
 
 export function useSpacesManager(explicitTenantId: string | null) {

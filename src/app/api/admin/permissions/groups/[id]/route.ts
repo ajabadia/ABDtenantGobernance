@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionService } from '@/services/tenant/permission-service';
-import connectDB from '@/lib/database/mongodb';
+import { connectDB } from '@ajabadia/satellite-sdk';
 
 export async function PUT(
   request: Request,

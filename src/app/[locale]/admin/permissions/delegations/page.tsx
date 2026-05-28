@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { useSearchParams, useParams } from 'next/navigation';
 import Link from 'next/link';
 import { Clock, ArrowLeft } from 'lucide-react';
-import { AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@ajabadia/styles';
 import { DelegationTable } from './DelegationTable';
 
 export default function DelegationsPage() {
@@ -21,17 +21,7 @@ export default function DelegationsPage() {
       if (explicit) {
         setTenantId(explicit);
       } else {
-        try {
-          const { getIndustrialSession } = await import('@/lib/session');
-          const session = await getIndustrialSession();
-          if (session?.user?.tenantId) {
-            setTenantId(session.user.tenantId);
-          } else {
-            setTenantId('academia-alfa');
-          }
-        } catch {
-          setTenantId('academia-alfa');
-        }
+        setTenantId('academia-alfa');
       }
     };
     resolveTenant();

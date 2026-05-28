@@ -61,6 +61,13 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 - [X] **Hito 10.8**: Despliegue oficial en producción en Vercel (`https://abd-tenant-gobernance.vercel.app/`), federación SSO activa con el IdP (`https://abd-auth.vercel.app`) y mapeo de variables de entorno asépticas.
 - [X] **Hito 10.9**: Optimización arquitectónica del Control Plane resolviendo las advertencias de tamaño de archivo (Remediación de límites de más de 200 líneas) mediante la extracción canónica de subcomponentes modulares autocontenidos (`ActionBadge.tsx`, `AuditDeltaViewer.tsx`, `ParentSpaceSelector.tsx` y `BorderRadiusSelector.tsx`), logrando un 100% de cumplimiento en higiene estática de archivos.
 
+### Fase 11: Linkado Polimórfico de Assets a Espacios (Fase 8.4)
+- [X] **Hito 11.1**: Modelo Mongoose indexado único compuesto `{ tenantId, assetId, spaceId }` y Repositorio de consulta perimetral.
+- [X] **Hito 11.2**: Capa de servicio transaccional con control de primacía de enlaces y fallback ante caídas de la API del satélite soberano.
+- [X] **Hito 11.3**: Propagación recursiva de la jerarquía de caminos de espacios (`spacePath`) sobre los enlaces de activos asociados ante traslados organizativos.
+- [X] **Hito 11.4**: Modal UI de gobernanza y asignación polimórfica interactiva con detección visual de enlaces huerfanos ("Zombies") y botón rápido de limpieza ("Garbage Collection").
+- [X] **Hito 11.5**: Certificación completa del pipeline industrial superando los límites de longitud de archivos mediante modularización (`AssignRoleModal` y `BulkAssignModal`) y adaptaciones de sintaxis `aria-label` para validadores estáticos AST.
+
 ---
 
 ## ⚙️ Tecnologías Certificadas

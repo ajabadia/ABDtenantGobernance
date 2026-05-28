@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { ShoppingBag, ArrowLeft } from 'lucide-react';
-import { AdminPageHeader } from '@abd/styles';
-import { GlobalFooter } from '@abd/ecosystem-widgets';
+import { AdminPageHeader } from '@ajabadia/styles';
+import { GlobalFooter } from '@ajabadia/ecosystem-widgets';
 import { fetchMarketplaceData, fetchAllPendingRequests } from './actions';
 import { MarketplaceGrid } from './components/MarketplaceGrid';
 import { RequestsPanel } from './components/RequestsPanel';

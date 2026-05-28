@@ -21,7 +21,7 @@ Este componente está diseñado bajo estándares de la **Era 11** (TypeScript es
 
 import React, { useState, useTransition, useRef } from 'react';
 import { Upload, Check, RefreshCw, Eye, Sparkles, Layout, Database } from 'lucide-react';
-import { generateTenantCss } from '@abd/styles';
+import { generateTenantCss } from '@ajabadia/styles';
 import { updateTenantBrandingAction } from '@/actions/branding';
 
 interface TenantBrandingFormProps {

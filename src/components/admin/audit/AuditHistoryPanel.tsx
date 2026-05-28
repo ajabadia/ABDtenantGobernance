@@ -3,7 +3,7 @@
 'use client';
 
 // Import shared components and feature flags via virtual package paths
-import { LiveLogViewer } from '@abd/ecosystem-widgets';
+import { LiveLogViewer } from '@ajabadia/ecosystem-widgets';
 
 const featureFlags = {
   liveModeEnabled: true

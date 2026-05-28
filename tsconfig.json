@@ -23,7 +23,7 @@
       }
     ],
     "paths": {
-      "@abd/styles/*": ["../ABDStyles/src/*"],
+      "@ajabadia/styles/*": ["../ABDStyles/src/*"],
       "@/*": ["./src/*"]
     }
   },

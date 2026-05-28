@@ -1,10 +1,10 @@
 'use client';
 
 import React from 'react';
-import { Home, Palette, Folder, Terminal, ShieldCheck, Building } from 'lucide-react';
+import { Home, Palette, Folder, Terminal, ShieldCheck, Building, GraduationCap } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
-import { SmartNavbar, buildSidebarLinks } from '@abd/ecosystem-widgets';
+import { SmartNavbar, buildSidebarLinks } from '@ajabadia/ecosystem-widgets';
 
 interface UserSession {
   authenticated: boolean;
@@ -32,20 +32,19 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const [tenantQuery, setTenantQuery] = React.useState('');
-
-  React.useEffect(() => {
+  const [tenantQuery] = React.useState(() => {
+    if (typeof window === 'undefined') return '';
     const params = new URLSearchParams(window.location.search);
     const activeTenantId = params.get('tenantId');
     const activeContextId = params.get('contextId');
     const activeContextType = params.get('contextType');
 
-    const queryParts = [];
+    const queryParts: string[] = [];
     if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
     if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
     if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
-    setTenantQuery(queryParts.length > 0 ? `?${queryParts.join('&')}` : '');
-  }, []);
+    return queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
+  });
 
   const isLoggedIn = session.authenticated && !!session.user;
   const user = session.user;
@@ -78,6 +77,12 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
       href: `/admin/audit${tenantQuery}`,
       label: locale === 'es' ? 'Auditoría en Cadena' : 'Chain Auditing',
       icon: <ShieldCheck size={14} />,
+      requiresAdmin: true
+    },
+    {
+      href: `/admin/quiz-roles${tenantQuery}`,
+      label: locale === 'es' ? 'Roles Contextuales' : 'Contextual Roles',
+      icon: <GraduationCap size={14} />,
       requiresAdmin: true
     },
     {

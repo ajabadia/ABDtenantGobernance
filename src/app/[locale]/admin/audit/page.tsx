@@ -1,14 +1,14 @@
 import React from 'react';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { AuditHistoryPanel } from '@/components/admin/audit/AuditHistoryPanel';
 import { AuditTenantSelector } from '@/components/admin/audit/AuditTenantSelector';
 import { ShieldCheck, Activity, ArrowLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import connectDB from '@/lib/database/mongodb';
+import { connectDB } from '@ajabadia/satellite-sdk';
 import type { Tenant } from '@/lib/schemas/tenant';
-import { AdminPageHeader } from '@abd/styles';
+import { AdminPageHeader } from '@ajabadia/styles';
 
 export const revalidate = 0; // Evitar el cacheado estático de la página administrativa
 

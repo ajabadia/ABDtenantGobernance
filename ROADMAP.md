@@ -35,6 +35,18 @@ Este documento detalla la planificación estratégica, las fases del ecosistema 
   - Panel visual `AuditHistoryPanel` con historial de configuraciones por tenant.
   - Página de auditoría dedicada (`/admin/audit`) con selector de tenants para SuperAdmin.
 
+- **Fase 11: Linkado Polimórfico de Assets a Espacios (AssetSpaceLink)**
+  - Modelo Mongoose `AssetSpaceLink` con índice único compuesto `{ tenantId, assetId, spaceId }`.
+  - Capa de servicio transaccional con control de primacía y fallback ante caídas.
+  - Propagación recursiva de jerarquía de espacios sobre enlaces de assets.
+  - Modal UI `ManageSpaceAssetsModal` con detección de enlaces huérfanos y Garbage Collection.
+  - Certificación completa del pipeline industrial (0 errores).
+
+- **Fase 12: Resiliencia de Sesiones Federadas & SmartNavbar**
+  - Migración a `proxy.ts` de Next.js 16 (eliminado `middleware.ts`).
+  - Integración de SmartNavbar con slots y bridge pattern.
+  - Limpieza de layouts heredados (eliminados `pt-24`, `SystemSettings` duplicados, clases de sidebar).
+
 ---
 
 ## 🔗 Enlaces Clave a Módulos Activos

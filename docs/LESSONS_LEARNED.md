@@ -13,9 +13,9 @@ Al inyectar dinámicamente colores de marca blanca desde la base de datos median
 Tailwind CSS v4 utiliza un nuevo motor de procesamiento que requiere que las variables de color del tema (ej: `--primary`, `--secondary`) inyectadas dinámicamente contengan valores en **formato HSL separados por espacios** (ej: `188 85% 48%`), en lugar de cadenas hexadecimales estándar o formatos `hsl(x, y, z)`. Si no se respeta esto, la función interna `hsl(var(--primary))` no se resuelve y el navegador ignora la regla.
 
 ### La Solución Industrial
-Utilizar siempre la función `generateTenantCss` provista por el paquete centralizado `@abd/styles`. Dicha función procesa el hexadecimal en tiempo de ejecución, realiza la conversión bit a bit y emite las variables HSL compatibles:
+Utilizar siempre la función `generateTenantCss` provista por el paquete centralizado `@ajabadia/styles`. Dicha función procesa el hexadecimal en tiempo de ejecución, realiza la conversión bit a bit y emite las variables HSL compatibles:
 ```typescript
-import { generateTenantCss } from '@abd/styles';
+import { generateTenantCss } from '@ajabadia/styles';
 
 const cssVariables = generateTenantCss(tenantConfig);
 // Emite: --primary: 188 85% 48%; --secondary: 200 40% 12%;

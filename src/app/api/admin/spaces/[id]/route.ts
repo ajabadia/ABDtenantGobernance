@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@/lib/session';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { SpaceService } from '@/services/tenant/space-service';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
-import connectDB from '@/lib/database/mongodb';
-import { withTenantContext } from '@/lib/database/tenant-model';
+import { connectDB } from '@ajabadia/satellite-sdk';
+import { withTenantContext } from '@ajabadia/satellite-sdk';
 
 const spaceRepository = new SpaceRepository();
 

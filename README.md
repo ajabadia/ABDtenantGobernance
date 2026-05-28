@@ -8,7 +8,7 @@ Consola centralizada de gobernanza de tenants, administración de sub-espacios c
 La plataforma está certificada bajo los más altos estándares de **Clean Architecture** (Era 11) e incluye:
 
 *   **Next.js 16.2.6 & React 19**: Aprovecha al máximo los React Server Components (RSC) y las Server Actions seguras.
-*   **Tailwind CSS v4 & @abd/styles**: Inyección reactiva y dinámica de variables CSS HSL síncronas en el servidor para evitar parpadeos visuales en el cliente (Zero-FOUC).
+*   **Tailwind CSS v4 & @ajabadia/styles**: Inyección reactiva y dinámica de variables CSS HSL síncronas en el servidor para evitar parpadeos visuales en el cliente (Zero-FOUC).
 *   **Mongoose 9.6.2 & Zod**: Capa de persistencia con tipados estrictos `QueryFilter<T>`, validaciones en tiempo de ejecución de Zod y aislamiento lógico robusto a través de `TenantAwareRepository`.
 *   **Next-Intl**: Soporte multilingüe integral (Inglés / Español) mediante enrutamiento localizado con prefijos de idioma (`/[locale]`).
 
