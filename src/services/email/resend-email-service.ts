@@ -11,48 +11,20 @@
  * async and throw on non‑2xx responses so that callers can handle failures.
  */
 
+import { ResendEmailService as SDKResendEmailService, type ResendEmailOptions as SDKResendEmailOptions } from '@ajabadia/satellite-sdk';
+
 export interface ResendEmailOptions {
   to: string;
   subject: string;
-  html: string; // HTML body
-  // plain text fallback – optional but recommended for email clients
+  html: string;
   text?: string;
 }
 
-/** Low‑level API call */
-export async function sendEmail({ to, subject, html, text }: ResendEmailOptions) {
-  const apiKey = process.env.RESEND_API_KEY;
-  const from = process.env.RESEND_FROM_EMAIL;
-  if (!apiKey) {
-    throw new Error('RESEND_API_KEY is not defined in environment');
-  }
-  if (!from) {
-    throw new Error('RESEND_FROM_EMAIL is not defined in environment');
-  }
-
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      from,
-      to,
-      subject,
-      html,
-      ...(text ? { text } : {}),
-    }),
-  });
-
-  const data = await response.json();
-  if (!response.ok) {
-    // Resend returns `{ error: { message: string } }` on failure
-    const errMsg = data?.error?.message ?? response.statusText;
-    throw new Error(`Resend email failed: ${errMsg}`);
-  }
-  return data;
+/** Low‑level API call delegating to SDK */
+export async function sendEmail({ to, subject, html, text }: ResendEmailOptions): Promise<{ id: string }> {
+  return SDKResendEmailService.sendEmail({ to, subject, html, text });
 }
+
 
 /** Helper for invitation emails */
 export async function sendInvitationEmail({ to, tenantName, inviteLink }: { to: string; tenantName: string; inviteLink: string }) {

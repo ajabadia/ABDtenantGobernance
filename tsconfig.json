@@ -23,6 +23,8 @@
       }
     ],
     "paths": {
+      "@ajabadia/ecosystem-widgets": ["../ABDEcosystemWidgets/src/index.ts"],
+      "@ajabadia/ecosystem-widgets/*": ["../ABDEcosystemWidgets/src/*"],
       "@ajabadia/styles/*": ["../ABDStyles/src/*"],
       "@/*": ["./src/*"]
     }

@@ -3,7 +3,7 @@
 import { GraduationCap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type RoleLiteralsMap, RoleBadge } from '@ajabadia/styles';
-import { IndustrialSelectSearch } from '@/components/ui/industrial/SelectSearch';
+import { IndustrialSelectSearch } from '@ajabadia/ecosystem-widgets';
 import { type IamUser } from '@/lib/services/iamClient';
 
 type ScopeType = 'space' | 'course' | 'exam_config';

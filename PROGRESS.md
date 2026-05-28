@@ -68,6 +68,13 @@ Este documento es el manifiesto de estado de gobernanza y sincronización de hit
 - [X] **Hito 11.4**: Modal UI de gobernanza y asignación polimórfica interactiva con detección visual de enlaces huerfanos ("Zombies") y botón rápido de limpieza ("Garbage Collection").
 - [X] **Hito 11.5**: Certificación completa del pipeline industrial superando los límites de longitud de archivos mediante modularización (`AssignRoleModal` y `BulkAssignModal`) y adaptaciones de sintaxis `aria-label` para validadores estáticos AST.
 
+### Fase 12: Auditoría de Ecosistema de Widgets & Promoción de Componentes — 2026-05-28
+- [X] **Hito 12.1**: Auditoría completa del consumo de `ABDEcosystemWidgets` en todas las aplicaciones del ecosistema. Verificado que `SmartNavbar` y `ConfirmDialog` son usados correctamente como fuente única de verdad; identificadas oportunidades de promoción.
+- [X] **Hito 12.2**: Promoción del componente `IndustrialSelectSearch` (ex `SelectSearch.tsx` de `ABDtenantGobernance`) a `ABDEcosystemWidgets/src/ui/SelectSearch.tsx`. Exportado públicamente desde `index.ts` del paquete compartido.
+- [X] **Hito 12.3**: Actualización de `tsconfig.json` en `ABDtenantGobernance` con path aliases robustos apuntando al fuente de `ABDEcosystemWidgets`, eliminando dependencia frágil de symlinks pnpm.
+- [X] **Hito 12.4**: Corrección de errores de tipo TSC en `proxy.ts` y `resend-email-service.ts` (castings `any`, colisiones de imports, tipos de retorno ausentes).
+- [X] **Hito 12.5**: Re-certificación industrial completa. Pipeline de 6 fases superado: **ERA 11 COMPLIANT [OK]**.
+
 ---
 
 ## ⚙️ Tecnologías Certificadas

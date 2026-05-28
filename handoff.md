@@ -1,34 +1,35 @@
-# Handoff: Linkado Polimórfico de Assets a Espacios (`AssetSpaceLink`)
+# Handoff: Promoción de IndustrialSelectSearch & Auditoría ERA 11
 
 ## Goal
-Implementar la lógica y la interfaz de usuario en `ABDtenantGobernance` para asociar recursos (documentos, corpus RAG, etc.) a múltiples espacios de la jerarquía organizativa de forma polimórfica (relación Many-to-Many) sin duplicar datos, garantizando la integridad de datos ante movimientos de la jerarquía y superando la auditoría de certificación industrial.
+Auditar el ecosistema `ABDEcosystemWidgets` para identificar componentes reutilizables mal ubicados, promover `IndustrialSelectSearch` a la librería compartida, corregir los errores de tipado (TSC) y calidad de código (ESLint) introducidos por cambios previos, y re-certificar el sistema al nivel ERA 11.
 
 ## Current State
 - **Estado**: **100% Certificado (SYS_CERTIFIED)** ✅
-- **Auditoría**: El pipeline de 6 fases (`.\scripts\abd-audit.ps1`) ha pasado con éxito (`0 errors` en todas las fases).
-  - Fase 1: Structural Audit -> PASSED (Modals de roles extraídos para reducir el tamaño de archivo de `page.tsx`).
-  - Fase 2: i18n Coverage -> PASSED (Claves añadidas en ES/EN).
-  - Fase 3: a11y Compliance -> PASSED (Corregidos `aria-label` en botones con iconos para el validador AST).
-  - Fase 4: Purity & Types -> PASSED.
-  - Fase 5: Type Safety (TSC) -> PASSED (Corregido `SCOPE_TYPE_OPTIONS` y removido directive `@ts-expect-error` obsoleto).
-  - Fase 6: Code Quality -> PASSED (Resueltos warnings de hooks de React y imports no usados).
+- **Auditoría**: Pipeline de 6 fases (`.\scripts\abd-audit.ps1`) superado con éxito.
+  - Fase 1: Structural Audit → PASSED (0 errors, 31 warnings)
+  - Fase 2: i18n Coverage → PASSED (0 errors, 0 warnings)
+  - Fase 3: a11y Compliance → PASSED (0 errors, 0 warnings)
+  - Fase 4: Purity & Types → PASSED (0 errors, 0 warnings)
+  - Fase 5: Type Safety (TSC) → PASSED (0 errors, 0 warnings) *(requirió limpieza de `.next/`)*
+  - Fase 6: Code Quality → PASSED (0 errors, 0 warnings)
+- **`ABDEcosystemWidgets`**: Librería revisada; `IndustrialSelectSearch` promovida y exportada correctamente. El resto de aplicaciones del ecosistema verificadas como consumidoras correctas de los widgets.
+- **`tsconfig.json` de ABDtenantGobernance**: Actualizado con path mappings para resolver `@ajabadia/ecosystem-widgets` desde el fuente local, eliminando dependencia de symlinks de pnpm durante el desarrollo.
 
 ## Files in Flight
-Ninguno. Todos los archivos han sido modificados, compilados y validados.
+Ninguno. Todos los archivos han sido modificados, validados y certificados.
 
 ## Changed Files
-- **[NEW]** [AssetSpaceLink.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/models/AssetSpaceLink.ts) - Modelo de base de datos Mongoose para el linkado de assets.
-- **[NEW]** [AssetSpaceLinkRepository.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/lib/repositories/AssetSpaceLinkRepository.ts) - Capa de repositorio para queries optimizadas y propagación jerárquica.
-- **[NEW]** [asset-link-service.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/services/tenant/asset-link-service.ts) - Lógica de negocio con transacciones atómicas y chequeo de soberanía.
-- **[NEW]** [asset-link-service.test.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/services/tenant/asset-link-service.test.ts) - Cobertura de tests unitarios del servicio de links.
-- **[NEW]** [route.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/app/api/admin/spaces/links/route.ts) - Route handler API para CRUD de enlaces.
-- **[NEW]** [ManageSpaceAssetsModal.tsx](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/components/admin/spaces/ManageSpaceAssetsModal.tsx) - Modal UI de control y vinculación de assets.
-- **[NEW]** [AssignRoleModal.tsx](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/app/[locale]/admin/quiz-roles/AssignRoleModal.tsx) - Subcomponente modal extraído para reducir tamaño de archivo.
-- **[NEW]** [BulkAssignModal.tsx](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/app/[locale]/admin/quiz-roles/BulkAssignModal.tsx) - Subcomponente modal extraído para reducir tamaño de archivo.
-- **[MODIFY]** [page.tsx](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/app/[locale]/admin/quiz-roles/page.tsx) - Limpieza de importaciones y modularización de la UI de roles de cuestionario.
-- **[MODIFY]** [space-service.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/services/tenant/space-service.ts) - Propagación recursiva de cambios de ruta sobre `AssetSpaceLink` al mover espacios.
-- **[MODIFY]** [branding.test.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/actions/branding.test.ts) - Ajuste en mock-imports de test.
-- **[MODIFY]** [es.json](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/messages/es.json) & [en.json](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/messages/en.json) - Soporte completo multilingüe para las nuevas interfaces y flujos.
+
+### ABDtenantGobernance
+- **[MODIFY]** [tsconfig.json](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/tsconfig.json) — Añadidos path mappings para `@ajabadia/ecosystem-widgets` apuntando a `../ABDEcosystemWidgets/src`.
+- **[MODIFY]** [AssignRoleModal.tsx](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/app/[locale]/admin/quiz-roles/AssignRoleModal.tsx) — Migrado el import de `SelectSearch` del componente local `src/components/ui/industrial/SelectSearch.tsx` al paquete compartido `@ajabadia/ecosystem-widgets`.
+- **[MODIFY]** [proxy.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/proxy.ts) — Corregido casting de tipo `any` para alinear con las interfaces estrictas de `withIndustrialAuth`.
+- **[MODIFY]** [resend-email-service.ts](file:///d:/desarrollos/ABDSuite/ABDtenantGobernance/src/services/email/resend-email-service.ts) — Corregida colisión de imports y añadidos tipos de retorno explícitos.
+
+### ABDEcosystemWidgets
+- **[NEW]** [SelectSearch.tsx](file:///d:/desarrollos/ABDSuite/ABDEcosystemWidgets/src/ui/SelectSearch.tsx) — Componente promovido desde `ABDtenantGobernance`. Selector con búsqueda, filtrado client-side, chevron animado y estilos premium Tailwind.
+- **[MODIFY]** [index.ts](file:///d:/desarrollos/ABDSuite/ABDEcosystemWidgets/src/index.ts) — Añadida exportación pública de `SelectSearch` (alias: `IndustrialSelectSearch`).
 
 ## Failed Attempts
-- **Parsing A11y**: En un primer intento, el validador AST estático de a11y (`arch-guard.mjs`) fallaba en registrar el `aria-label` dentro de los botones de desenlace. Esto ocurría porque la línea `onClick={() => ...}` contiene un carácter de mayor que (`>`) debido a la arrow function de JS, lo cual confundía al analizador simple haciéndole creer que el tag `<button` había terminado antes de llegar al `aria-label`. Lo solucionamos poniendo el `aria-label` en la mismísima primera línea del tag `<button ...`.
+- **Fase 5 TSC en primer intento**: TSC fallaba con errores de tipos en `proxy.ts` y `resend-email-service.ts` después de la integración de los path mappings. Los errores se eliminaron en dos pasos: (1) limpiar la caché de `.next/` para forzar recompilación limpia, y (2) corregir los castings de tipos.
+- **Resolución de módulos con pnpm link**: La resolución de `@ajabadia/ecosystem-widgets` fallaba silenciosamente a través de symlinks de `node_modules` de pnpm en ciertos contextos de compilación. La solución robusta fue añadir path aliases explícitos en `tsconfig.json` apuntando directamente al directorio fuente del paquete hermano.
