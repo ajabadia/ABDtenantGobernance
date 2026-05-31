@@ -1,80 +1,35 @@
 'use client';
 
-import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Plus, FolderOpen, ArrowLeft } from 'lucide-react';
 import { SpaceTreeView } from '@/components/admin/spaces/SpaceTreeView';
 import { CreateEditSpaceModal } from '@/components/admin/spaces/CreateEditSpaceModal';
 import { ManageSpaceCollaboratorsModal } from '@/components/admin/spaces/ManageSpaceCollaboratorsModal';
 import { ManageSpaceAssetsModal } from '@/components/admin/spaces/ManageSpaceAssetsModal';
-import { useSearchParams, useRouter, usePathname, useParams } from 'next/navigation';
-import { useSpacesManager, SpaceData } from '@/hooks/useSpacesManager';
+import { useSearchParams, useParams } from 'next/navigation';
 import { ConfirmDialog } from '@ajabadia/ecosystem-widgets';
 import Link from 'next/link';
 import { AdminPageHeader } from '@ajabadia/styles';
+import { useSpacesPageHandlers } from './useSpacesPageHandlers';
 
 export default function SpacesPage() {
   const t = useTranslations('dashboard.spaces');
   const tAdmin = useTranslations('admin');
   const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
   const params = useParams();
   const locale = params?.locale as string || 'en';
   const explicitTenantId = searchParams.get('tenantId');
 
   const {
-    spaces,
-    loading,
-    tenantId,
-    setTenantId,
-    allTenants,
-    customSpaceLabels,
-    modalOpen,
-    setModalOpen,
-    spaceToEdit,
-    setSpaceToEdit,
-    fetchSpaces,
-    handleDelete,
-    deleteTargetId,
-    handleConfirmDelete,
-    handleCancelDelete,
-    isDeleting,
-  } = useSpacesManager(explicitTenantId);
-
-  const [collaboratorsModalOpen, setCollaboratorsModalOpen] = useState(false);
-  const [assetsModalOpen, setAssetsModalOpen] = useState(false);
-
-  const handleCreateRoot = () => {
-    setSpaceToEdit(null);
-    setModalOpen(true);
-  };
-
-  const handleAddChild = (parentId: string) => {
-    setSpaceToEdit({
-      name: '',
-      slug: '',
-      type: 'TENANT',
-      visibility: 'INTERNAL',
-      parentSpaceId: parentId
-    } as SpaceData);
-    setModalOpen(true);
-  };
-
-  const handleEdit = (space: SpaceData) => {
-    setSpaceToEdit(space);
-    setModalOpen(true);
-  };
-
-  const handleManageCollaborators = (space: SpaceData) => {
-    setSpaceToEdit(space);
-    setCollaboratorsModalOpen(true);
-  };
-
-  const handleManageAssets = (space: SpaceData) => {
-    setSpaceToEdit(space);
-    setAssetsModalOpen(true);
-  };
+    spaces, loading, tenantId, setTenantId, allTenants, customSpaceLabels,
+    modalOpen, setModalOpen, spaceToEdit, setSpaceToEdit,
+    fetchSpaces, handleDelete, deleteTargetId,
+    handleConfirmDelete, handleCancelDelete, isDeleting,
+    collaboratorsModalOpen, setCollaboratorsModalOpen,
+    assetsModalOpen, setAssetsModalOpen,
+    handleCreateRoot, handleAddChild, handleEdit,
+    handleManageCollaborators, handleManageAssets,
+  } = useSpacesPageHandlers(explicitTenantId);
 
   return (
     <main className="min-h-screen bg-background text-foreground p-6 md:p-12 selection:bg-primary/30">

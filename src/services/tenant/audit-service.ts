@@ -1,4 +1,4 @@
-import { connectLogsDB } from '@/lib/database/mongodb-logs';
+import { connectLogsDB } from '@ajabadia/satellite-sdk';
 import { getAuditLogModel, IAuditLog } from '@/models/AuditLog';
 import { logger } from '@ajabadia/satellite-sdk';
 

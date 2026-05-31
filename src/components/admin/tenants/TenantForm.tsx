@@ -1,10 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Globe, Database, Shield } from "lucide-react"
+import { Shield } from "lucide-react"
 import type { Tenant } from "@/lib/schemas/tenant"
 import { useTranslations } from "next-intl"
 import type { SubmitTenantAction } from "./types"
+import { TenantBasicInfoFields } from './TenantBasicInfoFields'
+import { TenantAppSelector } from './TenantAppSelector'
 
 interface TenantFormProps {
   initialData?: Tenant | null;
@@ -41,59 +43,17 @@ export function TenantForm({ initialData, onSubmit, onCancel, isSubmitting }: Te
   return (
     <form onSubmit={handleSubmit} className="p-6 space-y-5 bg-card border border-border rounded-b-xl">
       <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('name_label')}</label>
-            <input 
-              required
-              value={formData.name}
-              onChange={e => setFormData({ ...formData, name: e.target.value })}
-              className="w-full bg-background border border-border text-foreground rounded-lg px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-              placeholder="Acme Corp"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1">{t('id_label')}</label>
-            <input 
-              required
-              disabled={!!initialData}
-              value={formData.tenantId}
-              onChange={e => setFormData({ ...formData, tenantId: e.target.value.toUpperCase() as Tenant["tenantId"] })}
-              className="w-full bg-background border border-border text-foreground rounded-lg px-3 py-2 text-xs font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all disabled:opacity-50"
-              placeholder="ACME_IND"
-            />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div className="space-y-1.5">
-            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
-              <Globe size={10} className="text-primary" aria-hidden="true" /> {t('industry')}
-            </label>
-            <select 
-              value={formData.industry}
-              onChange={e => setFormData({ ...formData, industry: e.target.value })}
-              className="w-full bg-background border border-border text-foreground rounded-lg px-3 py-2 text-xs focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-            >
-              <option value="Industrial" className="bg-background">{t('industries.industrial')}</option>
-              <option value="Energy" className="bg-background">{t('industries.energy')}</option>
-              <option value="Logistics" className="bg-background">{t('industries.logistics')}</option>
-              <option value="Security" className="bg-background">{t('industries.security')}</option>
-            </select>
-          </div>
-          <div className="space-y-1.5">
-            <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
-              <Database size={10} className="text-primary" aria-hidden="true" /> {t('database')}
-            </label>
-            <input 
-              required
-              value={formData.dbPrefix}
-              onChange={e => setFormData({ ...formData, dbPrefix: e.target.value.toLowerCase() })}
-              className="w-full bg-background border border-border text-foreground rounded-lg px-3 py-2 text-xs font-mono focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all"
-              placeholder="acme_"
-            />
-          </div>
-        </div>
+        <TenantBasicInfoFields
+          name={formData.name || ''}
+          tenantId={formData.tenantId || ''}
+          industry={formData.industry || 'Industrial'}
+          dbPrefix={formData.dbPrefix || ''}
+          initialData={initialData}
+          onNameChange={name => setFormData(p => ({ ...p, name }))}
+          onTenantIdChange={tenantId => setFormData(p => ({ ...p, tenantId: tenantId as Tenant['tenantId'] }))}
+          onIndustryChange={industry => setFormData(p => ({ ...p, industry }))}
+          onDbPrefixChange={dbPrefix => setFormData(p => ({ ...p, dbPrefix }))}
+        />
 
         <div className="space-y-1.5">
           <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
@@ -132,42 +92,10 @@ export function TenantForm({ initialData, onSubmit, onCancel, isSubmitting }: Te
           <p className="text-[10px] text-muted-foreground/70 ml-1">{t('hierarchy_help', { defaultMessage: 'Separa los niveles por coma. Se asignarán por profundidad.' })}</p>
         </div>
 
-        <div className="space-y-1.5 pt-2">
-          <label className="text-[9px] font-black uppercase tracking-widest text-muted-foreground ml-1 flex items-center gap-1">
-            {t('allowed_apps_label', { defaultMessage: 'Aplicaciones Autorizadas' })}
-          </label>
-          <div className="grid grid-cols-2 gap-3 p-3 bg-background/50 border border-border rounded-lg">
-            {['auth', 'quiz', 'gobernanza', 'elevators'].map((app) => {
-              const isChecked = (formData.allowedApps || []).includes(app);
-              return (
-                <label 
-                  key={app} 
-                  className="flex items-center gap-2 cursor-pointer select-none group text-xs text-foreground"
-                >
-                  <input
-                    type="checkbox"
-                    checked={isChecked}
-                    onChange={(e) => {
-                      const checked = e.target.checked;
-                      const currentApps = formData.allowedApps || [];
-                      const updatedApps = checked 
-                        ? [...currentApps, app] 
-                        : currentApps.filter(a => a !== app);
-                      setFormData({ ...formData, allowedApps: updatedApps });
-                    }}
-                    className="rounded border-border text-primary focus:ring-primary focus:ring-offset-background"
-                  />
-                  <span className="font-mono text-[10px] tracking-wide text-muted-foreground group-hover:text-foreground transition-colors">
-                    {t(`apps.${app}` as `apps.${string}`, { defaultValue: app })}
-                  </span>
-                </label>
-              );
-            })}
-          </div>
-          <p className="text-[10px] text-muted-foreground/70 ml-1">
-            {t('allowed_apps_help', { defaultMessage: 'Selecciona las aplicaciones satélite autorizadas para este tenant.' })}
-          </p>
-        </div>
+        <TenantAppSelector
+          allowedApps={formData.allowedApps || []}
+          onAppsChange={allowedApps => setFormData(p => ({ ...p, allowedApps }))}
+        />
       </div>
 
       <footer className="flex gap-3 pt-4 border-t border-border">

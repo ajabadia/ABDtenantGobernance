@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
-import { SpaceService } from '@/services/tenant/space-service';
+import { SpaceService, SpaceAccessService } from '@/services/tenant/space-service';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { withTenantContext } from '@ajabadia/satellite-sdk';
 
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
       const parentSpaceId = searchParams.get('parentSpaceId');
       const isRoot = searchParams.get('isRoot') === 'true';
       
-      const spaces = await SpaceService.getAccessibleSpaces(tenantId, user.id, {
+      const spaces = await SpaceAccessService.getAccessibleSpaces(tenantId, user.id, {
         parentSpaceId: parentSpaceId || undefined,
         isRoot: isRoot || undefined
       });

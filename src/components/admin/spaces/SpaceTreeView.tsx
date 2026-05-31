@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
-import { ChevronRight, ChevronDown, Folder, Plus, Trash2, Edit2, LayoutGrid, Users, Globe, Building, Lock, Link2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Folder, LayoutGrid } from 'lucide-react';
+import { SpaceTreeNode } from './SpaceTreeNode';
 import { SpaceData } from './CreateEditSpaceModal';
 
 interface SpaceTreeViewProps {
@@ -16,157 +16,32 @@ interface SpaceTreeViewProps {
   customSpaceLabels: string[];
 }
 
-interface TreeNode extends SpaceData {
+export interface TreeNode extends SpaceData {
   children: TreeNode[];
   depth: number;
 }
 
 export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCollaborators, onManageAssets, customSpaceLabels }: SpaceTreeViewProps) {
   const t = useTranslations('dashboard.spaces');
-  const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set());
-  
-  // (Remaining code keeps same structure...)
-  // We locate line 138-152 of original code and inject the Link2 button.
-  // Let's replace the whole props destructuring and node button render block to be safe.
 
-  // Construir el árbol recursivamente
   const tree = useMemo(() => {
     const map = new Map<string, TreeNode>();
     const roots: TreeNode[] = [];
-
-    // Initialize nodes
-    spaces.forEach(s => {
-      map.set(s._id!, { ...s, children: [], depth: 0 });
-    });
-
-    // Build hierarchy
+    spaces.forEach(s => { map.set(s._id!, { ...s, children: [], depth: 0 }); });
     spaces.forEach(s => {
       const node = map.get(s._id!);
       if (node) {
         if (s.parentSpaceId && map.has(s.parentSpaceId)) {
-          const parent = map.get(s.parentSpaceId)!;
-          parent.children.push(node);
-        } else {
-          roots.push(node);
-        }
+          map.get(s.parentSpaceId)!.children.push(node);
+        } else { roots.push(node); }
       }
     });
-
-    // Calcular profundidades
     const calcDepth = (nodes: TreeNode[], depth: number) => {
-      nodes.forEach(n => {
-        n.depth = depth;
-        calcDepth(n.children, depth + 1);
-      });
+      nodes.forEach(n => { n.depth = depth; calcDepth(n.children, depth + 1); });
     };
     calcDepth(roots, 0);
-
     return roots;
   }, [spaces]);
-
-  const toggleExpand = (id: string) => {
-    const next = new Set(expandedNodes);
-    if (next.has(id)) next.delete(id);
-    else next.add(id);
-    setExpandedNodes(next);
-  };
-
-  const getLabelForDepth = (depth: number) => {
-    if (depth < customSpaceLabels.length) {
-      return customSpaceLabels[depth];
-    }
-    return `L${(depth + 1).toString().padStart(2, '0')}`;
-  };
-
-  const getVisibilityIconAndStyles = (visibility: string) => {
-    switch (visibility) {
-      case 'PUBLIC':
-        return {
-          icon: <Globe size={10} className="text-emerald-500 mr-1" />,
-          text: t('vis_public', { defaultMessage: 'Público' }),
-          badgeClass: 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
-        };
-      case 'PRIVATE':
-        return {
-          icon: <Lock size={10} className="text-rose-500 mr-1" />,
-          text: t('vis_private', { defaultMessage: 'Privado' }),
-          badgeClass: 'bg-rose-500/10 text-rose-500 border-rose-500/20'
-        };
-      case 'INTERNAL':
-      default:
-        return {
-          icon: <Building size={10} className="text-blue-500 mr-1" />,
-          text: t('vis_internal', { defaultMessage: 'Interno' }),
-          badgeClass: 'bg-blue-500/10 text-blue-500 border-blue-500/20'
-        };
-    }
-  };
-
-  const renderNode = (node: TreeNode) => {
-    const isExpanded = expandedNodes.has(node._id!);
-    const hasChildren = node.children.length > 0;
-    const levelLabel = getLabelForDepth(node.depth);
-    const vis = getVisibilityIconAndStyles(node.visibility);
-
-    const paddingClasses = ['pl-2', 'pl-8', 'pl-14', 'pl-20', 'pl-24', 'pl-28'];
-    const paddingClass = paddingClasses[node.depth] || 'pl-32';
-
-    return (
-      <div key={node._id} className="select-none">
-        <div 
-          className={`flex items-center group py-3 pr-4 hover:bg-secondary/20 rounded-lg transition-colors border border-transparent hover:border-border ${paddingClass}`}
-        >
-          <div className="w-5 flex-shrink-0 flex items-center justify-center cursor-pointer" onClick={() => hasChildren && toggleExpand(node._id!)}>
-            {hasChildren ? (
-              isExpanded ? <ChevronDown size={16} className="text-muted-foreground" /> : <ChevronRight size={16} className="text-muted-foreground" />
-            ) : <span className="w-4" />}
-          </div>
-          
-          <Folder size={16} className="text-primary mr-3 flex-shrink-0" />
-          
-          <div className="flex-grow flex flex-col min-w-0">
-            <div className="flex items-center gap-3">
-              <span className="font-bold text-sm tracking-wide truncate text-foreground">{node.name}</span>
-              <span className="text-[9px] px-2 py-0.5 rounded bg-primary/10 text-primary border border-primary/20 uppercase tracking-widest font-mono">
-                {levelLabel}
-              </span>
-              <span className={`text-[9px] px-2 py-0.5 rounded border uppercase tracking-widest font-mono flex items-center ${vis.badgeClass}`}>
-                {vis.icon}
-                {vis.text}
-              </span>
-              <span className="text-[10px] text-muted-foreground font-mono truncate hidden md:inline-block">
-                {node.materializedPath}
-              </span>
-            </div>
-          </div>
-
-          <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => onManageAssets(node)} title={t('manage_assets', { defaultMessage: 'Gestionar Activos' })}>
-              <Link2 size={14} />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-primary hover:bg-primary/10" onClick={() => onManageCollaborators(node)} title={t('manage_collaborators', { defaultMessage: 'Gobernanza' })}>
-              <Users size={14} />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary/20" onClick={() => onAddChild(node._id!)} title={t('new_space')}>
-              <Plus size={14} />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-foreground hover:bg-secondary/20" onClick={() => onEdit(node)} title={t('edit_space')}>
-              <Edit2 size={14} />
-            </Button>
-            <Button variant="ghost" size="icon" className="h-7 w-7 text-muted-foreground hover:text-destructive hover:bg-destructive/10" onClick={() => onDelete(node._id!)}>
-              <Trash2 size={14} />
-            </Button>
-          </div>
-        </div>
-
-        {isExpanded && hasChildren && (
-          <div className="flex flex-col">
-            {node.children.map(renderNode)}
-          </div>
-        )}
-      </div>
-    );
-  };
 
   if (spaces.length === 0) {
     return (
@@ -183,7 +58,18 @@ export function SpaceTreeView({ spaces, onEdit, onDelete, onAddChild, onManageCo
   return (
     <div className="border border-border rounded-xl bg-card overflow-hidden text-foreground shadow-xl backdrop-blur-sm">
       <div className="p-4 flex flex-col gap-1">
-        {tree.map(renderNode)}
+        {tree.map(node => (
+          <SpaceTreeNode
+            key={node._id}
+            node={node}
+            customSpaceLabels={customSpaceLabels}
+            onEdit={onEdit}
+            onDelete={onDelete}
+            onAddChild={onAddChild}
+            onManageCollaborators={onManageCollaborators}
+            onManageAssets={onManageAssets}
+          />
+        ))}
       </div>
     </div>
   );

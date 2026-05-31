@@ -4,10 +4,10 @@ vi.hoisted(() => {
   process.env.MONGODB_URI = 'mongodb://test:27017/test';
 });
 
-import { SpaceService } from './space-service';
+import { SpaceService, SpaceAccessService, SpaceMoveService } from './space-service';
 
 // Mock database contexts
-vi.mock('@/lib/database/tenant-model', () => {
+vi.mock('@ajabadia/satellite-sdk', () => {
   const mockModel = new Proxy({}, {
     get(target, prop) {
       if (prop === 'modelName') return 'MockModel';
@@ -174,7 +174,7 @@ describe('SpaceService', () => {
 
       mockFind.mockResolvedValueOnce(mockSpaces);
 
-      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1', { isRoot: true, search: 'public' });
+      const result = await SpaceAccessService.getAccessibleSpaces('tenant-1', 'user-1', { isRoot: true, search: 'public' });
 
       expect(mockFindByUserId).toHaveBeenCalledWith('tenant-1', 'user-1');
       expect(mockFind).toHaveBeenCalledWith({ tenantId: 'tenant-1', isActive: true });
@@ -192,7 +192,7 @@ describe('SpaceService', () => {
 
       mockFind.mockResolvedValueOnce(mockSpaces);
 
-      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      const result = await SpaceAccessService.getAccessibleSpaces('tenant-1', 'user-1');
       expect(result).toHaveLength(0);
     });
 
@@ -206,7 +206,7 @@ describe('SpaceService', () => {
 
       mockFind.mockResolvedValueOnce(mockSpaces);
 
-      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      const result = await SpaceAccessService.getAccessibleSpaces('tenant-1', 'user-1');
       expect(result).toHaveLength(2);
       expect(result.map(x => x._id)).toContain('parent-private');
       expect(result.map(x => x._id)).toContain('child-private');
@@ -222,7 +222,7 @@ describe('SpaceService', () => {
 
       mockFind.mockResolvedValueOnce(mockSpaces);
 
-      const result = await SpaceService.getAccessibleSpaces('tenant-1', 'user-1');
+      const result = await SpaceAccessService.getAccessibleSpaces('tenant-1', 'user-1');
       expect(result).toHaveLength(1);
       expect(result[0]._id).toBe('parent-private');
     });
@@ -233,7 +233,7 @@ describe('SpaceService', () => {
       mockFindById.mockResolvedValueOnce(null);
 
       await expect(
-        SpaceService.moveSpace('nonexistent-space', 'parent-id', 'tenant-1')
+        SpaceMoveService.moveSpace('nonexistent-space', 'parent-id', 'tenant-1')
       ).rejects.toThrow('Espacio no encontrado');
     });
 
@@ -248,7 +248,7 @@ describe('SpaceService', () => {
       mockFindById.mockResolvedValueOnce(null); // find new parent
 
       await expect(
-        SpaceService.moveSpace('space-1', 'new-parent-id', 'tenant-1')
+        SpaceMoveService.moveSpace('space-1', 'new-parent-id', 'tenant-1')
       ).rejects.toThrow('El nuevo espacio padre no existe');
     });
 
@@ -296,7 +296,7 @@ describe('SpaceService', () => {
       ];
       mockFind.mockResolvedValueOnce(mockChildren);
 
-      await SpaceService.moveSpace('space-to-move', 'new-parent', 'tenant-1', 'user-1', 'user@test.com');
+      await SpaceMoveService.moveSpace('space-to-move', 'new-parent', 'tenant-1', 'user-1', 'user@test.com');
 
       // Verify finding the children
       expect(mockFind).toHaveBeenCalledWith({
@@ -349,7 +349,7 @@ describe('SpaceService', () => {
       mockFindById.mockResolvedValueOnce(null);
 
       await expect(
-        SpaceService.updateSpaceVisibility('nonexistent-space', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com')
+        SpaceMoveService.updateSpaceVisibility('nonexistent-space', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com')
       ).rejects.toThrow('Espacio no encontrado');
     });
 
@@ -365,7 +365,7 @@ describe('SpaceService', () => {
 
       mockFindById.mockResolvedValueOnce(mockSpace);
 
-      await SpaceService.updateSpaceVisibility('space-id', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com', false);
+      await SpaceMoveService.updateSpaceVisibility('space-id', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com', false);
 
       expect(mockFindByIdAndUpdate).toHaveBeenCalledWith('space-id', {
         $set: {
@@ -419,7 +419,7 @@ describe('SpaceService', () => {
 
       mockFind.mockResolvedValueOnce(mockDescendants);
 
-      await SpaceService.updateSpaceVisibility('parent-space-id', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com', true);
+      await SpaceMoveService.updateSpaceVisibility('parent-space-id', 'PRIVATE', 'tenant-1', 'user-1', 'user@test.com', true);
 
       // Verify database queries
       expect(mockFind).toHaveBeenCalledWith({

@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
-import { LayoutDashboard, Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap } from 'lucide-react';
-import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
+import { LayoutDashboard } from 'lucide-react';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
+import { DashboardCardsGrid } from '@/components/admin/dashboard/DashboardCardsGrid';
 import { AdminPageHeader } from '@ajabadia/styles';
 import { GlobalFooter } from '@ajabadia/ecosystem-widgets';
 
@@ -55,94 +55,7 @@ export default async function AdminPortalPage({
           locale={locale}
         />
 
-        {/* Dashboard Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-2">
-          
-          {/* Card 1: Tenant Governance Panel */}
-          <DashboardActionCard 
-            icon={Building2}
-            category={t('organizaciones')}
-            title={t('tenantCardTitle')}
-            description={t('tenantCardDesc')}
-            footerLabel={t('multiTenancy')}
-            footerValue={ap('activo')}
-            buttonText={t('tenantCardBtn')}
-            href={`/${locale}/admin/tenants${tenantQuery}`}
-          />
-
-          {/* Card 2: Visual Branding Customizer */}
-          <DashboardActionCard 
-            icon={Palette}
-            category={t('visual')}
-            title={t('brandCardTitle')}
-            description={t('brandCardDesc')}
-            footerLabel={t('yiqContrast')}
-            footerValue={ap('activo')}
-            buttonText={t('brandCardBtn')}
-            href={`/${locale}/admin/branding${tenantQuery}`}
-          />
-
-          {/* Card 3: Space Hierarchy Management */}
-          <DashboardActionCard 
-            icon={Layers}
-            category={t('estructura')}
-            title={t('spaceCardTitle')}
-            description={t('spaceCardDesc')}
-            footerLabel={t('materializedPaths')}
-            footerValue={ap('activo')}
-            buttonText={t('spaceCardBtn')}
-            href={`/${locale}/admin/spaces${tenantQuery}`}
-          />
-
-          {/* Card 4: Chain Auditing Logs */}
-          <DashboardActionCard 
-            icon={ShieldCheck}
-            category={t('certification')}
-            title={t('auditTitle')}
-            description={t('auditDesc')}
-            footerLabel={t('prodReady')}
-            footerValue={ap('activo')}
-            buttonText={t('auditTitle')}
-            href={`/${locale}/admin/audit${tenantQuery}`}
-          />
-
-          {/* Card 5.5: Quiz Contextual Roles */}
-          <DashboardActionCard 
-            icon={GraduationCap}
-            category="Roles Contextuales"
-            title="Roles Contextuales (Quiz)"
-            description="Gestiona los roles contextuales del ecosistema de aprendizaje (CREATOR / AUDITOR) por ámbito (Space, Course, ExamConfig)."
-            footerLabel="Roles CREATOR/AUDITOR"
-            footerValue="Activo"
-            buttonText="Gestionar Roles"
-            href={`/${locale}/admin/quiz-roles${tenantQuery}`}
-          />
-
-          {/* Card 5: Permission Groups (Phase 3) */}
-          <DashboardActionCard 
-            icon={Shield}
-            category={t('iamGovernance')}
-            title={t('permissionsCardTitle')}
-            description={t('permissionsCardDesc')}
-            footerLabel={t('abacPolicies')}
-            footerValue={ap('activo')}
-            buttonText={t('permissionsCardBtn')}
-            href={`/${locale}/admin/permissions${tenantQuery}`}
-          />
-
-          {/* Card 6: Marketplace de Satélites */}
-          <DashboardActionCard 
-            icon={ShoppingBag}
-            category={t('marketplace.title')}
-            title={t('marketplace.title')}
-            description={t('marketplace.subtitle')}
-            footerLabel={t('marketplace.title')}
-            footerValue={ap('activo')}
-            buttonText={t('marketplace.title')}
-            href={`/${locale}/admin/marketplace${tenantQuery}`}
-          />
-
-        </div>
+        <DashboardCardsGrid locale={locale} tenantQuery={tenantQuery} adminT={t} portalT={ap} />
 
         {/* Footer */}
         <GlobalFooter label={t('footer')} />

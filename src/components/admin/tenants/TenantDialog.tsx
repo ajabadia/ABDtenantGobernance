@@ -7,7 +7,7 @@ import { Building2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 import type { Tenant } from "@/lib/schemas/tenant"
 import type { SaveTenantAction } from "./types"
-import { IndustrialModalHeader } from "@/components/ui/industrial/ModalHeader"
+import { IndustrialModalHeader } from "@ajabadia/ecosystem-widgets"
 import { TenantForm } from "./TenantForm"
 import { ANIM_DURATION } from "@ajabadia/ecosystem-widgets"
 

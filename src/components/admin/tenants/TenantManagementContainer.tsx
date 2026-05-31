@@ -9,7 +9,7 @@ import { TenantDialog } from "./TenantDialog"
 import { TenantCard } from "./TenantCard"
 import { useRouter } from "next/navigation"
 import type { TenantManagementTranslations } from "./types"
-import { IndustrialSearchInput } from "@/components/ui/industrial/SearchInput"
+import { IndustrialSearchInput } from "@ajabadia/ecosystem-widgets"
 
 interface TenantManagementContainerProps {
   initialTenants: Tenant[];

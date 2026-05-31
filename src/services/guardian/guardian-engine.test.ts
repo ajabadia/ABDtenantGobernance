@@ -67,11 +67,12 @@ vi.mock('@/services/tenant/audit-service', () => {
   };
 });
 
-vi.mock('@/lib/database/tenant-model', () => {
-  const mongoose = require('mongoose');
+import mongoose from 'mongoose';
+
+vi.mock('@ajabadia/satellite-sdk', () => {
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
-    getTenantModel: (modelName: string, schema: any) =>
+    getTenantModel: (modelName: string, schema: mongoose.Schema) =>
       mongoose.models[modelName] || mongoose.model(modelName, schema),
     tenantStorage: { getStore: vi.fn(), run: vi.fn() },
   };

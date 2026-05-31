@@ -2,7 +2,8 @@
  * @vitest-environment jsdom
  */
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, within } from '@testing-library/react';
+import { render, screen, fireEvent, within, waitFor } from '@testing-library/react';
+import { act } from 'react';
 
 // ─── Mocks (hoisted) ─────────────────────────────────────────────────────────
 
@@ -173,14 +174,19 @@ describe('TenantBrandingForm — role literals fields', () => {
     const recipientEnInput = screen.getByDisplayValue('Recipient');
     fireEvent.change(recipientEnInput, { target: { value: 'Operator' } });
 
-    // Submit the form
+    // Submit the form inside act() to flush React state updates
     const submitButton = screen.getByRole('button', { name: /propagar marca blanca/i });
-    fireEvent.click(submitButton);
+    await act(async () => {
+      fireEvent.click(submitButton);
+    });
 
-    // Wait for async submission
+    // Wait for async submission (startTransition + action resolution)
+    await waitFor(() => {
+      const mockedAction = vi.mocked(updateTenantBrandingAction);
+      expect(mockedAction).toHaveBeenCalledTimes(1);
+    });
+
     const mockedAction = vi.mocked(updateTenantBrandingAction);
-    expect(mockedAction).toHaveBeenCalledTimes(1);
-
     const _formData = mockedAction.mock.calls[0][1] as FormData;
 
     expect(_formData.get('roleLiteral_CREATOR_es')).toBe('Docente');

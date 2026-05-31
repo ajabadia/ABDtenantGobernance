@@ -32,19 +32,22 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
-  const [tenantQuery] = React.useState(() => {
-    if (typeof window === 'undefined') return '';
-    const params = new URLSearchParams(window.location.search);
-    const activeTenantId = params.get('tenantId');
-    const activeContextId = params.get('contextId');
-    const activeContextType = params.get('contextType');
+  const [tenantQuery, setTenantQuery] = React.useState('');
 
-    const queryParts: string[] = [];
-    if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
-    if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
-    if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
-    return queryParts.length > 0 ? `?${queryParts.join('&')}` : '';
-  });
+  React.useEffect(() => {
+    React.startTransition(() => {
+      const params = new URLSearchParams(window.location.search);
+      const activeTenantId = params.get('tenantId');
+      const activeContextId = params.get('contextId');
+      const activeContextType = params.get('contextType');
+
+      const queryParts: string[] = [];
+      if (activeTenantId) queryParts.push(`tenantId=${activeTenantId}`);
+      if (activeContextId) queryParts.push(`contextId=${activeContextId}`);
+      if (activeContextType) queryParts.push(`contextType=${activeContextType}`);
+      setTenantQuery(queryParts.length > 0 ? `?${queryParts.join('&')}` : '');
+    });
+  }, []);
 
   const isLoggedIn = session.authenticated && !!session.user;
   const user = session.user;
@@ -123,6 +126,7 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
       tenantSelectorSlot={tenantSelectorSlot}
       settingsSlot={settingsSlot}
       onLocaleChange={handleLocaleChange}
+      appBadge="GOV"
       onSearchTrigger={() => {
         window.dispatchEvent(new CustomEvent('abd-command-palette-open'));
       }}

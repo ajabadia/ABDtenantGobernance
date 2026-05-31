@@ -5,12 +5,13 @@ import { defineConfig, devices } from '@playwright/test';
  * Tests for Spaces and Tenants management, which use ConfirmDialog.
  *
  * NOTE: This app depends on ABDAuth (port 3400) for authentication.
- * Start both apps before running tests:
+ * webServer auto-starts ABDtenantGobernance. Only ABDAuth needs manual startup:
  *   cd ABDAuth && npm run dev    # port 3400
- *   cd ABDtenantGobernance && npm run dev  # port 3500
+ *   cd ABDtenantGobernance && pnpm test  # auto-starts port 3500 via webServer
  */
 export default defineConfig({
   testDir: './tests',
+  globalSetup: './tests/global-setup',
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,
@@ -31,7 +32,14 @@ export default defineConfig({
     },
   ],
 
-  /* 🚀 The dev server must be started manually alongside ABDAuth.
-     webServer is NOT configured here because this app requires
-     ABDAuth (port 3400) to also be running for authentication. */
+  webServer: {
+    command: 'pnpm dev',
+    url: 'http://localhost:3500',
+    reuseExistingServer: !process.env.CI,
+    timeout: 180000,
+    stderr: 'pipe',
+  },
+
+  /* 🔐 ABDAuth (port 3400) must be started separately for auth-dependent tests.
+     webServer only starts ABDtenantGobernance's own dev server. */
 });

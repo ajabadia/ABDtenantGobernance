@@ -49,8 +49,8 @@ export class GuardianEngine {
     }
 
     // 4. Resolución de espacios permitidos
-    const { SpaceService } = await import('@/services/tenant/space-service');
-    const userSpaces = await SpaceService.getAccessibleSpaces(tenantId, userId);
+    const { SpaceAccessService } = await import('@/services/tenant/space-service');
+    const userSpaces = await SpaceAccessService.getAccessibleSpaces(tenantId, userId);
     const allowedSpaceIds = userSpaces.map(s => s._id!.toString());
     const allowedGroupIds = Array.from(groupIds);
 

@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import mongoose from 'mongoose';
-import { AssetLinkService, verifyAssetSovereignty } from './asset-link-service';
+import { AssetLinkService } from './asset-link-service';
+import { verifyAssetSovereignty } from './asset-verification';
 
 // Mock database contexts
-vi.mock('@/lib/database/tenant-model', () => {
-  const mongoose = require('mongoose');
+vi.mock('@ajabadia/satellite-sdk', () => {
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
-    getTenantModel: (modelName: string, schema: any) =>
+    getTenantModel: (modelName: string, schema: mongoose.Schema) =>
       mongoose.models[modelName] || mongoose.model(modelName, schema),
     tenantStorage: { getStore: vi.fn(), run: vi.fn() },
   };

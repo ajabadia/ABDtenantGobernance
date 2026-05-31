@@ -8,7 +8,7 @@ vi.hoisted(() => {
 // Note: vi.mock calls are hoisted. Mock variables are created INSIDE the factory
 // and exported as named exports so they can be imported by tests below.
 
-vi.mock('@/lib/session', () => ({
+vi.mock('@ajabadia/satellite-sdk', () => ({
   ensureIndustrialAccess: vi.fn(async () => ({
     id: 'admin-user-id',
     tenantId: 'tenant-test-1',

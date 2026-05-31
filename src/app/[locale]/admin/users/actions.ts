@@ -15,6 +15,13 @@ export async function fetchUsersAction(tenantId: string): Promise<{ data?: IamUs
 
 export async function inviteUserAction(payload: InviteUserPayload) {
   try {
+    // 🚦 Rate limiting: max 30 invites per tenant per hour
+    const { rateLimitMongodb } = await import('@ajabadia/satellite-sdk');
+    const isAllowed = await rateLimitMongodb.check(payload.tenantId || 'global', 'api', 30, 3600);
+    if (!isAllowed) {
+      return { error: 'Demasiadas invitaciones. Intente más tarde.' };
+    }
+
     const user = await iamClient.inviteUser(payload);
     return { data: user };
   } catch (error: unknown) {

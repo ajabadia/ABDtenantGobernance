@@ -30,6 +30,15 @@ test.describe('SmartNavbar — Public Mode (ABDtenantGobernance)', () => {
     await expect(page.locator('[data-testid="navbar-menu-theme"]')).toBeVisible();
   });
 
+  test('should display app badge "GOV" next to the brand logo', async ({ page }) => {
+    await expect(page.locator('[data-testid="navbar-logo"]')).toContainText('GOV');
+  });
+
+  test('hamburger toggle should not be visible on desktop viewport', async ({ page }) => {
+    // The hamburger uses smart-navbar-mobile-only (display:none on md+)
+    await expect(page.locator('[data-testid="navbar-mobile-toggle"]')).not.toBeVisible();
+  });
+
   test('theme mega-menu: opens with all three options', async ({ page }) => {
     await page.locator('[data-testid="navbar-menu-theme"]').click();
     const dropdown = page.locator('[data-testid="navbar-dropdown"]');
@@ -54,7 +63,7 @@ test.describe('SmartNavbar — Public Mode (ABDtenantGobernance)', () => {
     await page.locator('[data-testid="navbar-dropdown"]').waitFor({ state: 'visible' });
 
     await page.locator('[data-testid="navbar-dropdown"] button', { hasText: 'ENGLISH' }).click();
-    await page.waitForURL(/\/en\//, { timeout: 10000 });
+    await page.waitForURL(/\/en(?:$|\/)/, { timeout: 10000 });
   });
 
   test('theme: apply dark mode', async ({ page }) => {
@@ -71,5 +80,72 @@ test.describe('SmartNavbar — Public Mode (ABDtenantGobernance)', () => {
 
     await page.keyboard.press('Escape');
     await expect(page.locator('[data-testid="navbar-dropdown"]')).not.toBeVisible({ timeout: 3000 });
+  });
+
+  test('theme mega-menu: clicking outside closes the menu', async ({ page }) => {
+    await page.locator('[data-testid="navbar-menu-theme"]').click();
+    await page.locator('[data-testid="navbar-dropdown"]').waitFor({ state: 'visible' });
+
+    // Dispatch mousedown directly to trigger handleClickOutside
+    // The dropdown covers main visually, so force:true alone doesn't dispatch properly
+    await page.evaluate(() =>
+      document.dispatchEvent(new MouseEvent('mousedown', { bubbles: true, clientX: 10, clientY: 10 }))
+    );
+
+    // Menu should close
+    await expect(page.locator('[data-testid="navbar-dropdown"]')).not.toBeVisible({ timeout: 3000 });
+  });
+});
+
+// ──────────────────────────────────────────
+//  Mobile Drawer Tests
+// ──────────────────────────────────────────
+
+test.describe('SmartNavbar — Mobile Drawer (ABDtenantGobernance)', () => {
+  test.use({ viewport: { width: 375, height: 667 } });
+
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/es', { waitUntil: 'networkidle' });
+    await page.waitForSelector('[data-testid="smart-navbar"]', { timeout: 20000 });
+  });
+
+  test('hamburger toggle is visible on mobile viewport', async ({ page }) => {
+    await expect(page.locator('[data-testid="navbar-mobile-toggle"]')).toBeVisible();
+  });
+
+  test('clicking hamburger opens and closes the mobile drawer', async ({ page }) => {
+    await page.locator('[data-testid="navbar-mobile-toggle"]').click();
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).toBeVisible();
+
+    await page.locator('[data-testid="navbar-mobile-toggle"]').click();
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).not.toBeVisible({ timeout: 3000 });
+  });
+
+  test('mobile drawer has correct accessibility attributes', async ({ page }) => {
+    await page.locator('[data-testid="navbar-mobile-toggle"]').click();
+    const drawer = page.locator('[data-testid="navbar-mobile-drawer"]');
+    await expect(drawer).toHaveAttribute('role', 'dialog');
+    await expect(drawer).toHaveAttribute('aria-modal', 'true');
+    await expect(drawer).toHaveAttribute('aria-label', 'Mobile navigation');
+  });
+
+  test('clicking backdrop closes the mobile drawer', async ({ page }) => {
+    await page.locator('[data-testid="navbar-mobile-toggle"]').click();
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).toBeVisible();
+
+    // Dispatch click on the backdrop element directly
+    await page.evaluate(() => {
+      const backdrop = document.querySelector('.fixed.inset-0');
+      if (backdrop instanceof HTMLElement) backdrop.click();
+    });
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).not.toBeVisible({ timeout: 3000 });
+  });
+
+  test('Escape key closes the mobile drawer', async ({ page }) => {
+    await page.locator('[data-testid="navbar-mobile-toggle"]').click();
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).toBeVisible();
+
+    await page.keyboard.press('Escape');
+    await expect(page.locator('[data-testid="navbar-mobile-drawer"]')).not.toBeVisible({ timeout: 3000 });
   });
 });

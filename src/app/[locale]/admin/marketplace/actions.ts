@@ -34,6 +34,13 @@ export async function fetchMarketplaceData(tenantId: string) {
 }
 
 export async function createLicenseRequestAction(tenantId: string, appId: string, comments: string) {
+  // 🚦 Rate limiting: max 20 license requests per tenant per hour
+  const { rateLimitMongodb } = await import('@ajabadia/satellite-sdk');
+  const isAllowed = await rateLimitMongodb.check(tenantId, 'api', 20, 3600);
+  if (!isAllowed) {
+    throw new Error('Demasiadas solicitudes. Intente más tarde.');
+  }
+
   await connectDB();
   const user = await ensureIndustrialAccess('ADMIN');
   

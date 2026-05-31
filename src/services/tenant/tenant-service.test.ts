@@ -1,15 +1,24 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { TenantService } from './tenant-service';
 
-// Mock repositories and services
-vi.mock('@/lib/repositories/TenantRepository', () => {
-  const mockFindByTenantId = vi.fn();
-  const mockFind = vi.fn();
-  const mockCreate = vi.fn();
-  const mockUpdate = vi.fn();
-  const mockFindOneAndUpdate = vi.fn();
-  const mockExec = vi.fn();
+// ─── Hoisted mock fns (shared between factory closures and test body) ───────
 
+const { mockFindByTenantId, mockFind, mockCreate, mockUpdate,
+        mockFindOneAndUpdate, mockExec, mockLogEvent, mockAggregate } =
+  vi.hoisted(() => ({
+    mockFindByTenantId: vi.fn(),
+    mockFind: vi.fn(),
+    mockCreate: vi.fn(),
+    mockUpdate: vi.fn(),
+    mockFindOneAndUpdate: vi.fn(),
+    mockExec: vi.fn(),
+    mockLogEvent: vi.fn(),
+    mockAggregate: vi.fn(),
+  }));
+
+// ─── Mocks ──────────────────────────────────────────────────────────────────
+
+vi.mock('@/lib/repositories/TenantRepository', () => {
   mockFindOneAndUpdate.mockReturnValue({ exec: mockExec });
 
   class MockTenantRepository {
@@ -33,7 +42,7 @@ vi.mock('@/lib/repositories/TenantRepository', () => {
   };
 });
 
-vi.mock('@/lib/security', () => {
+vi.mock('@ajabadia/satellite-sdk', () => {
   return {
     SecurityService: {
       encrypt: vi.fn((text: string) => `encrypted:${text}`),
@@ -43,7 +52,6 @@ vi.mock('@/lib/security', () => {
 });
 
 vi.mock('./audit-service', () => {
-  const mockLogEvent = vi.fn();
   return {
     AuditService: {
       logEvent: mockLogEvent,
@@ -53,7 +61,6 @@ vi.mock('./audit-service', () => {
 });
 
 vi.mock('@/models/Space', () => {
-  const mockAggregate = vi.fn();
   return {
     default: {
       aggregate: mockAggregate,
@@ -62,14 +69,7 @@ vi.mock('@/models/Space', () => {
   };
 });
 
-// Import mock references
-// @ts-expect-error - mock exports only exist in runtime mock
-import { mockFindByTenantId, mockFind, mockCreate, mockUpdate, mockFindOneAndUpdate, mockExec } from '@/lib/repositories/TenantRepository';
-// @ts-expect-error - mock exports only exist in runtime mock
-import { mockLogEvent } from './audit-service';
-import { SecurityService } from '@/lib/security';
-// @ts-expect-error - mock exports only exist in runtime mock
-import { mockAggregate } from '@/models/Space';
+import { SecurityService } from '@ajabadia/satellite-sdk';
 
 describe('TenantService', () => {
   beforeEach(() => {
@@ -308,7 +308,7 @@ describe('TenantService', () => {
   });
 
   describe('getAllTenants', () => {
-    it('should return all tenants with their decrypted taxId and spaceCount', async () => {
+    it('should return all tenants with decrypted taxId and spaceCount', async () => {
       const mockTenantList = [
         {
           _id: 'id-1',

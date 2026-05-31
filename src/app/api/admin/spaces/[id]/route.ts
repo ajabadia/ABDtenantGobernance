@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
-import { SpaceService } from '@/services/tenant/space-service';
+import { SpaceService, SpaceMoveService } from '@/services/tenant/space-service';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { withTenantContext } from '@ajabadia/satellite-sdk';
@@ -26,12 +26,12 @@ export async function PATCH(
       
       // 1. Move space if parent changed
       if (body.parentSpaceId !== undefined) {
-        await SpaceService.moveSpace(id, body.parentSpaceId || null, tenantId, user.id, user.email);
+        await SpaceMoveService.moveSpace(id, body.parentSpaceId || null, tenantId, user.id, user.email);
       }
 
       // 2. Propagate visibility recursively if cascade option is sent
       if (body.visibility !== undefined) {
-        await SpaceService.updateSpaceVisibility(id, body.visibility, tenantId, user.id, user.email, body.cascade === true);
+        await SpaceMoveService.updateSpaceVisibility(id, body.visibility, tenantId, user.id, user.email, body.cascade === true);
       }
       
       // 3. Update other fields

@@ -4,25 +4,11 @@ vi.hoisted(() => {
   process.env.MONGODB_URI = 'mongodb://test:27017/test';
 });
 
-// Mock database context
-vi.mock('@/lib/database/tenant-model', () => {
-  const mongoose = require('mongoose');
-  return {
-    withTenantContext: vi.fn(async (callback) => await callback()),
-    getTenantModel: (modelName: string, schema: any) =>
-      mongoose.models[modelName] || mongoose.model(modelName, schema),
-    tenantStorage: { getStore: vi.fn(), run: vi.fn() },
-  };
-});
-
-// Mock session
-vi.mock('@/lib/session', () => ({
+// Mock SDK context
+vi.mock('@ajabadia/satellite-sdk', () => ({
+  connectDB: vi.fn(async () => {}),
   ensureIndustrialAccess: vi.fn(async () => ({ id: 'admin-user-id', email: 'admin@test.com', role: 'ADMIN' })),
-}));
-
-// Mock database connection
-vi.mock('@/lib/database/mongodb', () => ({
-  default: vi.fn(async () => {}),
+  withTenantContext: vi.fn(async (callback) => await callback()),
 }));
 
 // Mock QuizUserRole model
@@ -84,9 +70,9 @@ vi.mock('@/services/tenant/tenant-service', () => ({
 import { mockFind, mockCreate, mockDeleteOne, mockInsertMany, mockSort, mockLean } from '@/models/QuizUserRole';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 
+import { fetchTenantRoleCustomizationAction } from './role-queries';
 import {
   fetchQuizRolesAction,
-  fetchTenantRoleCustomizationAction,
   assignQuizRoleAction,
   revokeQuizRoleAction,
   bulkAssignQuizRolesAction,
