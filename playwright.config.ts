@@ -32,14 +32,7 @@ export default defineConfig({
     },
   ],
 
-  webServer: {
-    command: 'pnpm dev',
-    url: 'http://localhost:3500',
-    reuseExistingServer: !process.env.CI,
-    timeout: 180000,
-    stderr: 'pipe',
-  },
-
-  /* 🔐 ABDAuth (port 3400) must be started separately for auth-dependent tests.
-     webServer only starts ABDtenantGobernance's own dev server. */
+  // NOTA: webServer eliminado — usa scripts/run-e2e.sh para arrancar
+  // el servidor manualmente (evita problemas con cmd.exe en Windows).
+  /* 🔐 ABDAuth (port 3400) must be started separately for auth-dependent tests. */
 });

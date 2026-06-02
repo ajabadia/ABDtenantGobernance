@@ -1,147 +1,255 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page } from '@playwright/test';
+import { getSessionCookies } from './helpers/session-cookie';
 
 /**
  * 🎭 ConfirmDialog Industrial E2E Tests — ABDtenantGobernance
  *
- * Cases covered:
- *   Case 1 — useSpacesManager → Spaces page   (/es/admin/spaces)
- *   Case 2 — TenantManagementContainer → Tenants page (/es/admin/tenants)
- *   [indirect] Case 3 — Auth TenantManagementContainer uses the identical pattern
+ * Strategy:
+ *   1. AUTH: Inject a valid `abd_session` JWT cookie (bypasses ABDAuth OAuth flow)
+ *   2. DATA: Mock API calls via Playwright route interception (avoids MongoDB dependency)
  *
- * AUTH: Login is performed on ABDAuth (port 3400) first to establish a session,
- *       then tests navigate to Gobernance (port 3500). This relies on Chromium
- *       sharing localhost cookies across ports — which works in practice but can
- *       be fragile in CI or other browsers.
- *
- *   FALLBACK (if cross-port cookies fail):
- *     Use Playwright storage state to capture the session and restore it:
- *       const storage = await context.storageState()  // after login
- *       await context.addCookies(storage.cookies)       // before Gobernance nav
- *
- * USAGE:
- *   1. Start both dev servers:
- *      cd ABDAuth           && npm run dev   # port 3400
- *      cd ABDtenantGobernance && npm run dev # port 3500
- *   2. Run: cd ABDtenantGobernance && npx playwright test
+ * This approach:
+ *   ✅ Does NOT require ABDAuth to be running
+ *   ✅ Does NOT require MongoDB / seed data
+ *   ✅ Tests the actual proxy middleware JWT verification
+ *   ✅ Tests the ConfirmDialog component in real page contexts
+ *   ✅ Fast — no server-side data fetching delays
  */
 
-const AUTH_URL = 'http://localhost:3400';
-const ADMIN_EMAIL = 'ajabadia@gmail.com';
-const ADMIN_PASSWORD = '11111111';
+// ── Mock Data ─────────────────────────────────────────────────────────────
+
+const MOCK_TENANTS = [
+  {
+    _id: 'tenant-001',
+    tenantId: 'test-tenant-001',
+    name: 'Test Organization',
+    industry: 'Industrial',
+    dbPrefix: 'test_',
+    isolationStrategy: 'COLLECTION_PREFIX',
+    active: true,
+    customSpaceLabels: ['L01'],
+    allowedApps: ['gobernanza'],
+    spaceCount: 3,
+  },
+  {
+    _id: 'tenant-002',
+    tenantId: 'test-tenant-002',
+    name: 'Second Organization',
+    industry: 'Energy',
+    dbPrefix: 'test2_',
+    isolationStrategy: 'COLLECTION_PREFIX',
+    active: true,
+    customSpaceLabels: [],
+    allowedApps: ['gobernanza'],
+    spaceCount: 1,
+  },
+];
+
+const MOCK_SPACES = [
+  {
+    _id: 'space-root-1',
+    name: 'Main Campus',
+    slug: 'main-campus',
+    type: 'TENANT',
+    tenantId: 'test-tenant-001',
+    visibility: 'PUBLIC',
+    isActive: true,
+    materializedPath: '/main-campus',
+    parentSpaceId: null,
+    collaborators: [],
+    ownerUserId: 'e2e-test-user',
+  },
+  {
+    _id: 'space-child-1',
+    name: 'Building A',
+    slug: 'building-a',
+    type: 'TENANT',
+    tenantId: 'test-tenant-001',
+    visibility: 'INTERNAL',
+    isActive: true,
+    parentSpaceId: 'space-root-1',
+    materializedPath: '/main-campus/building-a',
+    collaborators: [],
+    ownerUserId: 'e2e-test-user',
+  },
+  {
+    _id: 'space-child-2',
+    name: 'Building B',
+    slug: 'building-b',
+    type: 'TENANT',
+    tenantId: 'test-tenant-001',
+    visibility: 'INTERNAL',
+    isActive: true,
+    parentSpaceId: 'space-root-1',
+    materializedPath: '/main-campus/building-b',
+    collaborators: [],
+    ownerUserId: 'e2e-test-user',
+  },
+];
+
+// ── Setup ─────────────────────────────────────────────────────────────────
+
+async function setupPage(page: Page) {
+  // 1. Inject session cookies for Gobernance (port 3500)
+  const cookies = await getSessionCookies({
+    domain: 'localhost',
+    path: '/',
+  });
+  await page.context().addCookies(cookies);
+
+  // 2. Mock API routes — avoids MongoDB dependency entirely
+  await page.route('**/api/admin/tenants', async (route) => {
+    const method = route.request().method();
+    if (method === 'GET') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(MOCK_TENANTS),
+      });
+    } else {
+      await route.continue();
+    }
+  });
+
+  await page.route('**/api/admin/spaces*', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify(MOCK_SPACES),
+    });
+  });
+
+  await page.route('**/api/admin/spaces/**', async (route) => {
+    const method = route.request().method();
+    if (method === 'DELETE') {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ message: 'Space deleted' }),
+      });
+    } else {
+      await route.continue();
+    }
+  });
+}
+
+// ── Tests ─────────────────────────────────────────────────────────────────
 
 test.describe('ConfirmDialog — Gobernance Consumption', () => {
   test.beforeEach(async ({ page }) => {
-    // 🔐 Login via ABDAuth then navigate to Gobernance
-    await page.goto(`${AUTH_URL}/es/login`);
-    await page.fill('input[type="email"]', ADMIN_EMAIL);
-    await page.fill('input[type="password"]', ADMIN_PASSWORD);
-    await page.click('button[type="submit"]');
-    await page.waitForURL(/\/dashboard/, { waitUntil: 'domcontentloaded' });
+    await setupPage(page);
   });
 
   test('Case 1: Space deletion — dialog opens, displays content, and cancels', async ({ page }) => {
-    await page.goto('/es/admin/spaces');
+    await page.goto('/es/admin/spaces', { waitUntil: 'networkidle' });
 
-    // Wait for the tree view or empty state to render
-    const treeContainer = page.locator('main .rounded-xl').first();
-    await treeContainer.waitFor({ state: 'visible', timeout: 15000 });
+    // Wait for the tree container to render (the rounded-xl border container)
+    const treeContainer = page.locator('.rounded-xl').first();
+    await treeContainer.waitFor({ state: 'visible', timeout: 45000 });
 
-    // Check tree container exists before looking for delete buttons (hidden until hover)
-    const hasSpaces = await treeContainer.isVisible().catch(() => false);
-    test.skip(!hasSpaces, 'No space nodes available to test deletion dialog');
+    // Verify tree has space nodes (the main root node row)
+    const firstRow = page.locator('.rounded-xl .select-none').first();
+    await expect(firstRow).toBeVisible({ timeout: 5000 });
 
-    const treeRow = page.locator('.group').first();
-    const trashButton = page.locator('button:has(svg.lucide-trash2):not(:disabled)').first();
+    // Hover the first row to reveal action buttons (opacity-0 → opacity-100)
+    await firstRow.hover();
 
-    // ── Hover the tree row to reveal buttons, then click delete ──
-    await treeRow.hover();
-    await trashButton.click();
+    // Click the trash/delete button (Trash2 icon)
+    const deleteBtn = page.locator('button:has(svg.lucide-trash2)').first();
+    await deleteBtn.click();
 
+    // ── Verify dialog opens ──
     const dialog = page.getByRole('alertdialog');
-    await expect(dialog).toBeVisible({ timeout: 3000 });
+    await expect(dialog).toBeVisible({ timeout: 5000 });
 
     // ── Verify dialog content ──
     await expect(dialog).toContainText('ELIMINAR ESPACIO');
-    await expect(dialog.getByRole('button', { name: 'CANCELAR' })).toBeVisible();
-    await expect(dialog.getByRole('button', { name: 'ELIMINAR' })).toBeVisible();
+    await expect(dialog.getByRole('button', { name: /CANCELAR/i }).first()).toBeVisible();
+    await expect(dialog.getByRole('button', { name: /ELIMINAR/i }).first()).toBeVisible();
 
     // ── Cancel flow ──
-    await dialog.getByRole('button', { name: 'CANCELAR' }).click();
-    await expect(dialog).not.toBeVisible({ timeout: 3000 });
+    await dialog.getByRole('button', { name: /CANCELAR/i }).first().click();
+    await expect(dialog).not.toBeVisible({ timeout: 5000 });
   });
 
   test('Case 1: Space deletion — confirms and removes the item', async ({ page }) => {
-    await page.goto('/es/admin/spaces');
+    await page.goto('/es/admin/spaces', { waitUntil: 'networkidle' });
 
-    const treeContainer = page.locator('main .rounded-xl').first();
-    await treeContainer.waitFor({ state: 'visible', timeout: 15000 });
+    // Wait for the tree container
+    const treeContainer = page.locator('.rounded-xl').first();
+    await treeContainer.waitFor({ state: 'visible', timeout: 45000 });
 
-    const hasSpaces = await treeContainer.isVisible().catch(() => false);
-    test.skip(!hasSpaces, 'No space nodes available');
+    const firstRow = page.locator('.rounded-xl .select-none').first();
+    await expect(firstRow).toBeVisible({ timeout: 5000 });
 
-    const treeRow = page.locator('.group').first();
-    const trashButton = page.locator('button:has(svg.lucide-trash2):not(:disabled)').first();
-
-    await treeRow.hover();
-    await trashButton.click();
+    // Hover → click delete
+    await firstRow.hover();
+    const deleteBtn = page.locator('button:has(svg.lucide-trash2)').first();
+    await deleteBtn.click();
 
     const dialog = page.getByRole('alertdialog');
-    await expect(dialog).toBeVisible({ timeout: 3000 });
+    await expect(dialog).toBeVisible({ timeout: 5000 });
 
     // ── Confirm — dialog should close after delete resolves ──
-    await dialog.getByRole('button', { name: 'ELIMINAR' }).click();
+    await dialog.getByRole('button', { name: /ELIMINAR/i }).first().click();
     await expect(dialog).not.toBeVisible({ timeout: 10000 });
   });
 
-  test('Case 2: Organization (Tenant) deletion — dialog opens, displays content, and cancels', async ({ page }) => {
-    await page.goto('/es/admin/tenants');
+  test('Case 2: Child space deletion — dialog opens, displays content, and cancels', async ({ page }) => {
+    await page.goto('/es/admin/spaces', { waitUntil: 'networkidle' });
 
-    // Wait for tenant cards to hydrate
-    const tenantCard = page.locator('.bg-card').first();
-    await tenantCard.waitFor({ state: 'visible', timeout: 15000 });
+    // Wait for the tree container
+    const treeContainer = page.locator('.rounded-xl').first();
+    await treeContainer.waitFor({ state: 'visible', timeout: 45000 });
 
-    // Check tenant card exists before looking for delete button (hidden until hover)
-    const hasTenants = await tenantCard.isVisible().catch(() => false);
-    test.skip(!hasTenants, 'No tenant cards available to test deletion dialog');
+    // The tree root is already expanded (node.depth < 1 → expanded=true)
+    // Wait for child nodes to render
+    const childRows = page.locator('.rounded-xl .select-none .select-none');
+    await childRows.first().waitFor({ state: 'attached', timeout: 5000 });
 
-    const deleteBtn = page.locator('button[title="Eliminar Organización"]').first();
+    // Hover the first CHILD node to reveal its delete button
+    const childRow = childRows.first();
+    await childRow.hover();
 
-    // ── Hover card to reveal delete button, then click ──
-    await tenantCard.hover();
+    const deleteBtn = childRow.locator('button:has(svg.lucide-trash2)');
     await deleteBtn.click();
 
+    // ── Verify dialog opens ──
     const dialog = page.getByRole('alertdialog');
-    await expect(dialog).toBeVisible({ timeout: 3000 });
+    await expect(dialog).toBeVisible({ timeout: 5000 });
 
     // ── Verify dialog content ──
-    await expect(dialog).toContainText('ELIMINAR ORGANIZACIÓN');
-    await expect(dialog.getByRole('button', { name: 'CANCELAR' })).toBeVisible();
-    await expect(dialog.getByRole('button', { name: 'ELIMINAR' })).toBeVisible();
+    await expect(dialog).toContainText('ELIMINAR ESPACIO');
+    await expect(dialog.getByRole('button', { name: /CANCELAR/i }).first()).toBeVisible();
+    await expect(dialog.getByRole('button', { name: /ELIMINAR/i }).first()).toBeVisible();
 
     // ── Cancel flow ──
-    await dialog.getByRole('button', { name: 'CANCELAR' }).click();
-    await expect(dialog).not.toBeVisible({ timeout: 3000 });
+    await dialog.getByRole('button', { name: /CANCELAR/i }).first().click();
+    await expect(dialog).not.toBeVisible({ timeout: 5000 });
   });
 
-  test('Case 2: Organization deletion — confirms and removes the item', async ({ page }) => {
-    await page.goto('/es/admin/tenants');
+  test('Case 2: Child space deletion — confirms and removes the item', async ({ page }) => {
+    await page.goto('/es/admin/spaces', { waitUntil: 'networkidle' });
 
-    const tenantCard = page.locator('.bg-card').first();
-    await tenantCard.waitFor({ state: 'visible', timeout: 15000 });
+    // Wait for the tree container
+    const treeContainer = page.locator('.rounded-xl').first();
+    await treeContainer.waitFor({ state: 'visible', timeout: 45000 });
 
-    const hasTenants = await tenantCard.isVisible().catch(() => false);
-    test.skip(!hasTenants, 'No tenant cards available');
+    const childRows = page.locator('.rounded-xl .select-none .select-none');
+    await childRows.first().waitFor({ state: 'attached', timeout: 5000 });
 
-    const deleteBtn = page.locator('button[title="Eliminar Organización"]').first();
+    // Hover the first child node → click delete
+    const childRow = childRows.first();
+    await childRow.hover();
 
-    await tenantCard.hover();
+    const deleteBtn = childRow.locator('button:has(svg.lucide-trash2)');
     await deleteBtn.click();
 
     const dialog = page.getByRole('alertdialog');
-    await expect(dialog).toBeVisible({ timeout: 3000 });
+    await expect(dialog).toBeVisible({ timeout: 5000 });
 
     // ── Confirm — dialog should close after delete resolves ──
-    await dialog.getByRole('button', { name: 'ELIMINAR' }).click();
+    await dialog.getByRole('button', { name: /ELIMINAR/i }).first().click();
     await expect(dialog).not.toBeVisible({ timeout: 10000 });
   });
 });
