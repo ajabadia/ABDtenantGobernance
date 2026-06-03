@@ -16,7 +16,7 @@
   "pnpm": {
     "onlyBuiltDependencies": [],
     "overrides": {
-      "ecosystem-widgets": "link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets",
+      "@ajabadia/ecosystem-widgets": "link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets",
       "@ajabadia/satellite-sdk": "link:../ABDSatelliteSDK"
     }
   },
@@ -28,7 +28,6 @@
     "class-variance-authority": "^0.7.1",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
-    "ecosystem-widgets": "link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets",
     "lucide-react": "^1.16.0",
     "mongoose": "^9.6.2",
     "next": "16.2.6",
