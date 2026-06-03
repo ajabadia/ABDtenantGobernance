@@ -5,7 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@ajabadia/ecosystem-widgets': link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets
+  '@ajabadia/ecosystem-widgets': link:../ABDEcosystemWidgets
   '@ajabadia/satellite-sdk': link:../ABDSatelliteSDK
 
 importers:
@@ -13,8 +13,8 @@ importers:
   .:
     dependencies:
       '@ajabadia/ecosystem-widgets':
-        specifier: link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets
-        version: link:C:/Users/ajaba/AppData/Local/pnpm/global/5/node_modules/@ajabadia/ecosystem-widgets
+        specifier: link:../ABDEcosystemWidgets
+        version: link:../ABDEcosystemWidgets
       '@ajabadia/satellite-sdk':
         specifier: link:../ABDSatelliteSDK
         version: 1.0.9(@ajabadia/styles@1.0.15(lucide-react@1.16.0(react@19.2.4))(next-intl@4.12.0(next@16.2.6(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react@19.2.4)(typescript@5.9.3))(react@19.2.4))(next@16.2.6(@babel/core@7.29.0)(@playwright/test@1.60.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4))(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
