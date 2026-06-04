@@ -1,5 +1,6 @@
 'use client';
 
+import { useCallback, useRef } from 'react';
 import { Shield, FileText } from 'lucide-react';
 
 interface PermissionsTabBarProps {
@@ -9,15 +10,37 @@ interface PermissionsTabBarProps {
   policiesCount: number;
 }
 
+const TAB_IDS: ('groups' | 'policies')[] = ['groups', 'policies'];
+
 export function PermissionsTabBar({ activeTab, onTabChange, groupsCount, policiesCount }: PermissionsTabBarProps) {
+  const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+
+  const handleKeyDown = useCallback((e: React.KeyboardEvent, currentTab: 'groups' | 'policies') => {
+    let nextIndex: number;
+    if (e.key === 'ArrowRight') {
+      nextIndex = (TAB_IDS.indexOf(currentTab) + 1) % TAB_IDS.length;
+    } else if (e.key === 'ArrowLeft') {
+      nextIndex = (TAB_IDS.indexOf(currentTab) - 1 + TAB_IDS.length) % TAB_IDS.length;
+    } else {
+      return;
+    }
+    e.preventDefault();
+    const nextTab = TAB_IDS[nextIndex];
+    onTabChange(nextTab);
+    tabRefs.current[nextTab]?.focus();
+  }, [onTabChange]);
+
   return (
-    <div className="flex border-b border-border gap-0" role="tablist">
+    <div className="flex border-b border-border gap-0" role="tablist" aria-label="Permissions tabs">
       <button
+        ref={(el) => { tabRefs.current['groups'] = el; }}
         role="tab"
         aria-selected={activeTab === 'groups'}
         aria-label="Groups tab"
         onClick={() => onTabChange('groups')}
-        className={`px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+        onKeyDown={(e) => handleKeyDown(e, 'groups')}
+        tabIndex={activeTab === 'groups' ? 0 : -1}
+        className={`px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest transition-colors border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
           activeTab === 'groups' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
         }`}
       >
@@ -27,11 +50,14 @@ export function PermissionsTabBar({ activeTab, onTabChange, groupsCount, policie
         </span>
       </button>
       <button
+        ref={(el) => { tabRefs.current['policies'] = el; }}
         role="tab"
         aria-selected={activeTab === 'policies'}
         aria-label="Policies tab"
         onClick={() => onTabChange('policies')}
-        className={`px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest transition-colors border-b-2 -mb-px ${
+        onKeyDown={(e) => handleKeyDown(e, 'policies')}
+        tabIndex={activeTab === 'policies' ? 0 : -1}
+        className={`px-6 py-3 font-mono text-[10px] font-black uppercase tracking-widest transition-colors border-b-2 -mb-px focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 ${
           activeTab === 'policies' ? 'border-primary text-primary' : 'border-transparent text-muted-foreground hover:text-foreground'
         }`}
       >

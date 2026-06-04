@@ -1,10 +1,11 @@
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
-import { LayoutDashboard } from 'lucide-react';
+import { LayoutDashboard, ArrowLeft } from 'lucide-react';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 import { DashboardCardsGrid } from '@/components/admin/dashboard/DashboardCardsGrid';
 import { AdminPageHeader } from '@ajabadia/styles';
 import { GlobalFooter } from '@ajabadia/ecosystem-widgets';
+import Link from 'next/link';
 
 /**
  * 🛰️ Central Admin Governance Portal Page (Federated Server Component)
@@ -40,6 +41,15 @@ export default async function AdminPortalPage({
     <main className="min-h-screen bg-background text-foreground pb-12 px-6 md:px-12 selection:bg-primary/30 relative z-10" role="main">
       <div className="max-w-7xl mx-auto flex flex-col gap-10">
         
+        {/* Back to home */}
+        <Link
+          href={`/${locale}`}
+          className="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors w-fit"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" />
+          {locale === 'es' ? 'Volver a Inicio' : 'Back to Home'}
+        </Link>
+
         {/* Header */}
         <AdminPageHeader
           icon={LayoutDashboard}
