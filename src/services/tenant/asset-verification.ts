@@ -7,9 +7,9 @@ import AssetSpaceLink from '@/models/AssetSpaceLink';
 export async function verifyAssetSovereignty(tenantId: string, assetId: string): Promise<boolean> {
   let url = '';
   if (assetId.startsWith('quiz-')) {
-    url = `http://localhost:3300/api/internal/assets/verify?tenantId=${tenantId}&assetId=${assetId}`;
+    url = `http://localhost:5020/api/internal/assets/verify?tenantId=${tenantId}&assetId=${assetId}`;
   } else if (assetId.startsWith('doc-') || assetId.startsWith('corpus-')) {
-    url = `http://localhost:3800/api/internal/assets/verify?tenantId=${tenantId}&assetId=${assetId}`;
+    url = `http://localhost:5005/api/internal/assets/verify?tenantId=${tenantId}&assetId=${assetId}`;
   } else {
     if (process.env.NODE_ENV !== 'production') {
       return assetId.startsWith('test-') || assetId.startsWith('demo-') || assetId.length > 5;

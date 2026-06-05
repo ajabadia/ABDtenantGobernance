@@ -31,7 +31,7 @@ export interface UpdateUserPayload {
 
 export class IamClient {
   private get baseUrl() {
-    return process.env.AUTH_PROVIDER_URL || 'http://localhost:3400';
+    return process.env.AUTH_PROVIDER_URL || 'http://localhost:5001';
   }
 
   private get headers() {

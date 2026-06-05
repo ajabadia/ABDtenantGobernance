@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3500 --webpack",
+    "dev": "next dev -p 5002 --webpack",
     "prebuild": "node ./scripts/clean-quiz.js",
     "build": "next build --webpack",
     "start": "next start",

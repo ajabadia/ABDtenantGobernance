@@ -100,6 +100,7 @@ export function TenantBrandingForm({ tenantId, initialBranding, initialRoleCusto
 
         <div className="flex items-center gap-4 mt-2">
           <button type="submit" disabled={isPending}
+            aria-label={isPending ? 'Guardando marca blanca del tenant' : 'Propagar marca blanca del tenant'}
             className="flex items-center justify-center gap-2 bg-primary hover:bg-primary/80 text-primary-foreground font-bold text-xs py-2.5 px-6 rounded transition-all duration-200 cursor-pointer disabled:opacity-50"
           >
             {isPending ? <RefreshCw size={14} className="animate-spin" /> : <Check size={14} />}
