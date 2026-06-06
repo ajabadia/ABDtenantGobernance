@@ -1,4 +1,4 @@
-import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap } from 'lucide-react';
+import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap, Cloud } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 
 interface DashboardCardsGridProps {
@@ -80,6 +80,16 @@ export function DashboardCardsGrid({ locale, tenantQuery, adminT, portalT }: Das
         footerValue={portalT('activo')}
         buttonText={adminT('marketplace.title')}
         href={`/${locale}/admin/marketplace${tenantQuery}`}
+      />
+      <DashboardActionCard
+        icon={Cloud}
+        category={locale === 'es' ? 'Almacenamiento' : 'Storage'}
+        title={locale === 'es' ? 'Proveedores de Almacenamiento' : 'Storage Providers'}
+        description={locale === 'es' ? 'Configura credenciales S3, Cloudinary o Drive para la gestión documental de tu organización.' : 'Configure S3, Cloudinary or Drive credentials for document management.'}
+        footerLabel={locale === 'es' ? 'Motores de Persistencia' : 'Persistence Engines'}
+        footerValue={portalT('activo')}
+        buttonText={locale === 'es' ? 'Configurar Proveedores' : 'Configure Providers'}
+        href={`/${locale}/admin/connectors${tenantQuery}`}
       />
     </div>
   )
