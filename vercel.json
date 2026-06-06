@@ -1,4 +1,5 @@
 {
+  "installCommand": "pnpm install --no-frozen-lockfile",
   "env": {
     "RESEND_API_KEY": "re_jJT76ccQ_BpkeHBxKcttPZ9ZM93A1yd1a",
     "RESEND_FROM_EMAIL": "ABD RAG Platform <noreply@resend.dev>"
