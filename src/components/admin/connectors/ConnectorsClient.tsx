@@ -37,10 +37,21 @@ const CREDENTIALS_TEMPLATES = {
     bucket: 'your-bucket-name'
   }, null, 2),
   googleDrive: JSON.stringify({
-    isMock: true
+    type: 'service_account',
+    project_id: 'your-gcp-project-id',
+    private_key_id: 'your-private-key-id',
+    private_key: '-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----\n',
+    client_email: 'your-sa@your-project.iam.gserviceaccount.com',
+    client_id: 'your-client-id',
+    auth_uri: 'https://accounts.google.com/o/oauth2/auth',
+    token_uri: 'https://oauth2.googleapis.com/token',
+    folderId: 'optional-target-folder-id'
   }, null, 2),
   oneDrive: JSON.stringify({
-    isMock: true
+    clientId: 'your-azure-app-client-id',
+    clientSecret: 'your-azure-app-client-secret',
+    tenantId: 'your-azure-ad-tenant-id',
+    driveId: 'optional-specific-drive-id'
   }, null, 2)
 };
 
@@ -194,7 +205,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                     {type === 's3Compatible' ? 'S3 Compatible' : type}
                   </span>
                   <span className="text-[9px] font-mono opacity-80">
-                    {type === 's3Compatible' || type === 'cloudinary' ? 'Production Ready' : 'Mock/Sandbox'}
+                    {type === 'googleDrive' || type === 'oneDrive' ? 'OAuth2 / Graph API' : 'Production Ready'}
                   </span>
                 </button>
               ))}
