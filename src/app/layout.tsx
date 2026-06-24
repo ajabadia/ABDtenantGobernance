@@ -11,8 +11,14 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { getLocale } from "next-intl/server";
-import { getIndustrialSession, BrandingStyles } from "@ajabadia/satellite-sdk";
+import { getIndustrialSession, BrandingStyles, configureLogger } from "@ajabadia/satellite-sdk";
 import { SessionProvider } from "@ajabadia/satellite-sdk/client";
+
+configureLogger({
+  endpoint: process.env.LOGS_SERVICE_URL || 'http://localhost:5003/api/logs',
+  token: process.env.LOGS_SECRET_TOKEN,
+  appId: 'ABDGovernance',
+});
 import { ThemeProvider } from "@/components/ThemeProvider";
 import "@ajabadia/styles/dist/styles/industrial-core.css";
 import "./globals.css";
