@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona operaciones de base de datos para modelos de Mongoose.
+ * @purpose_en Manages database operations for Mongoose models.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:18a4n5c
+ * @lastUpdated 2026-06-23T21:47:10.998Z
+ */
+
 import { Document, Model } from 'mongoose';
 import type { QueryFilter, UpdateQuery } from 'mongoose';
 

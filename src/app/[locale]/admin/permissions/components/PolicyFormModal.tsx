@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un modal para crear políticas con formularios de entrada y maneja el proceso de creación.
+ * @purpose_en Renders a modal for creating policies with form inputs and handles the creation process.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:16d86e3
+ * @lastUpdated 2026-06-23T20:38:49.306Z
+ */
+
 import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { X, FileText } from 'lucide-react';

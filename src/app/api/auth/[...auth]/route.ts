@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona rutas de autenticación para la aplicación ABDtenantGobernance utilizando la biblioteca Satellite SDK.
+ * @purpose_en Handles authentication routes for the ABDtenantGobernance application using the Satellite SDK.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:2,imports:2,sig:1jut9dq
+ * @lastUpdated 2026-06-23T20:36:36.599Z
+ */
+
 import type { NextRequest, NextResponse } from 'next/server';
 import { createAuthRouteHandler } from '@ajabadia/satellite-sdk';
 

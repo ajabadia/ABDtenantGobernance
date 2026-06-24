@@ -1,3 +1,13 @@
+/**
+ * @purpose Valida y define esquemas para membresías de grupos de usuarios y roles delegados dentro de un inquilino.
+ * @purpose_en Validates and defines schemas for user group memberships and delegated roles within a tenant.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:4,imports:2,sig:1swcdr9
+ * @lastUpdated 2026-06-23T21:47:39.053Z
+ */
+
 import { z } from 'zod';
 import { TenantIdSchema } from './tenant';
 

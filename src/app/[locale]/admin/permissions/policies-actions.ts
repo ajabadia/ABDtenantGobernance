@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona políticas de permisos para inquilinos mediante la recuperación y creación de políticas.
+ * @purpose_en Manages permission policies for tenants by fetching and creating policies.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:6,sig:9siznj
+ * @lastUpdated 2026-06-23T20:39:22.336Z
+ */
+
 'use server'
 
 import { connectDB } from '@ajabadia/satellite-sdk';

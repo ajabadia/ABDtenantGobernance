@@ -1,3 +1,15 @@
+/**
+ * @purpose Renders a grid of action cards for the admin dashboard, each card representing different administrative actions or settings.
+
+Se renderiza una grilla de tarjetas de acción para el panel administrativo, cada tarjeta representando diferentes acciones o configuraciones administrativas.
+ * @purpose_en Renders a grid of action cards for the admin dashboard, each card representing different administrative actions or settings.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:i8dep6
+ * @lastUpdated 2026-06-23T21:44:51.271Z
+ */
+
 import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap, Cloud } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 

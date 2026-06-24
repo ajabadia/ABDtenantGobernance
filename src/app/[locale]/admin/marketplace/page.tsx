@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página del mercado para administradores, mostrando una grilla de aplicaciones permitidas y solicitudes pendientes.
+ * @purpose_en Renders the marketplace page for administrators, displaying a grid of allowed applications and pending requests.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:9,sig:1ayz7tg
+ * @lastUpdated 2026-06-23T20:37:51.381Z
+ */
+
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { ShoppingBag, ArrowLeft } from 'lucide-react';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza el layout raíz para la aplicación de Administración de Gobernanza del ABDtenant, proporcionando gestión de ubicación y sesión, personalización de tema y estilos de marca.
+ * @purpose_en Renders the root layout for the ABDtenantGobernance application, providing locale and session management, theme customization, and branding styles.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:2,imports:8,sig:px476a
+ * @lastUpdated 2026-06-23T20:36:56.352Z
+ */
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { getLocale } from "next-intl/server";

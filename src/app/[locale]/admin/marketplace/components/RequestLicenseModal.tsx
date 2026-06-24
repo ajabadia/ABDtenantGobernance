@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona un modal para solicitar una licencia con campos de comentarios y maneja el proceso de envío.
+ * @purpose_en Renders a modal for requesting a license with input fields for comments and handles the submission process.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:um9z2w
+ * @lastUpdated 2026-06-23T20:37:40.933Z
+ */
+
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { createLicenseRequestAction } from '../actions';

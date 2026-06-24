@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un esquema de mongoose y modelo para administrar grupos de permisos dentro de un inquilino en el proyecto ABDSuite.
+ * @purpose_en Defines a Mongoose schema and model for managing permission groups within a tenant in the ABDSuite project.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:pkfk7y
+ * @lastUpdated 2026-06-23T21:51:34.646Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

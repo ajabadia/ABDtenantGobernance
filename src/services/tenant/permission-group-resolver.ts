@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el manejo de permisos efectivos y aplicaciones para grupos de inquilinos, manejando jerarquías recursivas.
+ * @purpose_en Manages the resolution of effective permissions and applications for tenant groups, handling recursive hierarchies.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:3,sig:p00svs
+ * @lastUpdated 2026-06-23T23:28:48.829Z
+ */
+
 import { PermissionPolicySchema, type PermissionPolicy } from '@/lib/schemas/permissions';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
 import { PermissionPolicyRepository } from '@/lib/repositories/PermissionPolicyRepository';

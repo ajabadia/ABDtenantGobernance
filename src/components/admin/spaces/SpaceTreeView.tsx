@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona una vista de árbol de espacios con funcionalidades para editar, eliminar, agregar hijos, gestionar colaboradores y gestionar activos.
+ * @purpose_en Renders a tree view of spaces with functionalities to edit, delete, add children, manage collaborators, and manage assets.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:2,imports:5,sig:1kyekku
+ * @lastUpdated 2026-06-23T21:45:30.835Z
+ */
+
 import { useMemo } from 'react';
 import { useTranslations } from 'next-intl';
 import { Folder, LayoutGrid } from 'lucide-react';

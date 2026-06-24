@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza un componente de tarjeta personalizable con secciones como encabezado, título, descripción, acción, contenido y pie de página.
+ * @purpose_en Renders a customizable card component with various sections like header, title, description, action, content, and footer.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:0,imports:2,sig:icprk1
+ * @lastUpdated 2026-06-23T21:46:26.214Z
+ */
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"

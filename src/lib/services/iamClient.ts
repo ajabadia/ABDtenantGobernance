@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona datos del usuario y operaciones dentro del sistema IAM, incluyendo listar usuarios, invitar nuevos usuarios y actualizar usuarios existentes.
+ * @purpose_en Manages user data and operations within the IAM system, including listing users, inviting new users, and updating existing users.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:5,imports:0,sig:kk9ayi
+ * @lastUpdated 2026-06-23T21:47:53.466Z
+ */
+
 export interface IamUser {
   _id: string;
   email: string;

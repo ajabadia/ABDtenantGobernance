@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y recupera registros de auditoría para inquilinos.
+ * @purpose_en Manages and retrieves audit logs for tenants.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:1md0flp
+ * @lastUpdated 2026-06-23T23:28:43.819Z
+ */
+
 import { connectLogsDB } from '@ajabadia/satellite-sdk';
 import { getAuditLogModel, IAuditLog } from '@/models/AuditLog';
 import { logger } from '@ajabadia/satellite-sdk';

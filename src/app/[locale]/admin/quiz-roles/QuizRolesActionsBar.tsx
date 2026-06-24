@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una barra de herramientas con botones para refrescar roles de quiz, asignar roles individuales y asignar roles en masa.
+ * @purpose_en Renders a toolbar with buttons for refreshing quiz roles, assigning individual roles, and bulk assigning roles.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1p5epy5
+ * @lastUpdated 2026-06-23T21:42:14.000Z
+ */
+
 import { RefreshCw, Plus, UserPlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

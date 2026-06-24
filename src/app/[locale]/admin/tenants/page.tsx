@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página administrativa para el manejo de inquilinos, incluyendo una lista y interfaz de gestión.
+ * @purpose_en Renders the admin page for managing tenants, including a list and management interface.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:10,sig:1vgilbd
+ * @lastUpdated 2026-06-23T21:42:51.406Z
+ */
+
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página de inicio para la aplicación ABDtenantGobernance, incluyendo un encabezado, botones de llamada a la acción y pie de página con información de telemetry.
+ * @purpose_en Renders the home page for the ABDtenantGobernance application, including a header, CTA buttons, and footer with telemetry information.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:5,sig:kj1jzw
+ * @lastUpdated 2026-06-23T21:43:51.902Z
+ */
+
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, ShieldCheck, Palette, Layers } from 'lucide-react';
 import { HeroHeader } from '@ajabadia/styles';

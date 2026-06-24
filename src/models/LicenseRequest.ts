@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un esquema de mongoose y modelo para el manejo de solicitudes de licencia en la aplicación de gobernanza del tenant ABDSuite.
+ * @purpose_en Defines a Mongoose schema and model for managing license requests in the ABDSuite tenant governance application.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:431t4o
+ * @lastUpdated 2026-06-23T21:51:30.249Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ILicenseRequest extends Document {

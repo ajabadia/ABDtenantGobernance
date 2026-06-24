@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una lista de resultados de búsqueda para colaboradores, incluyendo grupos y usuarios, con opciones para agregarlos.
+ * @purpose_en Renders a list of search results for collaborators, including groups and users, with options to add them.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:xmm19x
+ * @lastUpdated 2026-06-23T21:45:00.455Z
+ */
+
 import { Search, X, User, Shield } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

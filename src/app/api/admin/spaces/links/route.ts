@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona enlaces de activos entre espacios y activos en el sistema de gobernanza del tenant ABDSuite.
+ * @purpose_en Manages asset links between spaces and assets in the ABDSuite tenant governance system.
+ * @refactorable true (contains multiple API endpoints and business logic)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:3,imports:5,sig:e6yb51
+ * @lastUpdated 2026-06-23T23:27:09.551Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { AssetLinkService } from '@/services/tenant/asset-link-service';

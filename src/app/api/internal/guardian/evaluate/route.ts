@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona la evaluación de acciones del usuario contra recursos dentro de un inquilino utilizando el GuardianEngine.
+ * @purpose_en Handles the evaluation of user actions against resources within a tenant using the GuardianEngine.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:1qz9rtw
+ * @lastUpdated 2026-06-23T20:36:42.388Z
+ */
+
 import { NextResponse } from 'next/server';
 import { GuardianEngine } from '@/services/guardian/guardian-engine';
 import { connectDB } from '@ajabadia/satellite-sdk';

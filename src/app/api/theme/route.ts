@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona la generación dinámica del CSS para whitelabeling según las configuraciones de los inquilinos.
+ * @purpose_en Handles dynamic CSS generation for whitelabeling based on tenant configurations.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:4,sig:1codblb
+ * @lastUpdated 2026-06-23T23:27:39.974Z
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

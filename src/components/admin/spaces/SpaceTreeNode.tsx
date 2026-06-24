@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un nodo de árbol para espacios en la interfaz administrativa, gestionando la expansión, edición, eliminación y gestión de colaboradores/activos.
+ * @purpose_en Renders a tree node for spaces in the admin interface, handling expansion, editing, deletion, and managing collaborators/assets.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:1pm5j05
+ * @lastUpdated 2026-06-23T21:45:26.479Z
+ */
+
 import { useState } from 'react';
 import { ChevronRight, ChevronDown, Folder, FolderOpen, Pencil, Trash2, Plus, Users, FileText } from 'lucide-react';
 import { useTranslations } from 'next-intl';

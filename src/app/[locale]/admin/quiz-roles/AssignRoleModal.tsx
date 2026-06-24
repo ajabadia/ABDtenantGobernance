@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un modal para asignar roles a usuarios en la sección de roles del panel administrativo.
+ * @purpose_en Renders a modal for assigning roles to users in the quiz-roles section of the admin panel.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:7,sig:15qibky
+ * @lastUpdated 2026-06-23T20:39:39.383Z
+ */
+
 import { GraduationCap } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type RoleLiteralsMap } from '@ajabadia/styles';

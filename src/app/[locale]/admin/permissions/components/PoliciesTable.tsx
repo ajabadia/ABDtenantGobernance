@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una tabla que muestra las políticas con sus efectos, recursos, acciones y estado.
+ * @purpose_en Renders a table displaying policies with their effects, resources, actions, and status.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:zgfx8r
+ * @lastUpdated 2026-06-23T20:38:39.655Z
+ */
+
 import { useTranslations } from 'next-intl';
 
 interface Policy {

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona actualizaciones de marca del inquilino procesando subidas asincronas de logos y favicons a Cloudinary y persistiendo cambios en la base de datos.
+ * @purpose_en Handles the update of tenant branding by processing asynchronous logo/favicon uploads to Cloudinary and persisting changes in the database.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:4,sig:rfqaz2
+ * @lastUpdated 2026-06-23T23:26:58.857Z
+ */
+
 'use server';
 
 import { revalidatePath } from 'next/cache';

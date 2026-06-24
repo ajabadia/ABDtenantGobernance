@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona y muestra activos vinculados a un espacio, permitiendo a los usuarios agregar, eliminar y cambiar el estado principal de activos.
+ * @purpose_en Manages and displays assets linked to a space, allowing users to add, remove, and toggle primary status of assets.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:6,sig:1wwf4dp
+ * @lastUpdated 2026-06-23T21:45:08.432Z
+ */
+
 import React, { useState, useEffect, useTransition, useCallback, startTransition } from 'react';
 import { toast } from 'sonner';
 import { X, Link2, Loader2 } from 'lucide-react';

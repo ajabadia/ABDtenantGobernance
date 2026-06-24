@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona políticas de permisos para inquilinos en el proyecto ABDSuite.
+ * @purpose_en Manages permission policies for tenants in the ABDSuite project.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1laqzjb
+ * @lastUpdated 2026-06-23T21:51:37.550Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el modal para agregar o invitar usuarios existentes, maneja los campos de entrada, selecciones de grupo y invitaciones de usuario.
+ * @purpose_en Manages the modal for adding or inviting existing users, handling form inputs, group selections, and user invitations.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:7,sig:17vcs65
+ * @lastUpdated 2026-06-23T21:43:02.831Z
+ */
+
 // AddExistingUserModal.tsx - Allows adding an existing user or creating a new one and sending an invitation
 // Located in src/app/[locale]/admin/users/components/AddExistingUserModal.tsx
 

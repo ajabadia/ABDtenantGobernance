@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una suma de roles de quiz con conteos para cada tipo de rol.
+ * @purpose_en Renders a summary of quiz roles with counts for each role type.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:2qdm1z
+ * @lastUpdated 2026-06-23T21:42:22.684Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { RoleBadge } from '@ajabadia/styles';
 import type { RoleLiteralsMap } from '@ajabadia/styles';

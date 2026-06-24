@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona la funcionalidad de búsqueda para colaboradores en un espacio de gobernanza.
+ * @purpose_en Manages the search functionality for collaborators in a governance space.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:6,sig:qu4j75
+ * @lastUpdated 2026-06-23T21:51:16.115Z
+ */
+
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, Shield, User, X } from 'lucide-react';

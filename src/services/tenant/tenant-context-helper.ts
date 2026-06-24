@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y recupera información del contexto del inquilino.
+ * @purpose_en Manages and retrieves tenant context information.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:2,imports:1,sig:iymlws
+ * @lastUpdated 2026-06-23T21:53:03.190Z
+ */
+
 'use server'
 
 import { TenantService } from './tenant-service';

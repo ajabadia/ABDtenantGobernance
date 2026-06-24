@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una forma para editar literal de rol en español e inglés.
+ * @purpose_en Renders a form for editing role literals in Spanish and English.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:izm5oe
+ * @lastUpdated 2026-06-23T21:44:28.215Z
+ */
+
 import React from 'react';
 
 interface RoleLiteralsData {

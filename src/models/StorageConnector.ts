@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un esquema de Mongoose y modelo para el manejo de conectores de almacenamiento en la aplicación de gobernanza del inquilino ABDSuite.
+ * @purpose_en Defines a Mongoose schema and model for managing storage connectors in the ABDSuite tenant governance application.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1hgdivn
+ * @lastUpdated 2026-06-23T21:51:54.390Z
+ */
+
 import mongoose, { Schema, Document } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

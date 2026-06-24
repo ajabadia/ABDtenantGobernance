@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Rendra un componente de tarjeta para mostrar y gestionar información de inquilinos, incluyendo acciones como editar y eliminar.
+ * @purpose_en Renders a card component for displaying and managing tenant information, including actions like editing and deleting.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:5,sig:38r99q
+ * @lastUpdated 2026-06-23T21:45:47.877Z
+ */
+
 import { Building2, Globe, Database, Trash2, Edit3, Palette, Layers, ShieldCheck, Shield, Users } from 'lucide-react'
 import type { Tenant } from "@/lib/schemas/tenant"
 import type { TenantManagementTranslations } from "./types"

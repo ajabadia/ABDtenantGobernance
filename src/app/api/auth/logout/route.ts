@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el proceso de salida mediante eliminación del cookie de sesión local y redirección al punto de salida de identidad central.
+ * @purpose_en Handles the logout process by clearing the local session cookie and redirecting to the central Identity Provider's logout endpoint.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:17blair
+ * @lastUpdated 2026-06-23T23:27:35.106Z
+ */
+
 import { NextResponse } from 'next/server';
 
 /**

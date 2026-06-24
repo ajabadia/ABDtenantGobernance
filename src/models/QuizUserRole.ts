@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un esquema de mongoose y modelo para administrar roles de usuarios en preguntas dentro de una suscripción.
+ * @purpose_en Defines a Mongoose schema and model for managing user roles in quizzes within a tenant.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:jvp8j7
+ * @lastUpdated 2026-06-23T21:51:41.070Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface IQuizUserRole extends Document {

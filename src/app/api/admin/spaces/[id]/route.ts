@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona actualizaciones y eliminaciones de espacios, incluyendo cambios de jerarquía y propagación de visibilidad.
+ * @purpose_en Manages space updates and deletions, including hierarchy changes and visibility propagation.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:6,sig:7gbz7l
+ * @lastUpdated 2026-06-23T23:27:21.118Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { SpaceService, SpaceMoveService } from '@/services/tenant/space-service';

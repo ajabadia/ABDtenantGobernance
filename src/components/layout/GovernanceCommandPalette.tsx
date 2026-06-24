@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una pestaña de comandos con diversas acciones relacionadas con la gobernanza, incluyendo acciones de navegación y configuración.
+ * @purpose_en Renders a command palette with various governance-related commands, including navigation and settings actions.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:5,sig:gowu44
+ * @lastUpdated 2026-06-23T21:46:05.396Z
+ */
+
 import React from 'react';
 import { useRouter, usePathname } from '@/i18n/routing';
 import { useLocale } from 'next-intl';

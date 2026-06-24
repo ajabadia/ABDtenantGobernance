@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y recupera grupos de permisos para un inquilino, incluyendo la recuperación y eliminación de acciones de grupo.
+ * @purpose_en Manages and retrieves permission groups for a tenant, including fetching and deleting group actions.
+ * @refactorable true (contains multiple functions with similar logic)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:4,imports:6,sig:1fx9ahe
+ * @lastUpdated 2026-06-23T20:39:10.929Z
+ */
+
 'use server'
 
 import { connectDB } from '@ajabadia/satellite-sdk';

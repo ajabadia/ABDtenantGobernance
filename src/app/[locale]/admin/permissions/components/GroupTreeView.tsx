@@ -1,5 +1,14 @@
 'use client';
 
+/**
+ * @purpose Renders a vista de árbol de grupos con opciones para editar, eliminar, gestionar miembros y crear nuevos grupos.
+ * @purpose_en Renders a tree view of groups with options to edit, delete, manage members, and create new groups.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:14w16je
+ * @lastUpdated 2026-06-23T20:38:17.599Z
+ */
 
 import { useTranslations } from 'next-intl';
 

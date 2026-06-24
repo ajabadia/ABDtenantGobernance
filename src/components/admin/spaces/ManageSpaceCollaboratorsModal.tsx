@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona colaboradores para un espacio permitiendo a los usuarios buscar, asignar roles y propagar permisos.
+ * @purpose_en Manages the collaborators for a space by allowing users to search, assign roles, and propagate permissions.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:11,sig:hah0if
+ * @lastUpdated 2026-06-23T21:45:11.513Z
+ */
+
 import React, { useState, useEffect, useTransition, startTransition } from 'react';
 import { toast } from 'sonner';
 import { X, Users } from 'lucide-react';

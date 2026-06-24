@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Gestiona y renderiza un componente de diálogo utilizando primitives de UI de Radix.
+ * @purpose_en Manages and renders a dialog component using Radix UI primitives.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:0,imports:5,sig:dbpzve
+ * @lastUpdated 2026-06-23T21:46:33.941Z
+ */
+
 import * as React from "react"
 import { Dialog as DialogPrimitive } from "radix-ui"
 import { DialogPortal, DialogOverlay } from "./dialog-primitives"

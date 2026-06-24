@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona los manejadores y estado para la página de espacios en ABDtenantGobernance.
+ * @purpose_en Manages the handlers and state for spaces page in ABDtenantGobernance.
+ * @refactorable false
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:1,imports:2,sig:1ji9su9
+ * @lastUpdated 2026-06-23T21:42:48.018Z
+ */
+
 import { useState } from 'react';
 import { useSpacesManager, SpaceData } from '@/hooks/useSpacesManager';
 

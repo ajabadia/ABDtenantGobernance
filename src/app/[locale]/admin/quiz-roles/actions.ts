@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona roles de quiz para inquilinos mediante la recopilación, asignación y bulk-assignación de roles.
+ * @purpose_en Manages quiz roles for tenants by fetching, assigning, and bulk-assigning roles.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:4,imports:3,sig:s7skwe
+ * @lastUpdated 2026-06-23T20:39:35.443Z
+ */
+
 'use server'
 
 import { connectDB, ensureIndustrialAccess, withTenantContext } from '@ajabadia/satellite-sdk';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un componente que permite a los usuarios seleccionar si los elementos deben tener bordes redondeados y, en ese caso, el valor específico del radio.
+ * @purpose_en Renders a component that allows users to select whether elements should have rounded borders and, if so, the specific radius value.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:1ti6dwt
+ * @lastUpdated 2026-06-23T21:44:15.931Z
+ */
+
 import { useTranslations } from 'next-intl';
 
 interface BorderRadiusSelectorProps {

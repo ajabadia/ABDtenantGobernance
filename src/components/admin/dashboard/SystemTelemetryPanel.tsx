@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza una pestaña de telemetry del sistema con información del usuario y indicadores de estado.
+ * @purpose_en Renders a system telemetry panel with user information and status indicators.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:3,sig:wudqb1
+ * @lastUpdated 2026-06-23T22:08:36.370Z
+ */
+
 import React from 'react';
 import { ShieldCheck } from 'lucide-react';
 import { useTranslations } from 'next-intl';

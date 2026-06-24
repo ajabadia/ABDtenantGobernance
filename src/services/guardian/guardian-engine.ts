@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona permisos de usuario para acciones sobre recursos dentro de un inquilino utilizando un modelo ABAC con delegación de roles.
+ * @purpose_en Evaluates user permissions for actions on resources within a tenant using an ABAC model with role delegation.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:3,imports:4,sig:1gd051w
+ * @lastUpdated 2026-06-23T23:28:30.174Z
+ */
+
 import { PermissionService } from '@/services/tenant/permission-service';
 import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
 import { delegatedRoleRepository } from '@/lib/repositories/DelegatedRoleRepository';

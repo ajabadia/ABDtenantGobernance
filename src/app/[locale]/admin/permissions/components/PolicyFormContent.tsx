@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una forma para crear o editar configuraciones de políticas, incluyendo campos para nombre, descripción, efecto, recursos y acciones.
+ * @purpose_en Renders a form for creating or editing policy settings, including fields for name, description, effect, resources, and actions.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1dp90d6
+ * @lastUpdated 2026-06-23T20:38:44.846Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { ChevronDown } from 'lucide-react';
 

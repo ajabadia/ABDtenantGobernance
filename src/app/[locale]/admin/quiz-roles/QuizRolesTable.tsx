@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una tabla que muestra roles de quiz con acciones para revocarlos.
+ * @purpose_en Renders a table displaying quiz roles with actions to revoke them.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:5,sig:184x039
+ * @lastUpdated 2026-06-23T21:42:25.480Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { Trash2 } from 'lucide-react';
 import { RoleBadge, type RoleLiteralsMap } from '@ajabadia/styles';

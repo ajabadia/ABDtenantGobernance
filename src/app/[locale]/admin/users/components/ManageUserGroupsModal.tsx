@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona grupos de usuarios para un usuario específico dentro de una tenencia, permitiendo seleccionar y actualizar las membresías de grupo.
+ * @purpose_en Manages user groups for a specific user within a tenant, allowing selection and updating of group memberships.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:b78qpl
+ * @lastUpdated 2026-06-23T21:43:06.576Z
+ */
+
 import React, { useState, useEffect, useTransition } from 'react';
 import { toast } from 'sonner';
 import { X, Shield } from 'lucide-react';

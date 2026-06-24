@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona una tabla que muestra a los usuarios con sus roles, aplicaciones, grupos y estado, proporcionando acciones para gestionar los estados de los usuarios y las membresías de los grupos.
+ * @purpose_en Renders a table displaying users with their roles, applications, groups, and status, providing actions to manage user statuses and group memberships.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:86lia7
+ * @lastUpdated 2026-06-23T21:43:36.218Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { UserStatusBadge } from './components/UserStatusBadge';
 import { IamUser } from '@/lib/services/iamClient';

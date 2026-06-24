@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un conjunto de botones para seleccionar roles ('CREATOR' o 'AUDITOR'), cada uno mostrando una insignia de rol.
+ * @purpose_en Renders a set of buttons for selecting roles ('CREATOR' or 'AUDITOR'), each displaying a role badge.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:1i29fx2
+ * @lastUpdated 2026-06-23T21:42:32.992Z
+ */
+
 import { RoleBadge, type RoleLiteralsMap } from '@ajabadia/styles';
 
 interface RoleSelectorButtonsProps {

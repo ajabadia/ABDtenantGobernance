@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * @purpose Renderiza una forma para personalizar el branding del inquilino, incluyendo logo, favicon, colores y literalidades de rol.
+ * @purpose_en Renders a form for customizing tenant branding, including logo, favicon, colors, and role literals.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:11,sig:1glmfqh
+ * @lastUpdated 2026-06-23T21:45:37.536Z
+ */
+
 import React from 'react';
 import { Check, RefreshCw, Sparkles } from 'lucide-react';
 import { generateTenantCss } from "@ajabadia/styles";

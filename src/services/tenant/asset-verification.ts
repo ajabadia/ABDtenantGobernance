@@ -1,3 +1,13 @@
+/**
+ * @purpose Valida la existencia y soberanía de un activo dentro de su inquilino original.
+ * @purpose_en Validates the existence and sovereignty of an asset within its origin tenant.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:2,sig:1st945z
+ * @lastUpdated 2026-06-23T23:28:40.321Z
+ */
+
 import mongoose from 'mongoose';
 import AssetSpaceLink from '@/models/AssetSpaceLink';
 

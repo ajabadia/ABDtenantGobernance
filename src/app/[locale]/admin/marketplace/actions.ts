@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona acciones relacionadas con el mercado en la aplicación ABDtenantGobernance, incluyendo la recuperación de datos y la solicitud de licencias.
+ * @purpose_en Manages actions related to the marketplace in the ABDtenantGobernance application, including fetching data and creating license requests.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:4,imports:7,sig:iduo0e
+ * @lastUpdated 2026-06-23T20:37:28.462Z
+ */
+
 'use server';
 
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';

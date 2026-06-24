@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona el proceso de invitación del usuario, maneja estados y efectos secundarios para invitar a los usuarios a un inquilino con roles y grupos especificados.
+ * @purpose_en Manages the user invitation process, handling state and side effects for inviting users to a tenant with specified roles and groups.
+ * @refactorable false
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:1vspyd4
+ * @lastUpdated 2026-06-23T21:43:21.928Z
+ */
+
 import { useState, useEffect, startTransition } from 'react';
 import { toast } from 'sonner';
 import { inviteUserAction } from '../actions';

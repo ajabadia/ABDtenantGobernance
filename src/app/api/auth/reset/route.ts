@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el solicitud POST para enviar un correo electrónico de reinicio de contraseña, incluyendo la limitación de velocidad.
+ * @purpose_en Handles the POST request for sending a password reset email, including rate limiting.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:14wh3u6
+ * @lastUpdated 2026-06-23T20:36:30.630Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ResendEmailService } from '@/services/email/resend-email-service';
 import { rateLimitMongodb } from '@ajabadia/satellite-sdk';

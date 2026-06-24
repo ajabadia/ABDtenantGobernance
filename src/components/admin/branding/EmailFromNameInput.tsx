@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Valida y renderiza un campo de texto para el nombre del remitente de una correo electrónico, con validación y estilos.
+ * @purpose_en Renders a text input for the sender's name in an email, with validation and styling.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:dqghnz
+ * @lastUpdated 2026-06-23T21:44:22.772Z
+ */
+
 import React from 'react';
 
 interface EmailFromNameInputProps {

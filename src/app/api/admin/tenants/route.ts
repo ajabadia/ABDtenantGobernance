@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y maneja rutas de API para operaciones de inquilinos, incluyendo la lista y creación de nuevos inquilinos.
+ * @purpose_en Manages and handles API routes for tenant operations, including listing and creating new tenants.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:2,imports:5,sig:oms687
+ * @lastUpdated 2026-06-23T23:27:26.193Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

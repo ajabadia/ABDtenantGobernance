@@ -1,3 +1,13 @@
+/**
+ * @purpose Valida y define la estructura del objeto de inquilino utilizando esquemas de Zod.
+ * @purpose_en Validates and defines the structure of a tenant object using Zod schemas.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:3,imports:1,sig:d1d0nj
+ * @lastUpdated 2026-06-23T21:47:48.583Z
+ */
+
 import { z } from 'zod';
 
 export const TenantIdSchema = z.string().regex(/^[a-z0-9-_]+$/, "Solo se permiten minúsculas, números, guiones y guiones bajos");

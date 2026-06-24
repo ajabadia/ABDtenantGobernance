@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una forma para crear o editar espacios con campos para nombre, selección del espacio padre y configuraciones de visibilidad.
+ * @purpose_en Renders a form for creating or editing spaces with fields for name, parent space selection, and visibility settings.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:6,sig:8h81l6
+ * @lastUpdated 2026-06-23T21:45:21.718Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';

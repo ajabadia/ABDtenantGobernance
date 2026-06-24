@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona un tab bar para el manejo de permisos con tabs para grupos y políticas, incluyendo conteos y navegación por teclado.
+ * @purpose_en Renders a tab bar for managing permissions with tabs for groups and policies, including counts and keyboard navigation.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1bgd7tw
+ * @lastUpdated 2026-06-23T20:38:35.649Z
+ */
+
 import { useCallback, useRef } from 'react';
 import { Shield, FileText } from 'lucide-react';
 

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el movimiento y los cambios de visibilidad de espacios dentro de la estructura de gobernanza de un inquilino, incluyendo actualizar datos del repositorio y auditoría de acciones.
+ * @purpose_en Manages the movement and visibility changes of spaces within a tenant's governance structure, including updating repository data and auditing the actions.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:1klc9kf
+ * @lastUpdated 2026-06-23T21:52:51.940Z
+ */
+
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import { AssetSpaceLinkRepository } from '@/lib/repositories/AssetSpaceLinkRepository';
 import { AuditService } from './audit-service';

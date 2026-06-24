@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Renderiza un selector de casilla para seleccionar aplicaciones autorizadas para un inquilino.
+ * @purpose_en Renders a checkbox selector for choosing authorized applications for a tenant.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:qufgei
+ * @lastUpdated 2026-06-23T21:45:40.312Z
+ */
+
 import { useTranslations } from "next-intl"
 
 interface TenantAppSelectorProps {

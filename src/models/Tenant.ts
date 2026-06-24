@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el modelo de datos y la estructura de la base de datos para un inquilino en la aplicación ABDSuite utilizando Mongoose.
+ * @purpose_en Defines the data model and schema for a tenant in the ABDSuite application using Mongoose.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:5,imports:1,sig:1snu40x
+ * @lastUpdated 2026-06-23T21:51:58.588Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
 export interface ITenantBranding {

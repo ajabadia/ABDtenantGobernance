@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Renderiza un formulario para campos de información básica de los inquilinos, como nombre, ID, industria y prefijo de base de datos.
+ * @purpose_en Renders a form for basic tenant information fields such as name, ID, industry, and database prefix.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:4,sig:me0860
+ * @lastUpdated 2026-06-23T21:45:44.210Z
+ */
+
 import * as React from "react"
 import { Globe, Database } from "lucide-react"
 import type { Tenant } from "@/lib/schemas/tenant"

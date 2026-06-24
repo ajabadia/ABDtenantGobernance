@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el control de acceso a espacios dentro de un inquilino, determinando si un usuario o grupo tiene permiso para ver o interactuar con espacios específicos según sus configuraciones de propiedad y colaboración.
+ * @purpose_en Manages access control for spaces within a tenant, determining if a user or group has permission to view or interact with specific spaces based on their ownership and collaboration settings.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:1o7v6jr
+ * @lastUpdated 2026-06-23T23:29:03.477Z
+ */
+
 import { SpaceSchema, type Space } from '@/lib/schemas/spaces';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import type { ISpace } from '@/models/Space';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona delegaciones para permisos de inquilino.
+ * @purpose_en Manages delegations for tenant permissions.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:3,imports:5,sig:11bk4zd
+ * @lastUpdated 2026-06-23T20:38:52.900Z
+ */
+
 'use server'
 
 import mongoose from 'mongoose';

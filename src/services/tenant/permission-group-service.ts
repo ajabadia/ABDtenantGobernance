@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona grupos de permisos para inquilinos dentro del proyecto ABDSuite, incluyendo operaciones de creación, actualización y eliminación.
+ * @purpose_en Manages permission groups for tenants within the ABDSuite project, including creation, update, and deletion operations.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:gkn2k9
+ * @lastUpdated 2026-06-23T21:52:34.990Z
+ */
+
 import { PermissionGroupSchema, type PermissionGroup } from '@/lib/schemas/permissions';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
 import { AuditService } from './audit-service';

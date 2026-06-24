@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página de conectores administrativos con un encabezado y una interfaz de cliente interactiva para gestionar conectores.
+ * @purpose_en Renders the admin connectors page with a header and a client interactive dashboard for managing connectors.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:2,imports:8,sig:bxszad
+ * @lastUpdated 2026-06-23T20:37:21.023Z
+ */
+
 import React from 'react';
 import { ensureIndustrialAccess, connectDB } from '@ajabadia/satellite-sdk';
 import { getTranslations } from 'next-intl/server';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una lista de colaboradores con opciones para cambiar sus roles y eliminarlos.
+ * @purpose_en Renders a list of collaborators with options to change their roles and remove them.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:5,sig:1utimg6
+ * @lastUpdated 2026-06-23T21:44:56.980Z
+ */
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Shield, User, Trash2 } from 'lucide-react';

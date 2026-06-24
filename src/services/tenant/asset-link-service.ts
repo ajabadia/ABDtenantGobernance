@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el enlace y la recuperación de activos a espacios dentro de un inquilino, asegurando soberanía y integridad transaccional.
+ * @purpose_en Manages the linking and retrieval of assets to spaces within a tenant, ensuring sovereignty and transactional integrity.
+ * @refactorable true (contains multiple business logic functions)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:6,sig:4mj3my
+ * @lastUpdated 2026-06-23T23:28:36.040Z
+ */
+
 import AssetSpaceLink from '@/models/AssetSpaceLink';
 import { AssetSpaceLinkRepository } from '@/lib/repositories/AssetSpaceLinkRepository';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';

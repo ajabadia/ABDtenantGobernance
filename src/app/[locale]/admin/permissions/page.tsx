@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona y renderiza la página de permisos para un inquilino, incluyendo el manejo de grupos, creación de políticas y gestión de miembros.
+ * @purpose_en Renders and manages the permissions page for a tenant, including group management, policy creation, and member management.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:12,sig:1mmczkp
+ * @lastUpdated 2026-06-23T20:39:17.621Z
+ */
+
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
 import { Shield, ArrowLeft, Plus, RefreshCw } from 'lucide-react';

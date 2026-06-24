@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el cifrado y des cifrado de campos de facturación sensibles, así como los mascara para registro de auditoria.
+ * @purpose_en Manages the encryption and decryption of sensitive billing fields, as well as masking them for audit logging.
+ * @refactorable false
+ * @classification Helper Utility
+ * @complexity Low
+ * @fingerprint exports:3,imports:1,sig:vs2yyi
+ * @lastUpdated 2026-06-23T23:29:14.542Z
+ */
+
 import { SecurityService } from '@ajabadia/satellite-sdk';
 
 /**

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona una interfaz tabuada para el manejo de permisos, mostrando árboles de grupos y tablas de políticas según la pestaña activa.
+ * @purpose_en Renders a tabbed interface for managing permissions, displaying group trees and policies tables based on the active tab.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:4,sig:1n5l7xd
+ * @lastUpdated 2026-06-23T20:38:28.899Z
+ */
+
 import { GroupTreeView } from './GroupTreeView';
 import { PoliciesTable } from './PoliciesTable';
 import { PermissionsTabBar } from './PermissionsTabBar';

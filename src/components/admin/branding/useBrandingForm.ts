@@ -1,5 +1,15 @@
 "use client";
 
+/**
+ * @purpose Gestiona el estado y la lógica para una forma de marca, manejando los inputs del usuario, los subidos de archivos y las actualizaciones a la marca de inquilino.
+ * @purpose_en Manages the state and logic for a branding form, handling user inputs, file uploads, and submitting updates to tenant branding.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:16ozvro
+ * @lastUpdated 2026-06-23T21:44:36.544Z
+ */
+
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 import { useRouter } from 'next/navigation';

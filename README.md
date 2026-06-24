@@ -1,5 +1,7 @@
 # 🛰️ ABD Multi-Tenant Control Plane - Gobernanza
 
+[![ERA 11 Certified](https://img.shields.io/badge/ERA%2011-CERTIFIED-brightgreen?style=for-the-badge&logo=shield)](../.github/workflows/audit.yml)
+
 Consola centralizada de gobernanza de tenants, administración de sub-espacios corporativos y personalización visual en tiempo real con inyección SSR Zero-FOUC para el ecosistema **ABD**.
 
 ---
@@ -17,7 +19,7 @@ La plataforma está certificada bajo los más altos estándares de **Clean Archi
 ## 🛠️ Guía de Inicio Rápido
 
 ### Requisitos Previos
-Configurar las variables de entorno en el archivo [**.env.local**](file:///d:/desarrollos/ABDtenantGobernance/.env.local):
+Configurar las variables de entorno en el archivo `.env.local`:
 ```env
 MONGODB_URI=mongodb+srv://...
 DATABASE_URL=mongodb+srv://...
@@ -26,7 +28,7 @@ CLOUDINARY_URL=cloudinary://...
 ```
 
 ### Comandos de Desarrollo
-Para arrancar el servidor local en el puerto oficial **`3500`** e inicializar el Control Plane:
+Para arrancar el servidor local en el puerto oficial **`5002`** e inicializar el Control Plane:
 ```powershell
 # Levantar el entorno local
 .\start.bat
@@ -57,10 +59,10 @@ Para que la aplicación funcione perfectamente en el entorno productivo de Verce
 
 | Variable de Entorno | Valor en Local (`.env.local`) | Valor en Producción (Vercel) | Razón / Propósito |
 | :--- | :--- | :--- | :--- |
-| **`NEXTAUTH_URL`** | `http://localhost:3500` | `https://abd-tenant-gobernance.vercel.app` | URL base para la autenticación de NextAuth. |
-| **`AUTH_URL`** | `http://localhost:3500` | `https://abd-tenant-gobernance.vercel.app` | URL de callback e inicio del flujo de Auth.js. |
-| **`APP_DOMAIN`** | `localhost:3500` | `abd-tenant-gobernance.vercel.app` | Dominio base para resolución de subdominios. |
-| **`NEXT_PUBLIC_APP_URL`** | `http://localhost:3500` | `https://abd-tenant-gobernance.vercel.app` | URL pública de la aplicación para APIs y recursos. |
+| **`NEXTAUTH_URL`** | `http://localhost:5002` | `https://abd-tenant-gobernance.vercel.app` | URL base para la autenticación de NextAuth. |
+| **`AUTH_URL`** | `http://localhost:5002` | `https://abd-tenant-gobernance.vercel.app` | URL de callback e inicio del flujo de Auth.js. |
+| **`APP_DOMAIN`** | `localhost:5002` | `abd-tenant-gobernance.vercel.app` | Dominio base para resolución de subdominios. |
+| **`NEXT_PUBLIC_APP_URL`** | `http://localhost:5002` | `https://abd-tenant-gobernance.vercel.app` | URL pública de la aplicación para APIs y recursos. |
 | **`FEATURE_GRAPH_RELATIONS`**| `true` | `false` (o `true` con AuraDB en la nube) | Desactivar si no cuentas con un servidor de Neo4j accesible públicamente en la nube. |
 | **`REDIS_URL`** | `"redis://localhost:6379"` | (Usar Endpoint TLS de Upstash en la nube) | Configurar con la URL TLS de Redis remota si utilizas cacheo de sesiones productivo. |
 

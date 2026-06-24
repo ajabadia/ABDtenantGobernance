@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una lista de usuarios con casillas para selección en masa, incluyendo un botón para seleccionar todos los usuarios.
+ * @purpose_en Renders a list of users with checkboxes for bulk selection, including a toggle for selecting all users.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:2,sig:1t9sam3
+ * @lastUpdated 2026-06-23T20:39:47.745Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { type IamUser } from '@/lib/services/iamClient';
 

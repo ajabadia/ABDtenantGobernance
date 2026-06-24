@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona solicitudes PATCH y DELETE para actualizar y desactivar información de un inquilino.
+ * @purpose_en Manages PATCH and DELETE requests to update and deactivate a tenant's information.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:5,sig:1ecfxn8
+ * @lastUpdated 2026-06-23T23:27:30.273Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

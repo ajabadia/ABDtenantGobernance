@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona roles de quiz para inquilinos en la aplicación ABDSuite, incluyendo la recuperación, asignación, revocación y asignación en masa de roles.
+ * @purpose_en Manages quiz roles for tenants in the ABDSuite application, including fetching, assigning, revoking, and bulk-assigning roles.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:2,imports:10,sig:fiogsb
+ * @lastUpdated 2026-06-23T21:42:38.272Z
+ */
+
 import { useEffect, useState, useCallback, startTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';

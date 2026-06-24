@@ -1,3 +1,13 @@
+/**
+ * @purpose Valida y define la estructura de espacios dentro de un inquilino utilizando plantillas de TypeScript.
+ * @purpose_en Validates and defines the structure of spaces within a tenant using TypeScript schemas.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:8,imports:2,sig:1broftc
+ * @lastUpdated 2026-06-23T21:47:45.309Z
+ */
+
 import { z } from 'zod';
 import { TenantIdSchema } from './tenant';
 

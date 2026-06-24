@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza un componente etiqueta personalizado con nombres de clase opcionales y reforzado.
+ * @purpose_en Renders a styled label component with optional class names and forwarded ref.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:m48edq
+ * @lastUpdated 2026-06-23T21:46:39.821Z
+ */
+
 import * as React from "react"
 import { cn } from "@/lib/utils"
 

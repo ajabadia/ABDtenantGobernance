@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y recupera políticas de permisos para inquilinos.
+ * @purpose_en Manages and retrieves permission policies for tenants.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:6,sig:1s0y8c1
+ * @lastUpdated 2026-06-23T20:35:38.618Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionService } from '@/services/tenant/permission-service';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página de branding administrativa para un inquilino, incluyendo una forma para personalizar el branding y la configuración de roles.
+ * @purpose_en ** Renders the admin branding page for a tenant, including a form for customizing branding and role customization.
+ * @refactorable ** true (contains too many state variables and UI parts)
+ * @classification ** UI Component
+ * @complexity ** Medium
+ * @fingerprint exports:2,imports:9,sig:8we71d
+ * @lastUpdated 2026-06-23T20:37:15.468Z
+ */
+
 import React from 'react';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

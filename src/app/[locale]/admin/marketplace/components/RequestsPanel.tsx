@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona un panel para manejar solicitudes de licencia con opciones para aprobar o denegarlas y muestra historia de auditoria.
+ * @purpose_en Renders a panel to manage license requests with options to approve or deny them, and displays audit history.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:1qdw08b
+ * @lastUpdated 2026-06-23T20:37:46.605Z
+ */
+
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { resolveLicenseRequestAction } from '../actions';

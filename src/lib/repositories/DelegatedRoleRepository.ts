@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona roles delegados para inquilinos proporcionando métodos para encontrar roles activos por delegado y roles por delegante.
+ * @purpose_en Manages delegated roles for tenants by providing methods to find active roles by delegatee and roles by delegator.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:2,imports:3,sig:1tz805l
+ * @lastUpdated 2026-06-23T21:47:14.765Z
+ */
+
 import { TenantAwareRepository } from './TenantAwareRepository';
 import DelegatedRole, { type IDelegatedRole } from '@/models/DelegatedRole';
 import type { QueryFilter } from 'mongoose';

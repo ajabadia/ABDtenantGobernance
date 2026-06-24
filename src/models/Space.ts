@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un esquema de Mongoose y modelo para el ente "Space" en el proyecto ABDSuite, representando espacios organizativos con diversas características como nombre, slug, tipo, ID del inquilino, propietario, colaboradores, visibilidad y estado de actividad.
+ * @purpose_en Defines a Mongoose schema and model for the "Space" entity in the ABDSuite project, representing organizational spaces with various attributes like name, slug, type, tenant ID, owner, collaborators, visibility, and activity status.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:2,imports:2,sig:dxbbih
+ * @lastUpdated 2026-06-23T21:51:49.301Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

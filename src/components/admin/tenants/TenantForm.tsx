@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Renderiza una forma para crear o editar información de inquilinos, incluyendo detalles básicos y selección de solicitud.
+ * @purpose_en Renders a form for creating or editing tenant information, including basic details and application selection.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:7,sig:x8pyfh
+ * @lastUpdated 2026-06-23T21:45:53.656Z
+ */
+
 import * as React from "react"
 import { Shield } from "lucide-react"
 import type { Tenant } from "@/lib/schemas/tenant"

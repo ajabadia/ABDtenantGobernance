@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona la estructura para registros de auditoría en la aplicación ABDtenantGobernance.
+ * @purpose_en Defines the structure for audit log entries in the ABDtenantGobernance application.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:0,sig:15158nc
+ * @lastUpdated 2026-06-23T21:44:12.061Z
+ */
+
 export interface AuditLog {
   _id?: string;
   // 🌐 Origen de la aplicación que emitió el evento (multi-app stream)

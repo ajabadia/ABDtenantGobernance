@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona configuraciones de inquilinos, incluyendo recuperación, actualización y eliminación.
+ * @purpose_en Manages tenant configurations, including retrieval, update, and deletion.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:6,sig:zj0ty9
+ * @lastUpdated 2026-06-23T23:29:18.984Z
+ */
+
 import { TenantSchema, type Tenant } from '@/lib/schemas/tenant';
 import { TenantRepository } from '@/lib/repositories/TenantRepository';
 import { AuditService } from './audit-service';

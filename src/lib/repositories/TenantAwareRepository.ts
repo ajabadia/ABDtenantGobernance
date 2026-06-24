@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona consultas de bases de datos para repositorios conscientes de inquilinos aplicando filtros de seguridad según el rol del usuario y el ID de inquilino.
+ * @purpose_en Manages database queries for tenant-aware repositories by applying security filters based on the user's role and tenant ID.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:0,imports:4,sig:7spun1
+ * @lastUpdated 2026-06-23T21:47:29.835Z
+ */
+
 import { Document } from 'mongoose';
 import type { QueryFilter } from 'mongoose';
 import { BaseRepository } from './BaseRepository';

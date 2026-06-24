@@ -1,4 +1,15 @@
 "use client"
+
+/**
+ * @purpose Gestiona un diálogo modal para administrar información de inquilinos.
+ * @purpose_en Renders a modal dialog for managing tenant information.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:9,sig:8obtpj
+ * @lastUpdated 2026-06-23T21:45:50.585Z
+ */
+
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import * as React from "react"

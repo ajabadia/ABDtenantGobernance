@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página de administración central para el gobierno de los inquilinos y la marca blanca, incluyendo un encabezado, una pestaña de telemetry y tarjetas de dashboard.
+ * @purpose_en Renders the central admin governance portal page for managing tenants and white branding, including a header, telemetry panel, and dashboard cards.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:8,sig:1t46puw
+ * @lastUpdated 2026-06-23T23:27:46.371Z
+ */
+
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { LayoutDashboard, ArrowLeft } from 'lucide-react';

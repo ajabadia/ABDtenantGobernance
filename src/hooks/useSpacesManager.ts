@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona datos espaciales y proporciona funciones para manejar operaciones espaciales como obtener, eliminar y editar.
+ * @purpose_en Manages spaces data and provides functions to handle space operations such as fetching, deleting, and editing.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:2,imports:5,sig:sfxv8c
+ * @lastUpdated 2026-06-23T21:46:56.779Z
+ */
+
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';

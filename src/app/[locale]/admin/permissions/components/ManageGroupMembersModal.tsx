@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona el modo para agregar y eliminar miembros de un grupo en el sistema de gobernanza del inquilino.
+ * @purpose_en Manages the modal for adding and removing members from a group in the tenant governance system.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:7,sig:4eftin
+ * @lastUpdated 2026-06-23T20:38:22.132Z
+ */
+
 import React, { useState, useEffect, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { toast } from 'sonner';

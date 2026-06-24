@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona grupos de permisos y políticas.
+ * @purpose_en Manages permission groups and policies.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:1hzlqe5
+ * @lastUpdated 2026-06-23T23:28:56.399Z
+ */
+
 import { PermissionGroupService, PermissionGroupResolver } from './permission-group-service';
 import { PermissionPolicyService } from './permission-policy-service';
 import type { PermissionGroup, PermissionPolicy } from '@/lib/schemas/permissions';

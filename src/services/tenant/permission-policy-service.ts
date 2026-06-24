@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona políticas de permisos para inquilinos, incluyendo creación, actualización y eliminación.
+ * @purpose_en Manages permission policies for tenants, including creation, update, and deletion.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:2q3ql1
+ * @lastUpdated 2026-06-23T23:28:53.192Z
+ */
+
 import { PermissionPolicySchema, type PermissionPolicy } from '@/lib/schemas/permissions';
 import { PermissionPolicyRepository } from '@/lib/repositories/PermissionPolicyRepository';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';

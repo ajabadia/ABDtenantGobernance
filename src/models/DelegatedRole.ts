@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un modelo de Mongoose para el ente `DelegatedRole`, que representa roles delegados dentro de un inquilino con políticas y restricciones temporales asociadas.
+ * @purpose_en Defines a Mongoose model for the `DelegatedRole` entity, which represents roles delegated within a tenant with associated policies and time constraints.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:qgg1nb
+ * @lastUpdated 2026-06-23T21:51:24.924Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

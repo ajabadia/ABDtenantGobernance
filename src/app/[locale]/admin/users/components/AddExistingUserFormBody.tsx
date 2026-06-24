@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un formulario para agregar o invitar a un usuario existente, incluyendo campos para correo electrónico, nombre, rol y selección de grupo.
+ * @purpose_en Renders a form for adding or inviting an existing user, including fields for email, name, role, and group selection.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:2,sig:uaampp
+ * @lastUpdated 2026-06-23T21:42:58.552Z
+ */
+
 import { ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

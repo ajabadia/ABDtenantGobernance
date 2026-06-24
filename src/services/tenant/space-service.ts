@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona la creación y recuperación de espacios dentro de un inquilino, incluyendo el cálculo de su ruta materializada y registro de eventos de auditoría.
+ * @purpose_en Manages the creation and retrieval of spaces within a tenant, including calculating their materialized path and logging audit events.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:k07fqy
+ * @lastUpdated 2026-06-23T23:29:09.500Z
+ */
+
 import { SpaceSchema, type Space } from '@/lib/schemas/spaces';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import type { ISpace } from '@/models/Space';

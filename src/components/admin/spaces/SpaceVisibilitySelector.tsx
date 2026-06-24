@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un dropdown para seleccionar la visibilidad de espacios y un checkbox opcional para activar la cascada de visibilidad.
+ * @purpose_en Renders a dropdown for selecting the visibility of spaces and an optional checkbox to enable cascading visibility.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:10fw4lf
+ * @lastUpdated 2026-06-23T21:45:34.023Z
+ */
+
 import { useTranslations } from 'next-intl';
 
 interface SpaceVisibilitySelectorProps {

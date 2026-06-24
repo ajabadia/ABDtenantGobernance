@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona el subido y previsualización de un logo y favicon para fines de marca.
+ * @purpose_en Manages the upload and preview of a logo and favicon for branding purposes.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:n2h98i
+ * @lastUpdated 2026-06-23T21:44:25.717Z
+ */
+
 import React, { useRef } from 'react';
 import { Upload } from 'lucide-react';
 import { useTranslations } from 'next-intl';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Rendiza una lista de enlaces de activos con opciones para desvincular y manejar activos zombie.
+ * @purpose_en Renders a list of asset links with options to unlink and handle zombie assets.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:2,imports:3,sig:5d73jn
+ * @lastUpdated 2026-06-23T21:44:54.346Z
+ */
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Link2, Trash2, ShieldAlert, AlertTriangle } from 'lucide-react';

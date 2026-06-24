@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Gestiona y renderiza la interfaz de administración de inquilinos, incluyendo agregar, editar, eliminar y filtrar inquilinos.
+ * @purpose_en Manages and renders the tenant management interface, including adding, editing, deleting, and filtering tenants.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:10,sig:u14kmf
+ * @lastUpdated 2026-06-23T21:45:57.150Z
+ */
+
 import * as React from "react"
 import { Plus } from 'lucide-react'
 import { toast } from 'sonner'

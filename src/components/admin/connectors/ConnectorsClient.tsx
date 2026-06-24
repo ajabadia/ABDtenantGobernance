@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona componentes de UI para manejar conectores, incluyendo acciones como guardar, eliminar y probar conectores.
+ * @purpose_en Renders a UI component for managing connectors, including actions like saving, deleting, and testing connectors.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:01l1rd
+ * @lastUpdated 2026-06-23T21:44:39.893Z
+ */
+
 import React, { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Server, Check, Trash2, Shield, Play, HelpCircle, AlertTriangle, Cloud } from 'lucide-react';
@@ -12,7 +22,7 @@ interface Connector {
   status: 'active' | 'inactive';
   credentialsRef: string;
   allowedScopes: string[];
-  retentionPolicy: Record<string, any>;
+  retentionPolicy: Record<string, unknown>;
   auditMode: string;
   createdAt: string;
   updatedAt: string;
@@ -132,7 +142,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm(t('confirm_delete'))) return;
+    if (!window.confirm(t('confirm_delete'))) return;
 
     const res = await deleteConnectorAction(id, tenantId);
     if (res.success) {
@@ -161,10 +171,11 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
         ...prev,
         [id]: { success: res.success, message: res.message }
       }));
-    } catch (e: any) {
+    } catch (e: unknown) {
+      const errorMessage = e instanceof Error ? e.message : 'Network error';
       setTestResults(prev => ({
         ...prev,
-        [id]: { success: false, message: e.message || 'Network error' }
+        [id]: { success: false, message: errorMessage }
       }));
     } finally {
       setTestingId(null);
@@ -195,6 +206,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                   key={type}
                   type="button"
                   onClick={() => handleProviderChange(type)}
+                  aria-label={t('provider_' + type)}
                   className={`p-3 border text-left flex flex-col gap-1 transition-all rounded-none ${
                     providerType === type
                       ? 'border-primary bg-primary/5 text-foreground'
@@ -202,10 +214,10 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                   }`}
                 >
                   <span className="text-[11px] font-bold capitalize">
-                    {type === 's3Compatible' ? 'S3 Compatible' : type}
+                    {t('provider_' + type)}
                   </span>
                   <span className="text-[9px] font-mono opacity-80">
-                    {type === 'googleDrive' || type === 'oneDrive' ? 'OAuth2 / Graph API' : 'Production Ready'}
+                    {t('provider_badge_' + type)}
                   </span>
                 </button>
               ))}
@@ -233,8 +245,8 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                 onChange={e => setAuditMode(e.target.value)}
                 className="w-full bg-background border border-border text-xs p-2.5 rounded-none focus:outline-none focus:ring-1 focus:ring-primary/50 text-foreground"
               >
-                <option value="standard">Standard</option>
-                <option value="detailed">Detailed</option>
+                <option value="standard">{t('audit_standard')}</option>
+                <option value="detailed">{t('audit_detailed')}</option>
               </select>
             </div>
           </div>
@@ -266,6 +278,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
               <button
                 type="button"
                 onClick={handleResetForm}
+                aria-label={t('cancel')}
                 className="bg-transparent hover:bg-muted text-muted-foreground border border-border text-xs font-mono py-2.5 px-4 rounded-none cursor-pointer active:scale-95 transition-all"
               >
                 {t('cancel')}
@@ -292,10 +305,10 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
         <div>
           <h2 className="text-sm font-mono uppercase tracking-widest text-primary flex items-center gap-2">
             <Cloud size={14} />
-            {locale === 'es' ? 'CONECTORES ACTIVOS' : 'ACTIVE CONNECTORS'}
+            {t('active_connectors_heading')}
           </h2>
           <p className="text-xs text-muted-foreground mt-1">
-            {locale === 'es' ? 'Conectores configurados y su estado físico en caliente.' : 'Configured connectors and their live connection status.'}
+            {t('active_connectors_subtitle')}
           </p>
         </div>
 
@@ -323,7 +336,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                     <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-foreground capitalize">
-                          {conn.providerType === 's3Compatible' ? 'S3 Compatible' : conn.providerType}
+                          {t('provider_' + conn.providerType)}
                         </span>
                         <span className={`text-[9px] font-mono px-2 py-0.5 uppercase tracking-wider rounded-none ${
                           conn.status === 'active'
@@ -344,7 +357,7 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
                         className="bg-transparent hover:bg-muted text-muted-foreground hover:text-foreground p-1.5 border border-border rounded-none cursor-pointer active:scale-95 transition-all text-[10px] font-mono uppercase"
                         aria-label="Edit connector"
                       >
-                        {locale === 'es' ? 'Editar' : 'Edit'}
+                        {t('edit')}
                       </button>
 
                       <button
@@ -388,5 +401,4 @@ export function ConnectorsClient({ tenantId, initialConnectors }: ConnectorsClie
   );
 }
 
-// Helper to determine locale (simple wrapper for standalone client file compatibility)
-const locale = typeof window !== 'undefined' ? window.location.pathname.split('/')[1] : 'es';
+

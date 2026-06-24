@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza la página de auditoría para un inquilino en la aplicación ABDSuite, permitiendo a los administradores visualizar y gestionar la historia de auditorías.
+ * @purpose_en ** Renders the audit page for a tenant in the ABDSuite application, allowing administrators to view and manage audit history.
+ * @refactorable ** true (contains too many state variables and UI parts)
+ * @classification ** UI Component
+ * @complexity ** Medium
+ * @fingerprint exports:2,imports:11,sig:uih62y
+ * @lastUpdated 2026-06-23T20:37:09.390Z
+ */
+
 import React from 'react';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';

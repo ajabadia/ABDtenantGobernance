@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una previsualización de las configuraciones de marca de inquilinos, incluyendo el logo, la icono y los estilos CSS.
+ * @purpose_en Renders a preview of tenant branding settings including logo, favicon, and CSS styles.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:b4y34s
+ * @lastUpdated 2026-06-23T21:44:31.901Z
+ */
+
 import React from 'react';
 import { Eye, Layout, Database } from 'lucide-react';
 import { useTranslations } from 'next-intl';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona y maneja el estado y la lógica para la página de permisos, incluyendo la recuperación de datos, la gestión de operaciones de grupo y política, y la gestión de modales.
+ * @purpose_en Manages and handles the state and logic for the permissions page, including fetching data, handling group and policy operations, and managing modals.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification Custom Hook
+ * @complexity Medium
+ * @fingerprint exports:3,imports:5,sig:cwohnr
+ * @lastUpdated 2026-06-23T20:39:30.115Z
+ */
+
 import { useEffect, useState, useCallback, startTransition } from 'react';
 import { useSearchParams, useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';

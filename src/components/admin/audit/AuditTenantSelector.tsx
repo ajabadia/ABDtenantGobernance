@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un selector de dropdown para seleccionar un inquilino en el área de auditoría del aplicativo ABDtenantGobernance.
+ * @purpose_en Renders a dropdown selector for choosing a tenant in the audit section of the ABDtenantGobernance application.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:4,sig:1vzg0oe
+ * @lastUpdated 2026-06-23T21:44:09.318Z
+ */
+
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { Database } from 'lucide-react';

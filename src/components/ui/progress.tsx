@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona un componente progreso dinámico con estilos personalizables y valores.
+ * @purpose_en Manages a dynamic progress bar component with customizable styles and values.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:0,imports:3,sig:1dpokyv
+ * @lastUpdated 2026-06-23T21:46:42.869Z
+ */
+
 import * as React from "react";
 import * as ProgressPrimitive from "@radix-ui/react-progress";
 import { cn } from "@/lib/utils";

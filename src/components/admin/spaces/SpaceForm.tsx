@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona el formato para crear o editar espacios dentro de un inquilino, maneja estado, validación y envío.
+ * @purpose_en Manages the form for creating or editing spaces within a tenant, handling state, validation, and submission.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:2,imports:6,sig:q8basc
+ * @lastUpdated 2026-06-23T21:45:18.532Z
+ */
+
 import { useState, useEffect, startTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';

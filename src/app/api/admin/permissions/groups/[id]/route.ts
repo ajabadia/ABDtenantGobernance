@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona solicitudes de API para actualizar y eliminar grupos de permisos.
+ * @purpose_en Handles API requests for updating and deleting permission groups.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:4,sig:pbtdci
+ * @lastUpdated 2026-06-23T20:35:34.664Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionService } from '@/services/tenant/permission-service';

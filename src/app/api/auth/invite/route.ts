@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el POST para enviar un correo electrónico de invitación, valida el payload, aplica límite de velocidad y envía el correo electrónico a través de un servicio.
+ * @purpose_en Handles the POST request for sending an invitation email, validates the payload, applies rate limiting, and sends the email using a service.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:4,sig:106egcx
+ * @lastUpdated 2026-06-23T20:36:17.445Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ResendEmailService } from '@/services/email/resend-email-service';
 import { rateLimitMongodb } from '@ajabadia/satellite-sdk';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona espacios en el panel administrativo, incluyendo árboles de espacio, modales para crear o editar espacios, manejo de colaboradores y activos, y diálogo de confirmación para eliminar espacios.
+ * @purpose_en Renders a page for managing spaces in the admin panel, including space trees, modals for creating/editing spaces, managing collaborators and assets, and a confirmation dialog for deleting spaces.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:11,sig:62b07c
+ * @lastUpdated 2026-06-23T21:42:44.319Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { Plus, FolderOpen, ArrowLeft } from 'lucide-react';
 import { SpaceTreeView } from '@/components/admin/spaces/SpaceTreeView';

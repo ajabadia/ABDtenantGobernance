@@ -1,3 +1,13 @@
+/**
+ * @purpose Valida y define esquemas para políticas de permisos y grupos dentro de un inquilino.
+ * @purpose_en Validates and defines schemas for permission policies and groups within a tenant.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:4,imports:2,sig:1at9emf
+ * @lastUpdated 2026-06-23T21:47:42.360Z
+ */
+
 import { z } from 'zod';
 import { TenantIdSchema } from './tenant';
 

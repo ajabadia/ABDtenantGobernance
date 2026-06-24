@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el solicitud GET para recuperar los registros de auditoria combinados de SaaS para un inquilino, asegurando acceso industrial y conectándose a la base de datos.
+ * @purpose_en Handles the GET request to retrieve combined SaaS audit logs for a tenant, ensuring industrial access and connecting to the database.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:4,sig:179kbo6
+ * @lastUpdated 2026-06-23T23:27:04.935Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { AuditService } from '@/services/tenant/audit-service';

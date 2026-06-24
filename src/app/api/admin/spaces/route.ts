@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona y maneja rutas API para espacios en el sistema de gobernanza del inquilino, incluyendo la recuperación de jerarquías de espacio y la creación de nuevos espacios.
+ * @purpose_en Manages and handles API routes for spaces in the tenant governance system, including retrieving space hierarchies and creating new spaces.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:2,imports:5,sig:1bl5ixq
+ * @lastUpdated 2026-06-23T23:27:16.296Z
+ */
+
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { SpaceService, SpaceAccessService } from '@/services/tenant/space-service';

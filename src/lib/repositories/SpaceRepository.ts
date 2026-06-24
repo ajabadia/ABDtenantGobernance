@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona operaciones relacionadas con espacios dentro de un inquilino, incluyendo encontrar espacios mediante slug, ID de padre y ruta.
+ * @purpose_en Manages operations related to spaces within a tenant, including finding spaces by slug, parent ID, and path.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:dp9fks
+ * @lastUpdated 2026-06-23T23:28:08.239Z
+ */
+
 import { TenantAwareRepository } from './TenantAwareRepository';
 import Space, { type ISpace } from '@/models/Space';
 import type { QueryFilter } from 'mongoose';

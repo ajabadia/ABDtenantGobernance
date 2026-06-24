@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza una notificacion emergente para mostrar el estado del usuario, indicando si esta activo, suspendido o pendiente.
+ * @purpose_en Renders a badge to display the status of a user, indicating whether they are active, suspended, or pending.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:1,sig:eb4jup
+ * @lastUpdated 2026-06-23T21:43:16.943Z
+ */
+
 import React from 'react';
 
 export function UserStatusBadge({ status, active }: { status: string; active: boolean }) {

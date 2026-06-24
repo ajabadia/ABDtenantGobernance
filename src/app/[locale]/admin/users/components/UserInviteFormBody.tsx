@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una forma para invitar a los usuarios con opciones para seleccionar roles y grupos.
+ * @purpose_en Renders a form for inviting users with options to select roles and groups.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:1b3axml
+ * @lastUpdated 2026-06-23T21:43:09.541Z
+ */
+
 import { ChevronDown } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 

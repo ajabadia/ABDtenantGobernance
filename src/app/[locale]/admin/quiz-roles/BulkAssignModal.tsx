@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un modal para asignar roles en masa a usuarios en el panel administrativo.
+ * @purpose_en Renders a modal for bulk assigning roles to users in the admin panel.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:7,sig:1fqd3j9
+ * @lastUpdated 2026-06-23T20:39:42.880Z
+ */
+
 import { UserPlus } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { type RoleLiteralsMap } from '@ajabadia/styles';

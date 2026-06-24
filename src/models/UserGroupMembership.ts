@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona pertenencias de grupo de usuarios dentro de un inquilino utilizando la esquema de Mongoose.
+ * @purpose_en Manages user group memberships within a tenant using Mongoose schema.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:14ziykm
+ * @lastUpdated 2026-06-23T21:52:02.542Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

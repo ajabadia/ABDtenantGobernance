@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona pertenencias de grupos de usuarios para inquilinos mediante la recopilación, actualización y eliminación de membresías.
+ * @purpose_en Manages user group memberships for tenants by fetching, updating, and deleting memberships.
+ * @refactorable true (contains multiple functions with similar logic)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:3,imports:6,sig:zcjhce
+ * @lastUpdated 2026-06-23T21:43:26.080Z
+ */
+
 'use server'
 
 import { connectDB } from '@ajabadia/satellite-sdk';

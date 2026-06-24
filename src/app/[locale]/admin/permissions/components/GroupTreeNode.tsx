@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renders a un nodo de árbol para la gestión de grupos en la sección de permisos administrativos, incluyendo botones para editar, eliminar y gestionar miembros.
+ * @purpose_en Renders a tree node for group management in the admin permissions section, including buttons for editing, deleting, and managing members.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:2,imports:3,sig:gu9fbo
+ * @lastUpdated 2026-06-23T20:38:13.196Z
+ */
+
 import { ChevronRight, Trash2, Edit2, Users } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslations } from 'next-intl';

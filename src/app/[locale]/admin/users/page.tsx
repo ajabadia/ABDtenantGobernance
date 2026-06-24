@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona y muestra datos del usuario dentro de un panel administrativo, incluyendo la recopilación, actualización y gestión de grupos de usuarios.
+ * @purpose_en Manages and displays user data within an admin panel, including fetching, updating, and managing user groups.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:15,sig:1t5ibk1
+ * @lastUpdated 2026-06-23T21:43:31.452Z
+ */
+
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams, useParams } from 'next/navigation';

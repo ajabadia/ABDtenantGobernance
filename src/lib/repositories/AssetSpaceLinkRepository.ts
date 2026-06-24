@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona operaciones relacionadas con enlaces de espacio-activo de manera sensible a los inquilinos, incluyendo encontrar por ID de activo o espacio y actualizar caminos.
+ * @purpose_en Manages operations related to asset-space links in a tenant-aware manner, including finding by asset or space ID and updating paths.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:1,imports:4,sig:4qnpu2
+ * @lastUpdated 2026-06-23T23:27:58.408Z
+ */
+
 import { TenantAwareRepository } from './TenantAwareRepository';
 import AssetSpaceLink, { type IAssetSpaceLink } from '@/models/AssetSpaceLink';
 import type { QueryFilter } from 'mongoose';

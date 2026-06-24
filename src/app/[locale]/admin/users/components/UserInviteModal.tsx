@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un modal para invitar a nuevos usuarios con opciones para seleccionar grupos y roles.
+ * @purpose_en Renders a modal for inviting new users with options to select groups and roles.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:womq70
+ * @lastUpdated 2026-06-23T21:43:13.043Z
+ */
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { X, UserPlus } from 'lucide-react';

@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona una página para administrar delegaciones de roles dentro de un inquilino, incluyendo un encabezado y una tabla que muestra detalles de delegación.
+ * @purpose_en ** Renders a page for managing role delegations within a tenant, including a header and a table displaying delegation details.
+ * @refactorable false
+ * @classification ** UI Component
+ * @complexity ** Medium
+ * @fingerprint exports:1,imports:7,sig:jtotgh
+ * @lastUpdated 2026-06-23T20:39:05.497Z
+ */
+
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useSearchParams, useParams } from 'next/navigation';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona un modelo de Mongoose para el ente `AssetSpaceLink`, que representa la relación entre activos y espacios dentro de un inquilino.
+ * @purpose_en Defines a Mongoose model for the `AssetSpaceLink` entity, which represents the relationship between assets and spaces within a tenant.
+ * @refactorable false
+ * @classification Type Definition
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:13hk2ty
+ * @lastUpdated 2026-06-23T21:48:03.774Z
+ */
+
 import mongoose, { Schema, Document, Model } from 'mongoose';
 import { getTenantModel } from '@ajabadia/satellite-sdk';
 

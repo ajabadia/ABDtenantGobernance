@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona acciones relacionadas con los usuarios, como obtener usuarios, invitar nuevos usuarios y actualizar usuarios existentes.
+ * @purpose_en Manages user-related actions such as fetching users, inviting new users, and updating existing users.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:3,imports:1,sig:1vtswuy
+ * @lastUpdated 2026-06-23T21:42:54.370Z
+ */
+
 'use server'
 
 import { iamClient, InviteUserPayload, UpdateUserPayload, IamUser } from '@/lib/services/iamClient';

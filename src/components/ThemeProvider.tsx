@@ -1,5 +1,15 @@
 "use client"
 
+/**
+ * @purpose Gestiona configuraciones de tema y proporciona contexto para componentes sensibles a temas.
+ * @purpose_en Manages theme settings and provides a context for theme-aware components.
+ * @refactorable false
+ * @classification Context/Provider
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:15s0237
+ * @lastUpdated 2026-06-23T21:46:16.432Z
+ */
+
 import * as React from "react"
 import { ThemeProvider as NextThemesProvider } from "next-themes"
 

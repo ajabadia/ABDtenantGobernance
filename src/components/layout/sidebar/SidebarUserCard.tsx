@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una tarjeta de usuario con funcionalidad de inicio de sesión y salida.
+ * @purpose_en Renders a sidebar user card with login and logout functionality.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:4,sig:wrxjr4
+ * @lastUpdated 2026-06-23T21:51:19.193Z
+ */
+
 import React from 'react';
 import { ShieldCheck, LogOut, LogIn } from 'lucide-react';
 import { useTranslations } from 'next-intl';

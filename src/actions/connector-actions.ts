@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona conectores de almacenamiento para los inquilinos, listando y guardándolos, incluyendo pruebas de conexión física.
+ * @purpose_en Manages storage connectors for tenants by listing and saving them, including physical connection tests.
+ * @refactorable true (contains multiple actions and business logic)
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:5,imports:5,sig:x5nkpu
+ * @lastUpdated 2026-06-23T20:35:12.652Z
+ */
+
 'use server';
 
 import { revalidatePath } from 'next/cache';
@@ -11,7 +21,7 @@ const FILES_SERVICE_URL = process.env.FILES_SERVICE_URL || 'http://localhost:500
 export interface StorageConnectorResponse {
   success: boolean;
   message: string;
-  data?: any;
+  data?: Record<string, unknown>;
 }
 
 /**

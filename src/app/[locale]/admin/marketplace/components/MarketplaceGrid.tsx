@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza una red de módulos del mercado para que un administrador pueda gestionar, incluyendo el estado de licencia y botones de solicitud.
+ * @purpose_en ** Renders a grid of marketplace modules for an admin to manage, including licensing status and request buttons.
+ * @refactorable ** true (contains too many state variables and UI parts)
+ * @classification ** UI Component
+ * @complexity ** Medium
+ * @fingerprint exports:1,imports:4,sig:1w3fzhw
+ * @lastUpdated 2026-06-23T20:37:35.712Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { useState } from 'react';
 import { Activity, Shield, BrainCircuit, Sparkles, CheckCircle2, Clock, Lock } from 'lucide-react';

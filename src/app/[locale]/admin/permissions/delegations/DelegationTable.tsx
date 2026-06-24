@@ -1,5 +1,15 @@
 'use client'
 
+/**
+ * @purpose Renderiza una tabla para mostrar y gestionar delegaciones de roles dentro de un inquilino, incluyendo la capacidad de revocar delegaciones activas.
+ * @purpose_en Renders a table to display and manage delegations of roles within a tenant, including the ability to revoke active delegations.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:2,imports:7,sig:1418v68
+ * @lastUpdated 2026-06-23T20:38:59.082Z
+ */
+
 import React, { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';

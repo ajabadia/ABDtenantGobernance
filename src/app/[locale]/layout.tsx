@@ -1,3 +1,13 @@
+/**
+ * @purpose Renderiza el layout para una aplicación de gobernanza de inquilinos, incluyendo navegación lateral, configuraciones del sistema, selector de inquilino, paleta de comandos y notificaciones emergentes.
+ * @purpose_en Renders the layout for a tenant governance application, including sidebar navigation, system settings, tenant selector, command palette, and toast notifications.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:11,sig:1xtem0w
+ * @lastUpdated 2026-06-23T21:43:42.121Z
+ */
+
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { Toaster } from "sonner";

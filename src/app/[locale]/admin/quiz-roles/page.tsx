@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Gestiona y renderiza la página de roles del quiz en la sección administrativa, incluyendo una tabla de roles, filtros, barra de acciones, resumen y modales para asignar y revocar roles.
+ * @purpose_en Renders and manages the quiz roles page in the admin section, including displaying a table of roles, filters, actions bar, summary, and modals for assigning and revoking roles.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:13,sig:qpiin2
+ * @lastUpdated 2026-06-23T21:42:08.520Z
+ */
+
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';

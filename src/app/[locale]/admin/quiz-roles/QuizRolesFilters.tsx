@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un componente de filtro para roles de quiz con opciones para seleccionar el tipo y ID del escopo, y incluye un botón de filtrado claro.
+ * @purpose_en Renders a filter component for quiz roles with options to select scope type and ID, and includes a clear filters button.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:3,imports:2,sig:1hgvgit
+ * @lastUpdated 2026-06-23T21:42:19.462Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { Filter } from 'lucide-react';
 

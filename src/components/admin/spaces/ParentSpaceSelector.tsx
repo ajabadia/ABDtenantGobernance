@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un selector de dropdown para seleccionar el espacio de padre de otro espacio, asegurando no tener referencias circulares.
+ * @purpose_en Renders a dropdown selector for choosing the parent space of another space, ensuring no circular references.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:5cd0ad
+ * @lastUpdated 2026-06-23T21:45:15.039Z
+ */
+
 import { useTranslations } from 'next-intl';
 import { SpaceData } from './SpaceForm';
 

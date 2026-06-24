@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona datos de pertenencia de grupo de usuarios para un inquilino específico.
+ * @purpose_en Manages user group membership data for a specific tenant.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Low
+ * @fingerprint exports:2,imports:3,sig:opqdpc
+ * @lastUpdated 2026-06-23T21:47:35.628Z
+ */
+
 import { TenantAwareRepository } from './TenantAwareRepository';
 import UserGroupMembership, { type IUserGroupMembership } from '@/models/UserGroupMembership';
 import type { QueryFilter } from 'mongoose';

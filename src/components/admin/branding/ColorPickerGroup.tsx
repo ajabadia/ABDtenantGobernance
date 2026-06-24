@@ -1,5 +1,15 @@
 'use client';
 
+/**
+ * @purpose Renderiza un conjunto de pickers de colores primarios, secundarios y de acento con etiquetas.
+ * @purpose_en Renders a group of color pickers for primary, secondary, and accent colors with labels.
+ * @refactorable false
+ * @classification UI Component
+ * @complexity Low
+ * @fingerprint exports:1,imports:2,sig:154fo3f
+ * @lastUpdated 2026-06-23T21:44:19.166Z
+ */
+
 import React from 'react';
 import { useTranslations } from 'next-intl';
 

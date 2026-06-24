@@ -1,4 +1,15 @@
 'use client';
+
+/**
+ * @purpose Gestiona la creación y edición de permisos de grupo en el sistema de gobernanza de un inquilino.
+ * @purpose_en Manages the creation and editing of group permissions in a tenant's governance system.
+ * @refactorable true (contains too many state variables and UI parts)
+ * @classification UI Component
+ * @complexity Medium
+ * @fingerprint exports:1,imports:5,sig:1w8qujm
+ * @lastUpdated 2026-06-23T20:38:06.145Z
+ */
+
 /* eslint-disable react-hooks/set-state-in-effect */
 
 import React, { useState, useEffect } from 'react';
