@@ -4,18 +4,17 @@
  * @refactorable true (contains multiple functions with similar logic)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:4,imports:6,sig:1fx9ahe
- * @lastUpdated 2026-06-23T20:39:10.929Z
+ * @fingerprint exports:4,imports:5,sig:14cxqei
+ * @lastUpdated 2026-06-24T10:34:25.562Z
  */
 
 'use server'
 
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { connectDB, ensureIndustrialAccess, withTenantContext } from '@ajabadia/satellite-sdk';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
 import { PermissionService } from '@/services/tenant/permission-service';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
 import { getExplicitContext } from '@/services/tenant/tenant-context-helper';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const groupRepository = new PermissionGroupRepository();
 
@@ -45,6 +44,15 @@ export async function fetchGroupsAction(tenantId: string): Promise<{ data?: unkn
         return null;
       }, explicitContext);
     } catch (err) {
+      await AuditService.logEvent({
+        tenantId: tenantId || 'unknown',
+        action: 'GROUP_FETCH_EXPLICIT_ERROR',
+        entityType: 'PERMISSION_GROUP',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err instanceof Error ? err.message : String(err) },
+      });
       console.warn('[fetchGroupsAction] Query under explicit context failed, falling back:', err);
     }
 
@@ -70,12 +78,30 @@ export async function fetchGroupsAction(tenantId: string): Promise<{ data?: unkn
         };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'GROUP_FETCH_FALLBACK_ERROR',
+          entityType: 'PERMISSION_GROUP',
+          entityId: 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] fetchGroupsAction Fallback Error:', msg);
         return { error: msg };
       }
     });
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'GROUP_FETCH_OUTER_ERROR',
+      entityType: 'PERMISSION_GROUP',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }
@@ -98,12 +124,30 @@ export async function createGroupAction(tenantId: string, data: {
         return { data: group };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'GROUP_CREATE_ERROR',
+          entityType: 'PERMISSION_GROUP',
+          entityId: data.name || 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] createGroupAction Error:', msg);
         return { error: msg };
       }
     }, explicitContext);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'GROUP_CREATE_CONTEXT_ERROR',
+      entityType: 'PERMISSION_GROUP',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }
@@ -125,12 +169,30 @@ export async function updateGroupAction(groupId: string, tenantId: string, data:
         return { data: group };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'GROUP_UPDATE_ERROR',
+          entityType: 'PERMISSION_GROUP',
+          entityId: groupId || 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] updateGroupAction Error:', msg);
         return { error: msg };
       }
     }, explicitContext);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'GROUP_UPDATE_CONTEXT_ERROR',
+      entityType: 'PERMISSION_GROUP',
+      entityId: groupId || 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }
@@ -146,12 +208,30 @@ export async function deleteGroupAction(groupId: string, tenantId: string): Prom
         return { success: true };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'GROUP_DELETE_ERROR',
+          entityType: 'PERMISSION_GROUP',
+          entityId: groupId || 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] deleteGroupAction Error:', msg);
         return { error: msg };
       }
     }, explicitContext);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'GROUP_DELETE_CONTEXT_ERROR',
+      entityType: 'PERMISSION_GROUP',
+      entityId: groupId || 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }

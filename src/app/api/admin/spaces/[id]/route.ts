@@ -4,16 +4,16 @@
  * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:6,sig:7gbz7l
- * @lastUpdated 2026-06-23T23:27:21.118Z
+ * @fingerprint exports:2,imports:6,sig:atmiyf
+ * @lastUpdated 2026-06-24T10:33:35.244Z
  */
 
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { SpaceService, SpaceMoveService } from '@/services/tenant/space-service';
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const spaceRepository = new SpaceRepository();
 
@@ -62,8 +62,17 @@ export async function PATCH(
       const updatedSpace = await spaceRepository.findById(id);
       return NextResponse.json(updatedSpace);
     } catch (error: unknown) {
-      console.error('[API_PATCH_SPACE_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'SPACE_UPDATE_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_PATCH_SPACE_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Invalid update data' }, { status: 400 });
     }
   });
@@ -95,8 +104,17 @@ export async function DELETE(
       await spaceRepository.model.findByIdAndDelete(id);
       return NextResponse.json({ success: true, message: 'Space deleted successfully' });
     } catch (error: unknown) {
-      console.error('[API_DELETE_SPACE_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'SPACE_DELETE_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_DELETE_SPACE_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Error deleting space' }, { status: 400 });
     }
   });

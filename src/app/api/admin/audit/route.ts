@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona el solicitud GET para recuperar los registros de auditoria combinados de SaaS para un inquilino, asegurando acceso industrial y conectándose a la base de datos.
- * @purpose_en Handles the GET request to retrieve combined SaaS audit logs for a tenant, ensuring industrial access and connecting to the database.
+ * @purpose Gestiona el solicitud GET para obtener los registros de auditoría combinados SaaS para un inquilino, asegurando acceso industrial y conectándose a la base de datos.
+ * @purpose_en Manages the GET request to retrieve combined SaaS audit logs for a tenant, ensuring industrial access and connecting to the database.
  * @refactorable false
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:4,sig:179kbo6
- * @lastUpdated 2026-06-23T23:27:04.935Z
+ * @fingerprint exports:2,imports:4,sig:romm2f
+ * @lastUpdated 2026-06-24T10:33:02.873Z
  */
 
 import { NextResponse } from 'next/server';
@@ -37,8 +37,17 @@ export async function GET(request: Request) {
     
     return NextResponse.json(logs);
   } catch (error: unknown) {
-    console.error('[API_GET_AUDIT_LOGS_ERROR]', error);
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'AUDIT_LOGS_FETCH_ERROR',
+      entityType: 'SYSTEM',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
+    console.error('[API_GET_AUDIT_LOGS_ERROR]', error);
     const status = err.message === 'UNAUTHORIZED_ECOSYSTEM_ACCESS' ? 403 : 500;
     return NextResponse.json({ error: err.message || 'Unauthorized' }, { status });
   }

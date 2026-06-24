@@ -4,13 +4,14 @@
  * @refactorable false
  * @classification Business Service
  * @complexity Low
- * @fingerprint exports:1,imports:1,sig:krz9fl
- * @lastUpdated 2026-06-23T21:42:28.430Z
+ * @fingerprint exports:1,imports:2,sig:1wr19xq
+ * @lastUpdated 2026-06-24T10:34:40.877Z
  */
 
 'use server'
 
 import { TenantService } from '@/services/tenant/tenant-service';
+import { AuditService } from '@/services/tenant/audit-service';
 
 interface RoleCustomizationResponse {
   roleCustomization?: {
@@ -31,6 +32,15 @@ export async function fetchTenantRoleCustomizationAction(
     return { roleCustomization: tenantConfig.roleCustomization };
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'ROLE_CUSTOMIZATION_FETCH_ERROR',
+      entityType: 'CONFIG',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }

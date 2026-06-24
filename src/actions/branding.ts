@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona actualizaciones de marca del inquilino procesando subidas asincronas de logos y favicons a Cloudinary y persistiendo cambios en la base de datos.
+ * @purpose Gestiona actualizaciones de marca de inquilinos procesando subidas asíncronas de logos y favicons a Cloudinary y persistiendo cambios en la base de datos.
  * @purpose_en Handles the update of tenant branding by processing asynchronous logo/favicon uploads to Cloudinary and persisting changes in the database.
  * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:4,sig:rfqaz2
- * @lastUpdated 2026-06-23T23:26:58.857Z
+ * @fingerprint exports:2,imports:5,sig:yjt57o
+ * @lastUpdated 2026-06-24T10:32:50.797Z
  */
 
 'use server';
@@ -14,6 +14,7 @@ import { revalidatePath } from 'next/cache';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { uploadBrandingAsset, deleteCloudinaryAsset } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 export interface UpdateBrandingResponse {
   success: boolean;
@@ -117,6 +118,16 @@ export async function updateTenantBrandingAction(
       roleCustomization: { roleLiterals },
     }, user.id);
 
+    await AuditService.logEvent({
+      tenantId,
+      action: 'BRANDING_UPDATE_SUCCESS',
+      entityType: 'BRANDING',
+      entityId: 'unknown',
+      userId: user.email || 'system',
+      userEmail: user.email || 'system',
+      changedFields: { hasLogo: !!logoFile, hasFavicon: !!faviconFile },
+    });
+
     // 8. Revalidar el cache global de layouts en Next.js (Zero-FOUC en caliente)
     revalidatePath('/', 'layout');
     revalidatePath('/[locale]', 'layout');
@@ -127,6 +138,15 @@ export async function updateTenantBrandingAction(
     };
   } catch (error) {
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: (formData.get('tenantId') as string | null) || 'unknown',
+      action: 'BRANDING_UPDATE_ERROR',
+      entityType: 'BRANDING',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
     console.error('❌ [UPDATE_BRANDING_ACTION_ERROR] Failed to save white-label customizer config:', err);
     return {
       success: false,

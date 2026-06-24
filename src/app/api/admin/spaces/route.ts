@@ -1,18 +1,18 @@
 /**
  * @purpose Gestiona y maneja rutas API para espacios en el sistema de gobernanza del inquilino, incluyendo la recuperación de jerarquías de espacio y la creación de nuevos espacios.
  * @purpose_en Manages and handles API routes for spaces in the tenant governance system, including retrieving space hierarchies and creating new spaces.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:5,sig:1bl5ixq
- * @lastUpdated 2026-06-23T23:27:16.296Z
+ * @fingerprint exports:2,imports:5,sig:rf6puc
+ * @lastUpdated 2026-06-24T10:33:28.567Z
  */
 
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { SpaceService, SpaceAccessService } from '@/services/tenant/space-service';
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 /**
  * 🗂️ GET /api/admin/spaces
@@ -36,8 +36,17 @@ export async function GET(request: Request) {
       
       return NextResponse.json(spaces);
     } catch (error: unknown) {
-      console.error('[API_GET_SPACES_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'SPACE_LIST_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_GET_SPACES_ERROR]', error);
       const status = err.message === 'UNAUTHORIZED_ECOSYSTEM_ACCESS' ? 403 : 500;
       return NextResponse.json({ error: err.message || 'Unauthorized' }, { status });
     }
@@ -61,8 +70,17 @@ export async function POST(request: Request) {
       
       return NextResponse.json(newSpace, { status: 201 });
     } catch (error: unknown) {
-      console.error('[API_POST_SPACES_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'SPACE_CREATE_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_POST_SPACES_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Invalid space data' }, { status: 400 });
     }
   });

@@ -4,8 +4,8 @@
  * @refactorable true (contains multiple actions and business logic)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:5,imports:5,sig:x5nkpu
- * @lastUpdated 2026-06-23T20:35:12.652Z
+ * @fingerprint exports:5,imports:6,sig:37f8j8
+ * @lastUpdated 2026-06-24T10:32:56.387Z
  */
 
 'use server';
@@ -15,6 +15,7 @@ import { cookies } from 'next/headers';
 import { ensureIndustrialAccess, connectDB } from '@ajabadia/satellite-sdk';
 import StorageConnector, { TStorageConnector } from '@/models/StorageConnector';
 import crypto from 'crypto';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const FILES_SERVICE_URL = process.env.FILES_SERVICE_URL || 'http://localhost:5005';
 
@@ -36,6 +37,15 @@ export async function listConnectorsAction(tenantId: string): Promise<TStorageCo
     const connectors = await StorageConnector.find({ tenantId: targetTenantId }).sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(connectors));
   } catch (error) {
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'CONNECTOR_LIST_ERROR',
+      entityType: 'CONFIG',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: error instanceof Error ? error.message : String(error) },
+    });
     console.error('[LIST_CONNECTORS_ACTION_ERROR]', error);
     return [];
   }
@@ -102,6 +112,16 @@ export async function saveConnectorAction(
       await newConnector.save();
     }
 
+    await AuditService.logEvent({
+      tenantId,
+      action: 'CONNECTOR_SAVE_SUCCESS',
+      entityType: 'CONFIG',
+      entityId: connectorId || 'new',
+      userId: user.email || 'system',
+      userEmail: user.email || 'system',
+      changedFields: { providerType, status, auditMode, isUpdate: !!connectorId },
+    });
+
     revalidatePath('/[locale]/admin/connectors', 'page');
 
     return {
@@ -110,6 +130,15 @@ export async function saveConnectorAction(
     };
   } catch (error) {
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: (formData.get('tenantId') as string | null) || 'unknown',
+      action: 'CONNECTOR_SAVE_ERROR',
+      entityType: 'CONFIG',
+      entityId: (formData.get('connectorId') as string | null) || 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
     console.error('[SAVE_CONNECTOR_ACTION_ERROR]', err);
     return {
       success: false,
@@ -133,10 +162,29 @@ export async function deleteConnectorAction(connectorId: string, tenantId: strin
       return { success: false, message: 'Connector not found or already deleted.' };
     }
 
+    await AuditService.logEvent({
+      tenantId: targetTenantId,
+      action: 'CONNECTOR_DELETE_SUCCESS',
+      entityType: 'CONFIG',
+      entityId: connectorId,
+      userId: user.email || 'system',
+      userEmail: user.email || 'system',
+      changedFields: {},
+    });
+
     revalidatePath('/[locale]/admin/connectors', 'page');
     return { success: true, message: 'Storage provider configuration deleted successfully' };
-  } catch (error) {
+   } catch (error) {
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'CONNECTOR_DELETE_ERROR',
+      entityType: 'CONFIG',
+      entityId: connectorId || 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
     console.error('[DELETE_CONNECTOR_ACTION_ERROR]', err);
     return { success: false, message: err.message || 'Error occurred while deleting.' };
   }
@@ -174,12 +222,30 @@ export async function testConnectorAction(connectorId: string): Promise<StorageC
 
     const result = await response.json();
     if (result && result.success) {
+      await AuditService.logEvent({
+        tenantId: user.tenantId,
+        action: 'CONNECTOR_TEST_SUCCESS',
+        entityType: 'CONFIG',
+        entityId: connectorId,
+        userId: user.email || 'system',
+        userEmail: user.email || 'system',
+        changedFields: { success: true },
+      });
       return { success: true, message: result.message || 'Physical connection test passed successfully!' };
     } else {
       return { success: false, message: result.message || 'Physical connection test failed.' };
     }
   } catch (error) {
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'CONNECTOR_TEST_ERROR',
+      entityType: 'CONFIG',
+      entityId: connectorId || 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
     console.error('[TEST_CONNECTOR_ACTION_ERROR]', err);
     return { success: false, message: `Network error when calling storage engine: ${err.message}` };
   }

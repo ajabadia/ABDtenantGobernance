@@ -4,8 +4,8 @@
  * @refactorable false
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:5,sig:1ecfxn8
- * @lastUpdated 2026-06-23T23:27:30.273Z
+ * @fingerprint exports:2,imports:6,sig:pjea8d
+ * @lastUpdated 2026-06-24T10:33:46.032Z
  */
 
 import { NextResponse } from 'next/server';
@@ -13,6 +13,7 @@ import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantRepository } from '@/lib/repositories/TenantRepository';
 import { connectDB } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const tenantRepository = new TenantRepository();
 
@@ -43,8 +44,17 @@ export async function PATCH(
     
     return NextResponse.json(updatedTenant);
   } catch (error: unknown) {
-    console.error('[API_PATCH_TENANT_ERROR]', error);
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'TENANT_UPDATE_ERROR',
+      entityType: 'TENANT',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
+    console.error('[API_PATCH_TENANT_ERROR]', error);
     return NextResponse.json({ error: err.message || 'Invalid data' }, { status: 400 });
   }
 }
@@ -66,8 +76,17 @@ export async function DELETE(
     
     return NextResponse.json({ message: 'Tenant deactivated successfully' });
   } catch (error: unknown) {
-    console.error('[API_DELETE_TENANT_ERROR]', error);
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'TENANT_DELETE_ERROR',
+      entityType: 'TENANT',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
+    console.error('[API_DELETE_TENANT_ERROR]', error);
     return NextResponse.json({ error: err.message || 'Error deactivating tenant' }, { status: 400 });
   }
 }

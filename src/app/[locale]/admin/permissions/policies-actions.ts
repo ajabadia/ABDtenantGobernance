@@ -1,21 +1,20 @@
 /**
- * @purpose Gestiona políticas de permisos para inquilinos mediante la recuperación y creación de políticas.
+ * @purpose Gestiona políticas de permisos para inquilinos al recuperar y crear políticas.
  * @purpose_en Manages permission policies for tenants by fetching and creating policies.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:6,sig:9siznj
- * @lastUpdated 2026-06-23T20:39:22.336Z
+ * @fingerprint exports:2,imports:5,sig:vh6m1i
+ * @lastUpdated 2026-06-24T10:34:30.648Z
  */
 
 'use server'
 
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { connectDB, ensureIndustrialAccess, withTenantContext } from '@ajabadia/satellite-sdk';
 import { PermissionPolicyRepository } from '@/lib/repositories/PermissionPolicyRepository';
 import { PermissionService } from '@/services/tenant/permission-service';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const policyRepository = new PermissionPolicyRepository();
 
@@ -27,7 +26,7 @@ async function getExplicitContext(tenantId: string) {
       dbPrefix: tenantConfig.dbPrefix || tenantConfig.tenantId.toLowerCase().replace(/[^a-z0-9]/g, ''),
       isolationStrategy: tenantConfig.isolationStrategy || 'COLLECTION_PREFIX'
     };
-  } catch (e) {
+    } catch (e) {
     return {
       tenantId,
       dbPrefix: tenantId.toLowerCase().replace(/[^a-z0-9]/g, ''),
@@ -52,12 +51,30 @@ export async function fetchPoliciesAction(tenantId: string): Promise<{ data?: un
         };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'POLICY_FETCH_ERROR',
+          entityType: 'PERMISSION_POLICY',
+          entityId: 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] fetchPoliciesAction Error:', msg);
         return { error: msg };
       }
     }, explicitContext);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'POLICY_FETCH_CONTEXT_ERROR',
+      entityType: 'PERMISSION_POLICY',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }
@@ -80,12 +97,30 @@ export async function createPolicyAction(tenantId: string, data: {
         return { data: policy };
       } catch (error: unknown) {
         const msg = error instanceof Error ? error.message : 'Unknown error';
+        await AuditService.logEvent({
+          tenantId: tenantId || 'unknown',
+          action: 'POLICY_CREATE_ERROR',
+          entityType: 'PERMISSION_POLICY',
+          entityId: 'unknown',
+          userId: 'system',
+          userEmail: 'system',
+          changedFields: { error: msg },
+        });
         console.error('[PERMISSIONS_ACTION] createPolicyAction Error:', msg);
         return { error: msg };
       }
     }, explicitContext);
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : 'Unknown error';
+    await AuditService.logEvent({
+      tenantId: tenantId || 'unknown',
+      action: 'POLICY_CREATE_CONTEXT_ERROR',
+      entityType: 'PERMISSION_POLICY',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: msg },
+    });
     return { error: msg };
   }
 }

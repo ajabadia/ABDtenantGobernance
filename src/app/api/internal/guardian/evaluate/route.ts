@@ -4,14 +4,15 @@
  * @refactorable false
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:1,imports:4,sig:1qz9rtw
- * @lastUpdated 2026-06-23T20:36:42.388Z
+ * @fingerprint exports:1,imports:5,sig:86atc1
+ * @lastUpdated 2026-06-24T10:34:03.082Z
  */
 
 import { NextResponse } from 'next/server';
 import { GuardianEngine } from '@/services/guardian/guardian-engine';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 export async function POST(req: Request) {
   return withTenantContext(async () => {
@@ -50,6 +51,15 @@ export async function POST(req: Request) {
         allowedGroupIds: result.allowedGroupIds || []
       }, { status: 200 });
     } catch (error) {
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'GUARDIAN_EVALUATE_ERROR',
+        entityType: 'SYSTEM',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: error instanceof Error ? error.message : String(error) },
+      });
       console.error('[GuardianEngine S2S] Error:', error);
       return NextResponse.json(
         { error: 'Internal Server Error' },

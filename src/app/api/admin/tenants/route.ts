@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona y maneja rutas de API para operaciones de inquilinos, incluyendo la lista y creación de nuevos inquilinos.
+ * @purpose Gestiona y maneja rutas API para operaciones de inquilinos, incluyendo la lista y creación de nuevos inquilinos.
  * @purpose_en Manages and handles API routes for tenant operations, including listing and creating new tenants.
  * @refactorable false
  * @classification Business Service
  * @complexity Low
- * @fingerprint exports:2,imports:5,sig:oms687
- * @lastUpdated 2026-06-23T23:27:26.193Z
+ * @fingerprint exports:2,imports:6,sig:tyglyi
+ * @lastUpdated 2026-06-24T10:33:41.402Z
  */
 
 import { NextResponse } from 'next/server';
@@ -13,6 +13,7 @@ import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { TenantSchema } from '@/lib/schemas/tenant';
+import { AuditService } from '@/services/tenant/audit-service';
 
 // ... (GET handler unchanged, doing a precise chunk below)
 
@@ -28,8 +29,17 @@ export async function GET() {
     const tenants = await TenantService.getAllTenants();
     return NextResponse.json(tenants);
   } catch (error: unknown) {
-    console.error('[API_GET_TENANTS_ERROR]', error);
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'TENANT_LIST_ERROR',
+      entityType: 'TENANT',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
+    console.error('[API_GET_TENANTS_ERROR]', error);
     const message = err.message || 'Unauthorized';
     const status = message === 'UNAUTHORIZED_ECOSYSTEM_ACCESS' || message === 'INSUFFICIENT_INDUSTRIAL_PRIVILEGES' ? 403 : 500;
     return NextResponse.json({ error: message }, { status });
@@ -51,8 +61,17 @@ export async function POST(request: Request) {
     
     return NextResponse.json(newTenant, { status: 201 });
   } catch (error: unknown) {
-    console.error('[API_POST_TENANTS_ERROR]', error);
     const err = error as Error;
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'TENANT_CREATE_ERROR',
+      entityType: 'TENANT',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: err.message || 'Unknown error' },
+    });
+    console.error('[API_POST_TENANTS_ERROR]', error);
     return NextResponse.json({ error: err.message || 'Invalid tenant data' }, { status: 400 });
   }
 }

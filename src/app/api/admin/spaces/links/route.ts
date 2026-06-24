@@ -4,15 +4,15 @@
  * @refactorable true (contains multiple API endpoints and business logic)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:3,imports:5,sig:e6yb51
- * @lastUpdated 2026-06-23T23:27:09.551Z
+ * @fingerprint exports:3,imports:5,sig:15o9o9o
+ * @lastUpdated 2026-06-24T10:33:20.695Z
  */
 
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { AssetLinkService } from '@/services/tenant/asset-link-service';
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 /**
  * 🔗 GET /api/admin/spaces/links
@@ -39,8 +39,17 @@ export async function GET(request: Request) {
         return NextResponse.json({ error: 'Falta parámetro spaceId o assetId' }, { status: 400 });
       }
     } catch (error: unknown) {
-      console.error('[API_GET_ASSET_LINKS_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'ASSET_LINK_LIST_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_GET_ASSET_LINKS_ERROR]', error);
       const status = err.message === 'UNAUTHORIZED_ECOSYSTEM_ACCESS' ? 403 : 500;
       return NextResponse.json({ error: err.message || 'Unauthorized' }, { status });
     }
@@ -76,8 +85,17 @@ export async function POST(request: Request) {
       
       return NextResponse.json(link, { status: 201 });
     } catch (error: unknown) {
-      console.error('[API_POST_ASSET_LINKS_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'ASSET_LINK_CREATE_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_POST_ASSET_LINKS_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Error vinculando asset' }, { status: 400 });
     }
   });
@@ -106,8 +124,17 @@ export async function DELETE(request: Request) {
       
       return NextResponse.json({ success: true });
     } catch (error: unknown) {
-      console.error('[API_DELETE_ASSET_LINKS_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'ASSET_LINK_DELETE_ERROR',
+        entityType: 'SPACE',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_DELETE_ASSET_LINKS_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Error desvinculando asset' }, { status: 400 });
     }
   });

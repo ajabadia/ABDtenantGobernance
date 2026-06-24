@@ -1,19 +1,19 @@
 /**
- * @purpose Gestiona y recupera grupos de permisos para un inquilino, manejando tanto solicitudes GET como POST.
+ * @purpose Gestiona y recupera grupos de permisos para un inquilino, maneja tanto solicitudes GET como POST.
  * @purpose_en Manages and retrieves permission groups for a tenant, handling both GET and POST requests.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:6,sig:1lcjdma
- * @lastUpdated 2026-06-23T20:35:27.440Z
+ * @fingerprint exports:2,imports:6,sig:1pufwaw
+ * @lastUpdated 2026-06-24T10:33:07.827Z
  */
 
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
 import { PermissionService } from '@/services/tenant/permission-service';
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk';
+import { AuditService } from '@/services/tenant/audit-service';
 
 const groupRepository = new PermissionGroupRepository();
 
@@ -41,8 +41,17 @@ export async function GET(request: Request) {
 
       return NextResponse.json({ data: normalized });
     } catch (error: unknown) {
-      console.error('[API_GET_GROUPS_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'GROUP_API_LIST_ERROR',
+        entityType: 'PERMISSION_GROUP',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_GET_GROUPS_ERROR]', error);
       const status = err.message === 'UNAUTHORIZED_ECOSYSTEM_ACCESS' ? 403 : 500;
       return NextResponse.json({ error: err.message || 'Unauthorized' }, { status });
     }
@@ -62,8 +71,17 @@ export async function POST(request: Request) {
 
       return NextResponse.json({ data: newGroup }, { status: 201 });
     } catch (error: unknown) {
-      console.error('[API_POST_GROUPS_ERROR]', error);
       const err = error as Error;
+      await AuditService.logEvent({
+        tenantId: 'unknown',
+        action: 'GROUP_API_CREATE_ERROR',
+        entityType: 'PERMISSION_GROUP',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err.message || 'Unknown error' },
+      });
+      console.error('[API_POST_GROUPS_ERROR]', error);
       return NextResponse.json({ error: err.message || 'Invalid group data' }, { status: 400 });
     }
   });

@@ -1,17 +1,18 @@
 /**
  * @purpose Gestiona la generación dinámica del CSS para whitelabeling según las configuraciones de los inquilinos.
  * @purpose_en Handles dynamic CSS generation for whitelabeling based on tenant configurations.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:4,sig:1codblb
- * @lastUpdated 2026-06-23T23:27:39.974Z
+ * @fingerprint exports:2,imports:5,sig:1vuyl2s
+ * @lastUpdated 2026-06-24T10:34:08.385Z
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@ajabadia/satellite-sdk';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { generateTenantCss } from '@ajabadia/styles';
+import { AuditService } from '@/services/tenant/audit-service';
 
 export const revalidate = 0; // Dynamic route
 
@@ -48,6 +49,15 @@ export async function GET(request: NextRequest) {
       // strict validation and HSL translation
       css = generateTenantCss(themeConfig);
     } catch (err) {
+      await AuditService.logEvent({
+        tenantId: tenantId || 'unknown',
+        action: 'THEME_CONFIG_FETCH_ERROR',
+        entityType: 'CONFIG',
+        entityId: 'unknown',
+        userId: 'system',
+        userEmail: 'system',
+        changedFields: { error: err instanceof Error ? err.message : String(err) },
+      });
       console.warn(`[EdgeCSSThemeGateway] Failed to retrieve config for tenant ${tenantId}. Falling back to default CSS.`, err);
       css = generateTenantCss({}); // tech-noir default cyan
     }
@@ -61,6 +71,15 @@ export async function GET(request: NextRequest) {
       }
     });
   } catch (error) {
+    await AuditService.logEvent({
+      tenantId: 'unknown',
+      action: 'THEME_GATEWAY_ERROR',
+      entityType: 'CONFIG',
+      entityId: 'unknown',
+      userId: 'system',
+      userEmail: 'system',
+      changedFields: { error: error instanceof Error ? error.message : String(error) },
+    });
     console.error('[API_THEME_GATEWAY_ERROR]', error);
     const fallbackCss = generateTenantCss({});
     return new NextResponse(fallbackCss, {
