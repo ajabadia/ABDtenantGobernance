@@ -42,7 +42,7 @@ vi.mock('@/lib/repositories/TenantRepository', () => {
   };
 });
 
-vi.mock('@ajabadia/satellite-sdk', () => {
+vi.mock('@ajabadia/satellite-sdk/core', () => {
   return {
     SecurityService: {
       encrypt: vi.fn((text: string) => `encrypted:${text}`),
@@ -69,7 +69,7 @@ vi.mock('@/models/Space', () => {
   };
 });
 
-import { SecurityService } from '@ajabadia/satellite-sdk';
+import { SecurityService } from '@ajabadia/satellite-sdk/core';;
 
 describe('TenantService', () => {
   beforeEach(() => {

@@ -4,7 +4,7 @@ import { AssetLinkService } from './asset-link-service';
 import { verifyAssetSovereignty } from './asset-verification';
 
 // Mock database contexts
-vi.mock('@ajabadia/satellite-sdk', () => {
+vi.mock('@ajabadia/satellite-sdk/db', () => {
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
     getTenantModel: (modelName: string, schema: mongoose.Schema) =>

@@ -9,7 +9,7 @@
  */
 
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { LayoutDashboard, ArrowLeft } from 'lucide-react';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 import { DashboardCardsGrid } from '@/components/admin/dashboard/DashboardCardsGrid';

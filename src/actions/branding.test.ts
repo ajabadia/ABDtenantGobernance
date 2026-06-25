@@ -8,7 +8,7 @@ vi.hoisted(() => {
 // Note: vi.mock calls are hoisted. Mock variables are created INSIDE the factory
 // and exported as named exports so they can be imported by tests below.
 
-vi.mock('@ajabadia/satellite-sdk', () => ({
+vi.mock('@ajabadia/satellite-sdk/auth-middleware', () => ({
   ensureIndustrialAccess: vi.fn(async () => ({
     id: 'admin-user-id',
     tenantId: 'tenant-test-1',
@@ -53,7 +53,7 @@ vi.mock('next/cache', () => ({
 import { updateTenantBrandingAction } from './branding';
 // @ts-expect-error - named mock exports, not in real module
 import { mockGetConfig, mockUpdateConfig } from '@/services/tenant/tenant-service';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 
 describe('updateTenantBrandingAction — roleCustomization', () => {
   beforeEach(() => {

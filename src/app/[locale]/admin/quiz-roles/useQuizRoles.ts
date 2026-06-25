@@ -19,7 +19,7 @@ import { fetchQuizRolesAction, assignQuizRoleAction, revokeQuizRoleAction, bulkA
 import { fetchUsersAction } from '@/app/[locale]/admin/users/actions';
 import { type RoleLiteralsMap } from '@ajabadia/styles';
 import { type IamUser } from '@/lib/services/iamClient';
-import { type IQuizUserRole } from '@/models/QuizUserRole';
+import { type QuizRoleRecord } from './types';
 
 export type ScopeType = 'space' | 'course' | 'exam_config';
 
@@ -28,7 +28,7 @@ export function useQuizRoles(locale: string) {
   const searchParams = useSearchParams();
 
   const [tenantId, setTenantId] = useState<string>('');
-  const [roles, setRoles] = useState<Partial<IQuizUserRole>[]>([]);
+  const [roles, setRoles] = useState<Partial<QuizRoleRecord>[]>([]);
   const [users, setUsers] = useState<IamUser[]>([]);
   const [loading, setLoading] = useState(true);
 

@@ -11,7 +11,8 @@
 'use server'
 
 import mongoose from 'mongoose';
-import { connectDB, ensureIndustrialAccess, withTenantContext } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';;
 import { delegatedRoleRepository } from '@/lib/repositories/DelegatedRoleRepository';
 import { AuditService } from '@/services/tenant/audit-service';
 

@@ -14,10 +14,10 @@ import { useTranslations } from 'next-intl';
 import { Trash2 } from 'lucide-react';
 import { RoleBadge, type RoleLiteralsMap } from '@ajabadia/styles';
 import { type IamUser } from '@/lib/services/iamClient';
-import { type IQuizUserRole } from '@/models/QuizUserRole';
+import { type QuizRoleRecord } from './types';
 
 interface QuizRolesTableProps {
-  roles: Partial<IQuizUserRole>[];
+  roles: Partial<QuizRoleRecord>[];
   users: IamUser[];
   loading: boolean;
   roleLiterals: RoleLiteralsMap | undefined;

@@ -9,6 +9,7 @@
  */
 
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';;
 
 export interface ITenantBranding {
   logo?: {
@@ -130,6 +131,15 @@ const TenantMongooseSchema = new Schema<ITenant>({
 }, {
   timestamps: true
 });
+
+TenantMongooseSchema.plugin(encryptionPlugin([
+  'billing.fiscalName',
+  'billing.taxId',
+  'billing.shippingAddress.line1',
+  'billing.shippingAddress.city',
+  'billing.shippingAddress.postalCode',
+  'billing.shippingAddress.country',
+]));
 
 const Tenant: Model<ITenant> = mongoose.models.Tenant || mongoose.model<ITenant>('Tenant', TenantMongooseSchema);
 

@@ -9,7 +9,7 @@
  */
 
 import type { NextRequest, NextResponse } from 'next/server';
-import { createAuthRouteHandler } from '@ajabadia/satellite-sdk';
+import { createAuthRouteHandler } from '@ajabadia/satellite-sdk/auth-middleware';;
 
 const sdkHandler = createAuthRouteHandler({
   appId: process.env.NEXT_PUBLIC_APP_ID || 'gobernanza',

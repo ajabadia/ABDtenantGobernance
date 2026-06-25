@@ -9,13 +9,13 @@
  */
 
 import React from 'react';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantBrandingForm } from '@/components/admin/TenantBrandingForm';
 import { getTranslations } from 'next-intl/server';
 import { ArrowLeft, Palette } from 'lucide-react';
 import Link from 'next/link';
-import { connectDB } from '@ajabadia/satellite-sdk';
+import { connectDB } from '@ajabadia/satellite-sdk/db';;
 import { AdminPageHeader } from '@ajabadia/styles';
 
 export const revalidate = 0; // Evitar el cacheado estático de la página administrativa

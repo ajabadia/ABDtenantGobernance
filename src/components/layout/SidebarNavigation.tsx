@@ -11,7 +11,7 @@
  */
 
 import React from 'react';
-import { Home, Palette, Folder, Terminal, ShieldCheck, Building, GraduationCap, Cloud } from 'lucide-react';
+import { Home, Palette, Folder, Terminal, ShieldCheck, Building, GraduationCap, Cloud, Zap, ShieldX } from 'lucide-react';
 import { useTranslations, useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
 import { SmartNavbar, buildSidebarLinks } from '@ajabadia/ecosystem-widgets';
@@ -103,6 +103,18 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
       label: locale === 'es' ? 'Proveedores de Almacenamiento' : 'Storage Providers',
       icon: <Cloud size={14} />,
       requiresAdmin: true
+    },
+    {
+      href: `/admin/sandbox${tenantQuery}`,
+      label: locale === 'es' ? 'Sandbox JWT' : 'Sandbox JWT',
+      icon: <Zap size={14} />,
+      requiresSuperAdmin: true
+    },
+    {
+      href: `/admin/gdpr${tenantQuery}`,
+      label: locale === 'es' ? 'GDPR Purge' : 'GDPR Purge',
+      icon: <ShieldX size={14} />,
+      requiresSuperAdmin: true
     },
     {
       href: `/admin${tenantQuery}`,

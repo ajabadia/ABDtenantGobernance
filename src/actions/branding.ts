@@ -11,9 +11,9 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { TenantService } from '@/services/tenant/tenant-service';
-import { uploadBrandingAsset, deleteCloudinaryAsset } from '@ajabadia/satellite-sdk';
+import { uploadBrandingAsset, deleteCloudinaryAsset } from '@ajabadia/satellite-sdk/utils';;
 import { AuditService } from '@/services/tenant/audit-service';
 
 export interface UpdateBrandingResponse {

@@ -163,4 +163,63 @@ export class TenantService {
 
     TenantConfigCache.delete(updatedDoc.tenantId);
   }
+
+  /**
+   * Purgado físico del tenant (Hard delete / GDPR Purge) con llamadas en cascada S2S a los satélites
+   */
+  static async purgeTenant(id: string, performedBy: string = 'SYSTEM'): Promise<void> {
+    const tenantDoc = await tenantRepository.model.findById(id).exec();
+    if (!tenantDoc) {
+      throw new Error(`Tenant con ID de base de datos ${id} no encontrado.`);
+    }
+
+    const { tenantId, dbPrefix, isolationStrategy } = tenantDoc;
+
+    // 1. Orquestación S2S a los satélites
+    const satellites = [
+      { name: 'Quiz', url: process.env.QUIZ_SERVICE_URL || 'http://localhost:5020' },
+      { name: 'Files', url: process.env.FILES_SERVICE_URL || 'http://localhost:5005' },
+      { name: 'Logs', url: process.env.LOGS_SERVICE_URL ? new URL(process.env.LOGS_SERVICE_URL).origin : 'http://localhost:5003' }
+    ];
+
+    for (const sat of satellites) {
+      try {
+        console.log(`[GDPR_PURGE_S2S] Calling purge on ${sat.name} satellite for tenant ${tenantId}...`);
+        const response = await fetch(`${sat.url}/api/internal/gdpr/purge`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${process.env.ABD_INTERNAL_SECRET || 'dev-internal-secret-key-2026'}`
+          },
+          body: JSON.stringify({ tenantId, dbPrefix, isolationStrategy }),
+          // Add timeout to prevent blocking during build checks or offline testing
+          signal: AbortSignal.timeout(5000)
+        });
+        if (!response.ok) {
+          const bodyText = await response.text();
+          console.warn(`[GDPR_PURGE_S2S_WARN] Satellite ${sat.name} purge failed:`, bodyText);
+        } else {
+          console.log(`[GDPR_PURGE_S2S_OK] Satellite ${sat.name} purged successfully.`);
+        }
+      } catch (err) {
+        console.warn(`[GDPR_PURGE_S2S_ERR] Failed to communicate with ${sat.name} satellite:`, err instanceof Error ? err.message : err);
+      }
+    }
+
+    // 2. Eliminar físicamente los registros locales del inquilino
+    await tenantRepository.model.findByIdAndDelete(id).exec();
+
+    // 3. Registrar el evento de auditoría en la central
+    AuditService.logEvent({
+      tenantId,
+      action: 'PURGE_TENANT',
+      entityType: 'TENANT',
+      entityId: id,
+      userId: performedBy,
+      userEmail: performedBy,
+      changedFields: { purged: true }
+    });
+
+    TenantConfigCache.delete(tenantId);
+  }
 }

@@ -6,8 +6,21 @@ vi.hoisted(() => {
   process.env.MONGODB_URI = 'mongodb://test:27017/test';
 });
 
-vi.mock('@ajabadia/satellite-sdk', () => ({
+const { mockGetCache, mockSetCache } = vi.hoisted(() => {
+  return {
+    mockGetCache: vi.fn<(key: string) => Promise<string | null>>(async () => null),
+    mockSetCache: vi.fn(async () => {}),
+  };
+});
+
+vi.mock('@ajabadia/satellite-sdk/db', () => ({
   connectDB: vi.fn(async () => {}),
+  encryptionPlugin: vi.fn(() => (schema: unknown) => schema),
+}));
+
+vi.mock('@ajabadia/satellite-sdk/auth-middleware', () => ({
+  getCache: mockGetCache,
+  setCache: mockSetCache,
 }));
 
 vi.mock('@/services/tenant/tenant-service', () => {
@@ -25,7 +38,7 @@ import { mockGetConfig } from '@/services/tenant/tenant-service';
 
 describe('Edge CSS Theme Gateway API', () => {
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
   });
 
   it('should return 400 when tenantId is missing', async () => {
@@ -35,6 +48,21 @@ describe('Edge CSS Theme Gateway API', () => {
     expect(res.status).toBe(400);
     const body = await res.text();
     expect(body).toContain('Missing tenantId');
+  });
+
+  it('should return cached CSS when Redis has a hit', async () => {
+    mockGetCache.mockResolvedValue(':root { --primary: hsl(0 100% 50%); }');
+
+    const req = new NextRequest('http://localhost:5002/api/theme?tenantId=tenant-cached');
+    const res = await GET(req);
+
+    expect(res.status).toBe(200);
+    expect(res.headers.get('X-Cache')).toBe('HIT');
+    expect(res.headers.get('Content-Type')).toBe('text/css');
+    const cssText = await res.text();
+    expect(cssText).toContain('--primary: hsl(0 100% 50%)');
+    // Should NOT call MongoDB when cache is hit
+    expect(mockGetConfig).not.toHaveBeenCalled();
   });
 
   it('should return valid CSS and cache headers for a configured tenant', async () => {

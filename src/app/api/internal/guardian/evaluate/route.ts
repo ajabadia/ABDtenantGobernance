@@ -10,8 +10,8 @@
 
 import { NextResponse } from 'next/server';
 import { GuardianEngine } from '@/services/guardian/guardian-engine';
-import { connectDB } from '@ajabadia/satellite-sdk';
-import { withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { withTenantContext } from '@ajabadia/satellite-sdk/db';;
 import { AuditService } from '@/services/tenant/audit-service';
 
 export async function POST(req: Request) {

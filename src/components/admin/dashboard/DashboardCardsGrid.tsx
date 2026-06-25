@@ -10,7 +10,7 @@ Se renderiza una grilla de tarjetas de acción para el panel administrativo, cad
  * @lastUpdated 2026-06-23T21:44:51.271Z
  */
 
-import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap, Cloud } from 'lucide-react';
+import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap, Cloud, Terminal, ShieldAlert } from 'lucide-react';
 import { DashboardActionCard } from '@/components/admin/dashboard/DashboardActionCard';
 
 interface DashboardCardsGridProps {
@@ -103,6 +103,26 @@ export function DashboardCardsGrid({ locale, tenantQuery, adminT, portalT }: Das
         buttonText={locale === 'es' ? 'Configurar Proveedores' : 'Configure Providers'}
         href={`/${locale}/admin/connectors${tenantQuery}`}
       />
+      <DashboardActionCard
+        icon={Terminal}
+        category={locale === 'es' ? 'Desarrollo / QA' : 'Development / QA'}
+        title={locale === 'es' ? 'Simulador Sandbox' : 'Sandbox Simulator'}
+        description={locale === 'es' ? 'Consola local para inyectar JWTs de prueba, simular desconexión de licencias y saltos de rol instantáneos.' : 'Local console to inject test JWTs, simulate license disconnection, and perform instant role shifts.'}
+        footerLabel={locale === 'es' ? 'Modo Depuración' : 'Debug Mode'}
+        footerValue="Activo"
+        buttonText={locale === 'es' ? 'Abrir Sandbox' : 'Open Sandbox'}
+        href={`/${locale}/admin/sandbox${tenantQuery}`}
+      />
+      <DashboardActionCard
+        icon={ShieldAlert}
+        category={locale === 'es' ? 'Seguridad / Privacidad' : 'Security / Privacy'}
+        title={locale === 'es' ? 'GDPR y Portabilidad' : 'GDPR & Portability'}
+        description={locale === 'es' ? 'Descargas cifradas en ZIP de datos de inquilinos y solicitudes de derecho al olvido (purga física).' : 'Encrypted ZIP downloads of tenant data and requests for right to be forgotten (physical purge).'}
+        footerLabel={locale === 'es' ? 'Cumplimiento' : 'Compliance'}
+        footerValue="Activo"
+        buttonText={locale === 'es' ? 'Abrir Panel GDPR' : 'Open GDPR Panel'}
+        href={`/${locale}/admin/gdpr${tenantQuery}`}
+      />
     </div>
-  )
+  );
 }

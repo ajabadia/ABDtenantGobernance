@@ -8,7 +8,7 @@
  * @lastUpdated 2026-06-23T21:52:05.740Z
  */
 
-import { withIndustrialAuth } from '@ajabadia/satellite-sdk';
+import { withIndustrialAuth } from '@ajabadia/satellite-sdk/auth-middleware';;
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
 

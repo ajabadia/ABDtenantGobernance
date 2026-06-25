@@ -9,6 +9,7 @@
  */
 
 import { Schema, Connection, Document } from 'mongoose';
+import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';;
 
 export interface IAuditLog {
   appId?: string;                        // Aplicación origen: 'auth', 'quiz', 'gobernanza'
@@ -41,6 +42,8 @@ export const AuditLogSchema = new Schema<IAuditLog>({
   userAgent: { type: String },
   createdAt: { type: Date, default: Date.now, index: true },
 });
+
+AuditLogSchema.plugin(encryptionPlugin(['userEmail']));
 
 // Índice compuesto para telemetría rápida por organización y tiempo
 AuditLogSchema.index({ tenantId: 1, createdAt: -1 });

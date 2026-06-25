@@ -9,9 +9,9 @@
  */
 
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { SpaceService, SpaceAccessService } from '@/services/tenant/space-service';
-import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';;
 import { AuditService } from '@/services/tenant/audit-service';
 
 /**

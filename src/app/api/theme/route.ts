@@ -9,10 +9,14 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB } from '@ajabadia/satellite-sdk';
+import { getCache, setCache } from '@ajabadia/satellite-sdk/auth-middleware';
+import { connectDB } from '@ajabadia/satellite-sdk/db';;
 import { TenantService } from '@/services/tenant/tenant-service';
 import { generateTenantCss } from '@ajabadia/styles';
 import { AuditService } from '@/services/tenant/audit-service';
+
+const THEME_CACHE_TTL = 3600; // 1 hour
+const THEME_CACHE_PREFIX = 'theme:css:';
 
 export const revalidate = 0; // Dynamic route
 
@@ -29,6 +33,20 @@ export async function GET(request: NextRequest) {
       return new NextResponse('/* Missing tenantId parameter */', {
         status: 400,
         headers: { 'Content-Type': 'text/css' }
+      });
+    }
+
+    const cacheKey = `${THEME_CACHE_PREFIX}${tenantId}`;
+    const cached = await getCache<string>(cacheKey);
+    if (cached) {
+      return new NextResponse(cached, {
+        status: 200,
+        headers: {
+          'Content-Type': 'text/css',
+          'Cache-Control': 'public, max-age=60, stale-while-revalidate=600',
+          'X-Content-Type-Options': 'nosniff',
+          'X-Cache': 'HIT',
+        },
       });
     }
 
@@ -62,12 +80,16 @@ export async function GET(request: NextRequest) {
       css = generateTenantCss({}); // tech-noir default cyan
     }
 
+    // Cache the generated CSS (fire-and-forget)
+    setCache(cacheKey, css, THEME_CACHE_TTL);
+
     return new NextResponse(css, {
       status: 200,
       headers: {
         'Content-Type': 'text/css',
         'Cache-Control': 'public, max-age=60, stale-while-revalidate=600',
-        'X-Content-Type-Options': 'nosniff'
+        'X-Content-Type-Options': 'nosniff',
+        'X-Cache': 'MISS',
       }
     });
   } catch (error) {

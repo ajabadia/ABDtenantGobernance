@@ -8,7 +8,7 @@
  * @lastUpdated 2026-06-23T23:29:14.542Z
  */
 
-import { SecurityService } from '@ajabadia/satellite-sdk';
+import { SecurityService } from '@ajabadia/satellite-sdk/core';;
 
 /**
  * Encrypts sensitive billing fields (taxId) for storage

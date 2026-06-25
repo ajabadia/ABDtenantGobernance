@@ -10,7 +10,8 @@
 
 'use server'
 
-import { connectDB, ensureIndustrialAccess, withTenantContext } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';;
 import { PermissionGroupRepository } from '@/lib/repositories/PermissionGroupRepository';
 import { PermissionService } from '@/services/tenant/permission-service';
 import { getExplicitContext } from '@/services/tenant/tenant-context-helper';

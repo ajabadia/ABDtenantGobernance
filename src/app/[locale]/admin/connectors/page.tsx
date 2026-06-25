@@ -9,7 +9,8 @@
  */
 
 import React from 'react';
-import { ensureIndustrialAccess, connectDB } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
+import { connectDB } from '@ajabadia/satellite-sdk/db';;
 import { getTranslations } from 'next-intl/server';
 import { ArrowLeft, Cloud } from 'lucide-react';
 import Link from 'next/link';

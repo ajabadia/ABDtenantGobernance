@@ -21,7 +21,7 @@
  * async and throw on non‑2xx responses so that callers can handle failures.
  */
 
-import { ResendEmailService as SDKResendEmailService, type ResendEmailOptions as SDKResendEmailOptions } from '@ajabadia/satellite-sdk';
+import { ResendEmailService as SDKResendEmailService } from '@ajabadia/satellite-sdk/utils';
 
 export interface ResendEmailOptions {
   to: string;

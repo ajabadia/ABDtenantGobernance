@@ -7,7 +7,7 @@ vi.hoisted(() => {
 import { SpaceService, SpaceAccessService, SpaceMoveService } from './space-service';
 
 // Mock database contexts
-vi.mock('@ajabadia/satellite-sdk', () => {
+vi.mock('@ajabadia/satellite-sdk/db', () => {
   const mockModel = new Proxy({}, {
     get(target, prop) {
       if (prop === 'modelName') return 'MockModel';

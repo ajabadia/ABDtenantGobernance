@@ -4,50 +4,28 @@ vi.hoisted(() => {
   process.env.MONGODB_URI = 'mongodb://test:27017/test';
 });
 
-// Mock SDK context
-vi.mock('@ajabadia/satellite-sdk', () => ({
-  connectDB: vi.fn(async () => {}),
-  ensureIndustrialAccess: vi.fn(async () => ({ id: 'admin-user-id', email: 'admin@test.com', role: 'ADMIN' })),
-  withTenantContext: vi.fn(async (callback) => await callback()),
+const mockFetchRoles = vi.hoisted(() => vi.fn());
+const mockAssignRole = vi.hoisted(() => vi.fn());
+const mockRevokeRole = vi.hoisted(() => vi.fn());
+const mockBulkAssignRoles = vi.hoisted(() => vi.fn());
+
+vi.mock('@/services/quiz-role-client', () => ({
+  QuizRoleClient: {
+    fetchRoles: mockFetchRoles,
+    assignRole: mockAssignRole,
+    revokeRole: mockRevokeRole,
+    bulkAssignRoles: mockBulkAssignRoles,
+  },
 }));
 
-// Mock QuizUserRole model
-vi.mock('@/models/QuizUserRole', () => {
-  const mockFind = vi.fn();
-  const mockCreate = vi.fn();
-  const mockDeleteOne = vi.fn();
-  const mockInsertMany = vi.fn();
-  const mockSort = vi.fn();
-  const mockLean = vi.fn();
+vi.mock('@ajabadia/satellite-sdk/auth-middleware', () => ({
+  ensureIndustrialAccess: vi.fn(async () => ({ id: 'admin-user-id', email: 'admin@test.com', role: 'ADMIN' })),
+}));
 
-  // Chain: find().sort().lean()
-  mockFind.mockReturnValue({ sort: mockSort });
-  mockSort.mockReturnValue({ lean: mockLean });
+vi.mock('@ajabadia/satellite-sdk/db', () => ({
+  encryptionPlugin: vi.fn(() => (schema: unknown) => schema),
+}));
 
-  const MockQuizUserRole = Object.assign(
-    function () {
-      return {};
-    },
-    {
-      find: mockFind,
-      create: mockCreate,
-      deleteOne: mockDeleteOne,
-      insertMany: mockInsertMany,
-    }
-  );
-
-  return {
-    default: MockQuizUserRole,
-    mockFind,
-    mockCreate,
-    mockDeleteOne,
-    mockInsertMany,
-    mockSort,
-    mockLean,
-  };
-});
-
-// Mock TenantService
 vi.mock('@/services/tenant/tenant-service', () => ({
   TenantService: {
     getConfig: vi.fn(async (tenantId: string) => ({
@@ -65,11 +43,7 @@ vi.mock('@/services/tenant/tenant-service', () => ({
   },
 }));
 
-// Import mock references
-// @ts-expect-error - mock exports only exist in runtime mock
-import { mockFind, mockCreate, mockDeleteOne, mockInsertMany, mockSort, mockLean } from '@/models/QuizUserRole';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
-
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { fetchTenantRoleCustomizationAction } from './role-queries';
 import {
   fetchQuizRolesAction,
@@ -96,7 +70,6 @@ describe('fetchTenantRoleCustomizationAction', () => {
     });
 
     it('should return error if TenantService.getConfig throws', async () => {
-      // Re-import to get fresh mock reference
       const { TenantService } = await import('@/services/tenant/tenant-service');
       (TenantService.getConfig as ReturnType<typeof vi.fn>).mockRejectedValueOnce(new Error('Config not found'));
 
@@ -115,17 +88,15 @@ describe('fetchTenantRoleCustomizationAction', () => {
   describe('fetchQuizRolesAction', () => {
     it('should fetch all roles without filters', async () => {
       const mockRoles = [
-        { _id: 'role-1', tenantId: TENANT_ID, userId: 'user-1', scopeType: 'space', scopeId: 'space-1', roleType: 'CREATOR', assignedBy: 'admin-1', createdAt: new Date() },
-        { _id: 'role-2', tenantId: TENANT_ID, userId: 'user-2', scopeType: 'course', scopeId: 'course-1', roleType: 'AUDITOR', assignedBy: 'admin-1', createdAt: new Date() },
+        { _id: 'role-1', tenantId: TENANT_ID, userId: 'user-1', scopeType: 'space', scopeId: 'space-1', roleType: 'CREATOR', assignedBy: 'admin-1' },
+        { _id: 'role-2', tenantId: TENANT_ID, userId: 'user-2', scopeType: 'course', scopeId: 'course-1', roleType: 'AUDITOR', assignedBy: 'admin-1' },
       ];
 
-      mockLean.mockResolvedValueOnce(mockRoles);
+      mockFetchRoles.mockResolvedValueOnce({ data: mockRoles });
 
       const result = await fetchQuizRolesAction(TENANT_ID);
 
-      expect(mockFind).toHaveBeenCalledWith({ tenantId: TENANT_ID });
-      expect(mockSort).toHaveBeenCalledWith({ createdAt: -1 });
-      expect(mockLean).toHaveBeenCalled();
+      expect(mockFetchRoles).toHaveBeenCalledWith(TENANT_ID, undefined);
       expect(result.data).toHaveLength(2);
       expect(result.data![0].userId).toBe('user-1');
       expect(result.data![1].userId).toBe('user-2');
@@ -133,40 +104,31 @@ describe('fetchTenantRoleCustomizationAction', () => {
     });
 
     it('should filter by scopeType when provided', async () => {
-      mockLean.mockResolvedValueOnce([]);
+      mockFetchRoles.mockResolvedValueOnce({ data: [] });
 
       await fetchQuizRolesAction(TENANT_ID, { scopeType: 'space' });
 
-      expect(mockFind).toHaveBeenCalledWith({ tenantId: TENANT_ID, scopeType: 'space' });
+      expect(mockFetchRoles).toHaveBeenCalledWith(TENANT_ID, { scopeType: 'space' });
     });
 
     it('should filter by scopeId when provided', async () => {
-      mockLean.mockResolvedValueOnce([]);
+      mockFetchRoles.mockResolvedValueOnce({ data: [] });
 
       await fetchQuizRolesAction(TENANT_ID, { scopeId: 'space-42' });
 
-      expect(mockFind).toHaveBeenCalledWith({ tenantId: TENANT_ID, scopeId: 'space-42' });
+      expect(mockFetchRoles).toHaveBeenCalledWith(TENANT_ID, { scopeId: 'space-42' });
     });
 
     it('should filter by both scopeType and scopeId', async () => {
-      mockLean.mockResolvedValueOnce([]);
+      mockFetchRoles.mockResolvedValueOnce({ data: [] });
 
       await fetchQuizRolesAction(TENANT_ID, { scopeType: 'course', scopeId: 'course-7' });
 
-      expect(mockFind).toHaveBeenCalledWith({ tenantId: TENANT_ID, scopeType: 'course', scopeId: 'course-7' });
+      expect(mockFetchRoles).toHaveBeenCalledWith(TENANT_ID, { scopeType: 'course', scopeId: 'course-7' });
     });
 
-    it('should serialize _id to string', async () => {
-      const mockRole = { _id: 'role-id-1', tenantId: TENANT_ID, userId: 'user-1', scopeType: 'space', scopeId: 'space-1', roleType: 'AUDITOR', assignedBy: 'admin-1', createdAt: new Date() };
-      mockLean.mockResolvedValueOnce([mockRole]);
-
-      const result = await fetchQuizRolesAction(TENANT_ID);
-
-      expect(result.data![0]).toHaveProperty('_id', 'role-id-1');
-    });
-
-    it('should return error if find throws', async () => {
-      mockLean.mockRejectedValueOnce(new Error('DB connection failed'));
+    it('should return error if client returns error', async () => {
+      mockFetchRoles.mockResolvedValueOnce({ error: 'DB connection failed' });
 
       const result = await fetchQuizRolesAction(TENANT_ID);
 
@@ -192,20 +154,15 @@ describe('fetchTenantRoleCustomizationAction', () => {
         scopeId: assignData.scopeId,
         roleType: assignData.roleType,
         assignedBy: 'admin-user-id',
-        toObject: function () { return this; },
       };
 
-      mockCreate.mockResolvedValueOnce(mockDoc);
+      mockAssignRole.mockResolvedValueOnce({ data: mockDoc });
 
       const result = await assignQuizRoleAction(TENANT_ID, assignData);
 
       expect(ensureIndustrialAccess).toHaveBeenCalledWith('ADMIN');
-      expect(mockCreate).toHaveBeenCalledWith({
-        tenantId: TENANT_ID,
-        userId: assignData.userId,
-        scopeType: assignData.scopeType,
-        scopeId: assignData.scopeId,
-        roleType: assignData.roleType,
+      expect(mockAssignRole).toHaveBeenCalledWith(TENANT_ID, {
+        ...assignData,
         assignedBy: 'admin-user-id',
       });
       expect(result.data).toBeDefined();
@@ -214,10 +171,8 @@ describe('fetchTenantRoleCustomizationAction', () => {
       expect(result.error).toBeUndefined();
     });
 
-    it('should return DUPLICATE_ROLE error on E11000 duplicate key', async () => {
-      const dupError = new Error('E11000 duplicate key');
-      (dupError as unknown as { code: number }).code = 11000;
-      mockCreate.mockRejectedValueOnce(dupError);
+    it('should return DUPLICATE_ROLE error on conflict', async () => {
+      mockAssignRole.mockResolvedValueOnce({ error: 'DUPLICATE_ROLE: El usuario ya tiene un rol asignado en este ámbito' });
 
       const result = await assignQuizRoleAction(TENANT_ID, assignData);
 
@@ -225,8 +180,8 @@ describe('fetchTenantRoleCustomizationAction', () => {
       expect(result.data).toBeUndefined();
     });
 
-    it('should return error message if create throws', async () => {
-      mockCreate.mockRejectedValueOnce(new Error('Validation failed'));
+    it('should return error message if client returns error', async () => {
+      mockAssignRole.mockResolvedValueOnce({ error: 'Validation failed' });
 
       const result = await assignQuizRoleAction(TENANT_ID, assignData);
 
@@ -236,17 +191,17 @@ describe('fetchTenantRoleCustomizationAction', () => {
 
   describe('revokeQuizRoleAction', () => {
     it('should revoke a role successfully', async () => {
-      mockDeleteOne.mockResolvedValueOnce({ deletedCount: 1 });
+      mockRevokeRole.mockResolvedValueOnce({ success: true });
 
       const result = await revokeQuizRoleAction('role-to-delete', TENANT_ID);
 
-      expect(mockDeleteOne).toHaveBeenCalledWith({ _id: 'role-to-delete', tenantId: TENANT_ID });
+      expect(mockRevokeRole).toHaveBeenCalledWith('role-to-delete', TENANT_ID);
       expect(result.success).toBe(true);
       expect(result.error).toBeUndefined();
     });
 
     it('should return ROLE_NOT_FOUND when role does not exist', async () => {
-      mockDeleteOne.mockResolvedValueOnce({ deletedCount: 0 });
+      mockRevokeRole.mockResolvedValueOnce({ error: 'ROLE_NOT_FOUND: No se encontró el rol especificado' });
 
       const result = await revokeQuizRoleAction('nonexistent-role', TENANT_ID);
 
@@ -254,8 +209,8 @@ describe('fetchTenantRoleCustomizationAction', () => {
       expect(result.error).toBe('ROLE_NOT_FOUND: No se encontró el rol especificado');
     });
 
-    it('should return error message if deleteOne throws', async () => {
-      mockDeleteOne.mockRejectedValueOnce(new Error('DB timeout'));
+    it('should return error message if client returns error', async () => {
+      mockRevokeRole.mockResolvedValueOnce({ error: 'DB timeout' });
 
       const result = await revokeQuizRoleAction('role-id', TENANT_ID);
 
@@ -272,53 +227,33 @@ describe('fetchTenantRoleCustomizationAction', () => {
     };
 
     it('should bulk assign roles successfully', async () => {
-      mockInsertMany.mockResolvedValueOnce([{ _id: 'r1' }, { _id: 'r2' }, { _id: 'r3' }]);
+      mockBulkAssignRoles.mockResolvedValueOnce({ data: { assigned: 3, skipped: 0 } });
 
       const result = await bulkAssignQuizRolesAction(TENANT_ID, bulkData);
 
       expect(ensureIndustrialAccess).toHaveBeenCalledWith('ADMIN');
-      expect(mockInsertMany).toHaveBeenCalledWith(
-        [
-          { tenantId: TENANT_ID, userId: 'user-1', scopeType: 'exam_config', scopeId: 'exam-config-1', roleType: 'AUDITOR', assignedBy: 'admin-user-id' },
-          { tenantId: TENANT_ID, userId: 'user-2', scopeType: 'exam_config', scopeId: 'exam-config-1', roleType: 'AUDITOR', assignedBy: 'admin-user-id' },
-          { tenantId: TENANT_ID, userId: 'user-3', scopeType: 'exam_config', scopeId: 'exam-config-1', roleType: 'AUDITOR', assignedBy: 'admin-user-id' },
-        ],
-        { ordered: false }
-      );
+      expect(mockBulkAssignRoles).toHaveBeenCalledWith(TENANT_ID, {
+        ...bulkData,
+        assignedBy: 'admin-user-id',
+      });
       expect(result.data).toEqual({ assigned: 3, skipped: 0 });
       expect(result.error).toBeUndefined();
     });
 
-    it('should handle partial duplicates from insertMany with ordered: false', async () => {
-      const bulkError = new Error('Some duplicate keys');
-      (bulkError as unknown as { writeErrors: unknown[]; insertedCount: number }).writeErrors = [{}, {}];
-      (bulkError as unknown as { insertedCount: number }).insertedCount = 1;
-      mockInsertMany.mockRejectedValueOnce(bulkError);
+    it('should handle partial duplicates', async () => {
+      mockBulkAssignRoles.mockResolvedValueOnce({ data: { assigned: 1, skipped: 2 }, error: 'partial failure: 1 assigned' });
 
       const result = await bulkAssignQuizRolesAction(TENANT_ID, bulkData);
 
       expect(result.data).toEqual({ assigned: 1, skipped: 2 });
-      expect(result.error).toBe('DUPLICATE_ROLE: 2 usuario(s) ya tenían rol asignado');
     });
 
-    it('should return 0 assigned when insertMany throws without insertedCount', async () => {
-      const genericError = new Error('Bulk write failed');
-      (genericError as unknown as { writeErrors?: unknown[]; insertedCount?: number }).writeErrors = undefined;
-      (genericError as unknown as { insertedCount?: number }).insertedCount = 0;
-      mockInsertMany.mockRejectedValueOnce(genericError);
+    it('should return assigned 0 and skipped count on generic error', async () => {
+      mockBulkAssignRoles.mockResolvedValueOnce({ error: 'Bulk write failed' });
 
       const result = await bulkAssignQuizRolesAction(TENANT_ID, bulkData);
 
-      expect(result.data).toEqual({ assigned: 0, skipped: 3 });
-    });
-
-    it('should return assigned:0 and skipped count when insertMany throws a generic error', async () => {
-      mockInsertMany.mockRejectedValueOnce(new Error('DB connection lost'));
-
-      const result = await bulkAssignQuizRolesAction(TENANT_ID, bulkData);
-
-      expect(result.data).toEqual({ assigned: 0, skipped: 3 });
-      expect(result.error).toBe('DUPLICATE_ROLE: 3 usuario(s) ya tenían rol asignado');
+      expect(result.error).toBe('Bulk write failed');
     });
   });
 });

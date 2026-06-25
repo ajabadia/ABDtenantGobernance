@@ -9,10 +9,10 @@
  */
 
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk';
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantRepository } from '@/lib/repositories/TenantRepository';
-import { connectDB } from '@ajabadia/satellite-sdk';
+import { connectDB } from '@ajabadia/satellite-sdk/db';;
 import { AuditService } from '@/services/tenant/audit-service';
 
 const tenantRepository = new TenantRepository();
@@ -59,22 +59,31 @@ export async function PATCH(
   }
 }
 
-/**
- * 🏢 DELETE /api/admin/tenants/[id]
- * Deactivates a tenant by Mongoose _id (logical soft-delete).
- */
 export async function DELETE(
   _request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const user = await ensureIndustrialAccess('ADMIN');
+    const { searchParams } = new URL(_request.url);
+    const purge = searchParams.get('purge') === 'true';
+
+    let user;
+    if (purge) {
+      user = await ensureIndustrialAccess('SUPER_ADMIN');
+    } else {
+      user = await ensureIndustrialAccess('ADMIN');
+    }
+
     await connectDB();
-    
     const { id } = await params;
-    await TenantService.deleteTenant(id, user.email);
-    
-    return NextResponse.json({ message: 'Tenant deactivated successfully' });
+
+    if (purge) {
+      await TenantService.purgeTenant(id, user.email);
+      return NextResponse.json({ message: 'Tenant purged successfully (GDPR cascaded)' });
+    } else {
+      await TenantService.deleteTenant(id, user.email);
+      return NextResponse.json({ message: 'Tenant deactivated successfully' });
+    }
   } catch (error: unknown) {
     const err = error as Error;
     await AuditService.logEvent({
@@ -87,6 +96,6 @@ export async function DELETE(
       changedFields: { error: err.message || 'Unknown error' },
     });
     console.error('[API_DELETE_TENANT_ERROR]', error);
-    return NextResponse.json({ error: err.message || 'Error deactivating tenant' }, { status: 400 });
+    return NextResponse.json({ error: err.message || 'Error deactivating/purging tenant' }, { status: 400 });
   }
 }

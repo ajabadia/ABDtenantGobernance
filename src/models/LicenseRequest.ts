@@ -9,6 +9,7 @@
  */
 
 import mongoose, { Schema, Document, Model } from 'mongoose';
+import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';;
 
 export interface ILicenseRequest extends Document {
   tenantId: string;
@@ -33,6 +34,8 @@ const LicenseRequestSchema = new Schema<ILicenseRequest>({
 }, {
   timestamps: true
 });
+
+LicenseRequestSchema.plugin(encryptionPlugin(['requestedBy', 'resolvedBy']));
 
 // Índice único parcial para evitar duplicados pendientes
 LicenseRequestSchema.index({ tenantId: 1, appId: 1, status: 1 }, { 

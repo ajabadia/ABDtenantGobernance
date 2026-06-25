@@ -69,7 +69,7 @@ vi.mock('@/services/tenant/audit-service', () => {
 
 import mongoose from 'mongoose';
 
-vi.mock('@ajabadia/satellite-sdk', () => {
+vi.mock('@ajabadia/satellite-sdk/db', () => {
   return {
     withTenantContext: vi.fn(async (callback) => await callback()),
     getTenantModel: (modelName: string, schema: mongoose.Schema) =>
