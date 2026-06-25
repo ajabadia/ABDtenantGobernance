@@ -20,6 +20,7 @@ import { AuditService } from '@/services/tenant/audit-service';
 import { createPublisher, SystemEventType } from '@ajabadia/satellite-sdk/event-bus';
 
 const FILES_SERVICE_URL = process.env.FILES_SERVICE_URL || 'http://localhost:5005';
+const eventPublisher = createPublisher({ source: 'gobernanza' });
 
 export interface StorageConnectorResponse {
   success: boolean;
@@ -128,12 +129,14 @@ export async function saveConnectorAction(
 
     revalidatePath('/[locale]/admin/connectors', 'page');
 
-    const publisher = createPublisher({ source: 'gobernanza' });
-    await publisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
+    const eventId = await eventPublisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
       tenantId,
       providerType,
       previousProviderType: oldActive?.providerType || null,
     });
+    if (process.env.NODE_ENV === 'development') {
+      console.log('[EVENT_BUS] Published STORAGE_CONNECTOR_CHANGED', { eventId, tenantId, providerType });
+    }
 
     return {
       success: true,
@@ -188,12 +191,14 @@ export async function deleteConnectorAction(connectorId: string, tenantId: strin
     });
 
     if (wasActive) {
-      const publisher = createPublisher({ source: 'gobernanza' });
-      await publisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
+      const eventId = await eventPublisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
         tenantId: targetTenantId,
         providerType: 'cloudinary',
         previousProviderType: toDelete.providerType,
       });
+      if (process.env.NODE_ENV === 'development') {
+        console.log('[EVENT_BUS] Published STORAGE_CONNECTOR_CHANGED (delete fallback)', { eventId, tenantId: targetTenantId });
+      }
     }
 
     revalidatePath('/[locale]/admin/connectors', 'page');

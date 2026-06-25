@@ -81,6 +81,41 @@ export function GdprConsole({ tenants, userRole, locale }: GdprConsoleProps) {
     purgeDialog.trigger({ id, tenantId });
   };
 
+  const [exportForm, setExportForm] = useState({ tenantId: '', userId: '', email: '' });
+  const [exporting, setExporting] = useState(false);
+
+  const handleUserExport = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!exportForm.tenantId || !exportForm.userId) {
+      toast.error(locale === 'es' ? 'Tenant ID y User ID son obligatorios' : 'Tenant ID and User ID are required');
+      return;
+    }
+    setExporting(true);
+    try {
+      const res = await fetch('/api/admin/gdpr/user-export', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(exportForm),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({ error: res.statusText }));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `gdpr-export-${exportForm.tenantId}-${exportForm.userId}.zip`;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success(locale === 'es' ? 'Exportación completada' : 'Export completed');
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : 'Export failed');
+    } finally {
+      setExporting(false);
+    }
+  };
+
   return (
     <div className="flex flex-col gap-8 mt-2">
       {/* Intro info box */}
@@ -96,6 +131,63 @@ export function GdprConsole({ tenants, userRole, locale }: GdprConsoleProps) {
               : 'This panel provides centralized tools for data sovereignty and portability. Administrators can instantly download a complete dump of tenant data in ZIP format (Portability), and Super Administrators can definitively and irreversibly purge all tenant information across the microservices network (Right to be Forgotten).'}
           </p>
         </div>
+      </div>
+
+      {/* User-level export section */}
+      <div className="border border-border bg-card p-5">
+        <h4 className="text-xs font-bold uppercase tracking-wider text-foreground mb-3 flex items-center gap-2">
+          <FileArchive className="w-4 h-4 text-primary" />
+          {locale === 'es' ? 'Exportar datos de usuario (GDPR Portabilidad)' : 'Export user data (GDPR Portability)'}
+        </h4>
+        <form onSubmit={handleUserExport} className="flex flex-wrap items-end gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Tenant ID</label>
+            <input
+              type="text"
+              value={exportForm.tenantId}
+              onChange={(e) => setExportForm(f => ({ ...f, tenantId: e.target.value }))}
+              className="px-3 py-2 border border-border bg-background text-xs font-mono w-40 focus:outline-none focus:border-foreground"
+              placeholder="tenant-id"
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">User ID</label>
+            <input
+              type="text"
+              value={exportForm.userId}
+              onChange={(e) => setExportForm(f => ({ ...f, userId: e.target.value }))}
+              className="px-3 py-2 border border-border bg-background text-xs font-mono w-56 focus:outline-none focus:border-foreground"
+              placeholder="user-id"
+              required
+            />
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground">Email (opcional)</label>
+            <input
+              type="email"
+              value={exportForm.email}
+              onChange={(e) => setExportForm(f => ({ ...f, email: e.target.value }))}
+              className="px-3 py-2 border border-border bg-background text-xs font-mono w-48 focus:outline-none focus:border-foreground"
+              placeholder="user@example.com"
+            />
+          </div>
+          <button
+            type="submit"
+            disabled={exporting}
+            className="inline-flex items-center gap-1.5 px-4 py-2 border border-border hover:border-foreground hover:bg-muted/10 text-[10px] font-mono uppercase tracking-wider transition-all duration-200 cursor-pointer"
+          >
+            {exporting ? (
+              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Download className="w-3.5 h-3.5 text-primary" />
+            )}
+            <span>{exporting
+              ? (locale === 'es' ? 'Exportando...' : 'Exporting...')
+              : (locale === 'es' ? 'Exportar datos' : 'Export data')
+            }</span>
+          </button>
+        </form>
       </div>
 
       {/* Tenants Table */}
