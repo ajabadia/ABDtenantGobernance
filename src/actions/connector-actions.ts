@@ -17,6 +17,7 @@ import { connectDB } from '@ajabadia/satellite-sdk/db';
 import StorageConnector, { TStorageConnector } from '@/models/StorageConnector';
 import crypto from 'crypto';
 import { AuditService } from '@/services/tenant/audit-service';
+import { createPublisher, SystemEventType } from '@ajabadia/satellite-sdk/event-bus';
 
 const FILES_SERVICE_URL = process.env.FILES_SERVICE_URL || 'http://localhost:5005';
 
@@ -81,6 +82,8 @@ export async function saveConnectorAction(
 
     await connectDB();
 
+    const oldActive = await StorageConnector.findOne({ tenantId, status: 'active' });
+
     if (status === 'active') {
       // Deactivate all other connectors for this tenant
       await StorageConnector.updateMany({ tenantId, status: 'active' }, { status: 'inactive' });
@@ -125,6 +128,13 @@ export async function saveConnectorAction(
 
     revalidatePath('/[locale]/admin/connectors', 'page');
 
+    const publisher = createPublisher({ source: 'gobernanza' });
+    await publisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
+      tenantId,
+      providerType,
+      previousProviderType: oldActive?.providerType || null,
+    });
+
     return {
       success: true,
       message: connectorId ? 'Storage provider updated successfully' : 'Storage provider registered successfully'
@@ -157,11 +167,15 @@ export async function deleteConnectorAction(connectorId: string, tenantId: strin
     const targetTenantId = tenantId || user.tenantId;
 
     await connectDB();
-    const result = await StorageConnector.deleteOne({ tenantId: targetTenantId, connectorId });
+    const toDelete = await StorageConnector.findOne({ tenantId: targetTenantId, connectorId });
     
-    if (result.deletedCount === 0) {
+    if (!toDelete) {
       return { success: false, message: 'Connector not found or already deleted.' };
     }
+
+    const wasActive = toDelete.status === 'active';
+
+    await StorageConnector.deleteOne({ tenantId: targetTenantId, connectorId });
 
     await AuditService.logEvent({
       tenantId: targetTenantId,
@@ -172,6 +186,15 @@ export async function deleteConnectorAction(connectorId: string, tenantId: strin
       userEmail: user.email || 'system',
       changedFields: {},
     });
+
+    if (wasActive) {
+      const publisher = createPublisher({ source: 'gobernanza' });
+      await publisher.publish(SystemEventType.STORAGE_CONNECTOR_CHANGED, {
+        tenantId: targetTenantId,
+        providerType: 'cloudinary',
+        previousProviderType: toDelete.providerType,
+      });
+    }
 
     revalidatePath('/[locale]/admin/connectors', 'page');
     return { success: true, message: 'Storage provider configuration deleted successfully' };

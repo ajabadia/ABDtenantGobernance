@@ -10,7 +10,9 @@
 
 import { getTranslations } from 'next-intl/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { LayoutDashboard, ArrowLeft } from 'lucide-react';
+import { connectDB } from '@ajabadia/satellite-sdk/db';
+import StorageConnector from '@/models/StorageConnector';
+import { LayoutDashboard, ArrowLeft, HardDrive } from 'lucide-react';
 import { SystemTelemetryPanel } from '@/components/admin/dashboard/SystemTelemetryPanel';
 import { DashboardCardsGrid } from '@/components/admin/dashboard/DashboardCardsGrid';
 import { AdminPageHeader } from '@ajabadia/styles';
@@ -38,6 +40,11 @@ export default async function AdminPortalPage({
   const user = await ensureIndustrialAccess('ADMIN');
 
   const activeTenantId = sParams?.tenantId || user.tenantId;
+
+  // 🔌 Active Storage Provider
+  await connectDB();
+  const activeConnector = await StorageConnector.findOne({ tenantId: activeTenantId, status: 'active' });
+  const activeProvider = activeConnector?.providerType || 'cloudinary';
   const activeContextId = sParams?.contextId;
   const activeContextType = sParams?.contextType;
 
@@ -74,6 +81,15 @@ export default async function AdminPortalPage({
           userRole={user.role}
           locale={locale}
         />
+
+        {/* Active Storage Provider Card */}
+        <div className="bg-card border p-4 rounded">
+          <div className="flex items-center gap-2 mb-2">
+            <HardDrive className="w-4 h-4 text-muted-foreground" />
+            <span className="text-[9px] font-mono font-black text-muted-foreground uppercase">ALMACENAMIENTO_ACTIVO</span>
+          </div>
+          <div className="text-xl font-mono font-black text-[#2dd4bf] uppercase">{activeProvider}</div>
+        </div>
 
         <DashboardCardsGrid locale={locale} tenantQuery={tenantQuery} adminT={t} portalT={ap} />
 
