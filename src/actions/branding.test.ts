@@ -53,7 +53,7 @@ vi.mock('next/cache', () => ({
 import { updateTenantBrandingAction } from './branding';
 // @ts-expect-error - named mock exports, not in real module
 import { mockGetConfig, mockUpdateConfig } from '@/services/tenant/tenant-service';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 
 describe('updateTenantBrandingAction — roleCustomization', () => {
   beforeEach(() => {

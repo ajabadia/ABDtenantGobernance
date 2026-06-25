@@ -9,10 +9,10 @@
  */
 
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { TenantManagementContainer } from '@/components/admin/tenants/TenantManagementContainer';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import Link from 'next/link';
 import { ArrowLeft, Building2 } from 'lucide-react';
 import type { TenantManagementTranslations } from '@/components/admin/tenants/types';

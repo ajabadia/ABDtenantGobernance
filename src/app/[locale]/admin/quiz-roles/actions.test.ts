@@ -43,7 +43,7 @@ vi.mock('@/services/tenant/tenant-service', () => ({
   },
 }));
 
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { fetchTenantRoleCustomizationAction } from './role-queries';
 import {
   fetchQuizRolesAction,

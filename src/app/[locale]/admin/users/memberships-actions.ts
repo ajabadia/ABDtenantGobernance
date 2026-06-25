@@ -11,7 +11,7 @@
 'use server'
 
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';;
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';
 import { userGroupMembershipRepository } from '@/lib/repositories/UserGroupMembershipRepository';
 import mongoose, { type QueryFilter } from 'mongoose';
 import { type IUserGroupMembership } from '@/models/UserGroupMembership';

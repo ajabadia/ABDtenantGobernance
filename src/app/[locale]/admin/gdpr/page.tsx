@@ -9,7 +9,7 @@
  */
 
 import React from 'react';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { getTranslations } from 'next-intl/server';
 import { ShieldX, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';

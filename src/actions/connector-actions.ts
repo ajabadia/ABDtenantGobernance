@@ -13,7 +13,7 @@
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import StorageConnector, { TStorageConnector } from '@/models/StorageConnector';
 import crypto from 'crypto';
 import { AuditService } from '@/services/tenant/audit-service';

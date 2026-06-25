@@ -11,7 +11,7 @@
 import { SpaceRepository } from '@/lib/repositories/SpaceRepository';
 import { AssetSpaceLinkRepository } from '@/lib/repositories/AssetSpaceLinkRepository';
 import { AuditService } from './audit-service';
-import { withTenantContext } from '@ajabadia/satellite-sdk/db';;
+import { withTenantContext } from '@ajabadia/satellite-sdk/db';
 
 const spaceRepository = new SpaceRepository();
 const assetSpaceLinkRepository = new AssetSpaceLinkRepository();

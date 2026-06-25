@@ -9,7 +9,7 @@
  */
 
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';;
+import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';
 
 export interface ILicenseRequest extends Document {
   tenantId: string;

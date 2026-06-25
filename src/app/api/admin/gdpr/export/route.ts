@@ -10,7 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB, connectLogsDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';;
+import { connectDB, connectLogsDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';
 import { TenantService } from '@/services/tenant/tenant-service';
 import JSZip from 'jszip';
 

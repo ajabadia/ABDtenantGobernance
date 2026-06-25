@@ -9,7 +9,7 @@
  */
 
 import { getTranslations } from 'next-intl/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { ShoppingBag, ArrowLeft } from 'lucide-react';
 import { AdminPageHeader } from '@ajabadia/styles';
 import { GlobalFooter } from '@ajabadia/ecosystem-widgets';

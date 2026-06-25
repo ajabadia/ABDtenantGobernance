@@ -9,7 +9,7 @@
  */
 
 import mongoose, { Schema, Document, Model } from 'mongoose';
-import { getTenantModel } from '@ajabadia/satellite-sdk/db';;
+import { getTenantModel } from '@ajabadia/satellite-sdk/db';
 
 export interface IPermissionPolicy extends Document {
   tenantId: string;

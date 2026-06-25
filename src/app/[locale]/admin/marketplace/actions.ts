@@ -10,8 +10,8 @@
 
 'use server';
 
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import LicenseRequest from '@/models/LicenseRequest';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { AuditService } from '@/services/tenant/audit-service';

@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';;
+import { connectDB, withTenantContext } from '@ajabadia/satellite-sdk/db';
 import Space from '@/models/Space';
 
 export async function GET(req: NextRequest) {

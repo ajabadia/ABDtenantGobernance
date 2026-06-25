@@ -9,14 +9,14 @@
  */
 
 import React from 'react';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { AuditHistoryPanel } from '@/components/admin/audit/AuditHistoryPanel';
 import { AuditTenantSelector } from '@/components/admin/audit/AuditTenantSelector';
 import { ShieldCheck, Activity, ArrowLeft } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 import Link from 'next/link';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import type { Tenant } from '@/lib/schemas/tenant';
 import { AdminPageHeader } from '@ajabadia/styles';
 

@@ -12,7 +12,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';;
+import { connectDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';
 import { getAuditLogModel } from '@/models/AuditLog';
 import { AuditService } from '@/services/tenant/audit-service';
 

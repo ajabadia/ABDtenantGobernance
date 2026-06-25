@@ -9,7 +9,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { connectDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';;
+import { connectDB, getTenantConnection } from '@ajabadia/satellite-sdk/db';
 import { getAuditLogModel } from '@/models/AuditLog';
 import { z } from 'zod';
 

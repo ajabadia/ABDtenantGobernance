@@ -10,7 +10,7 @@
 
 import { NextResponse } from 'next/server';
 import { ensureIndustrialAccess, generateToken } from '@ajabadia/satellite-sdk';
-import type { TokenPayloadInput } from '@ajabadia/satellite-sdk/core';;
+import type { TokenPayloadInput } from '@ajabadia/satellite-sdk/core';
 import { z } from 'zod';
 import { AuditService } from '@/services/tenant/audit-service';
 import { cookies } from 'next/headers';

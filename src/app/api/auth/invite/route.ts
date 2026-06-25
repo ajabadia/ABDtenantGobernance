@@ -10,7 +10,7 @@
 
 import { NextResponse } from 'next/server';
 import { ResendEmailService } from '@/services/email/resend-email-service';
-import { rateLimitMongodb } from '@ajabadia/satellite-sdk/utils';;
+import { rateLimitMongodb } from '@ajabadia/satellite-sdk/utils';
 import { z } from 'zod';
 import { AuditService } from '@/services/tenant/audit-service';
 

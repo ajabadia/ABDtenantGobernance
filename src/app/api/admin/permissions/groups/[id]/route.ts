@@ -9,9 +9,9 @@
  */
 
 import { NextResponse } from 'next/server';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { PermissionService } from '@/services/tenant/permission-service';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import { AuditService } from '@/services/tenant/audit-service';
 
 export async function PUT(

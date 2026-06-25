@@ -8,7 +8,7 @@
 
 import React from 'react';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { getTranslations } from 'next-intl/server';
 import { ArrowLeft, Terminal } from 'lucide-react';

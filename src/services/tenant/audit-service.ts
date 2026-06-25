@@ -8,9 +8,9 @@
  * @lastUpdated 2026-06-23T23:28:43.819Z
  */
 
-import { connectLogsDB } from '@ajabadia/satellite-sdk/db';;
+import { connectLogsDB } from '@ajabadia/satellite-sdk/db';
 import { getAuditLogModel, IAuditLog } from '@/models/AuditLog';
-import { logger } from '@ajabadia/satellite-sdk/logger';;
+import { logger } from '@ajabadia/satellite-sdk/logger';
 
 export class AuditService {
   /**

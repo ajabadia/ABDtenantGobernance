@@ -9,7 +9,7 @@
  */
 
 import { Schema, Connection, Document } from 'mongoose';
-import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';;
+import { encryptionPlugin } from '@ajabadia/satellite-sdk/db';
 
 export interface IAuditLog {
   appId?: string;                        // Aplicación origen: 'auth', 'quiz', 'gobernanza'

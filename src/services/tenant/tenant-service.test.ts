@@ -69,7 +69,7 @@ vi.mock('@/models/Space', () => {
   };
 });
 
-import { SecurityService } from '@ajabadia/satellite-sdk/core';;
+import { SecurityService } from '@ajabadia/satellite-sdk/core';
 
 describe('TenantService', () => {
   beforeEach(() => {

@@ -11,7 +11,7 @@
 'use server'
 
 import { iamClient, InviteUserPayload, UpdateUserPayload, IamUser } from '@/lib/services/iamClient';
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { AuditService } from '@/services/tenant/audit-service';
 
 export async function fetchUsersAction(tenantId: string): Promise<{ data?: IamUser[]; error?: string; }> {

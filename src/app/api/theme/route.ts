@@ -10,7 +10,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getCache, setCache } from '@ajabadia/satellite-sdk/auth-middleware';
-import { connectDB } from '@ajabadia/satellite-sdk/db';;
+import { connectDB } from '@ajabadia/satellite-sdk/db';
 import { TenantService } from '@/services/tenant/tenant-service';
 import { generateTenantCss } from '@ajabadia/styles';
 import { AuditService } from '@/services/tenant/audit-service';

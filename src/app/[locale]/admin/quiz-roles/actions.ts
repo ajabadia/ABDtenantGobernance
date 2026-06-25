@@ -10,7 +10,7 @@
 
 'use server'
 
-import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';;
+import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { QuizRoleClient } from '@/services/quiz-role-client';
 import { AuditService } from '@/services/tenant/audit-service';
 import { QuizRoleRecord } from './types';
