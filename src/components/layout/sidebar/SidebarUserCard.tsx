@@ -58,7 +58,7 @@ export function SidebarUserCard({
           <div className="flex items-center gap-1.5">
             {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
             <a
-              href="/api/auth/logout"
+              href="/api/abd-auth/logout"
               className="p-2 hover:bg-red-500/10 text-muted-foreground hover:text-red-400 border border-border hover:border-red-500/20 transition-all duration-200 cursor-pointer focus:outline-none focus:ring-1 focus:ring-red-400/50"
               title={t('logout')}
               aria-label={t('logout')}

@@ -147,7 +147,7 @@ export function SidebarNavigation({ session, logoUrl, tenantSelectorSlot, settin
       session={session}
       links={links}
       logoUrl={finalLogoUrl}
-      onLogout={() => { window.location.href = '/api/auth/logout'; }}
+      onLogout={() => { window.location.href = '/api/abd-auth/logout'; }}
       locale={locale}
       brandName={t('appTitle') || 'ABD SYSTEM'}
       activeHref={pathname}
