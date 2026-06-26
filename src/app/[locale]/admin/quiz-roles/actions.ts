@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona roles de quiz al cargando y asignando roles dentro de un inquilino, registrando acciones para auditoría.
+ * @purpose Gestiona roles de quiz al recuperar y asignar roles dentro de un inquilino, registrando acciones para auditoría.
  * @purpose_en Manages quiz roles by fetching and assigning roles within a tenant, logging actions for auditing.
  * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:4,imports:3,sig:1k2aj63
- * @lastUpdated 2026-06-25T09:23:40.595Z
+ * @fingerprint exports:4,imports:4,sig:1v6wivu
+ * @lastUpdated 2026-06-26T10:04:50.890Z
  */
 
 'use server'

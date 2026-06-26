@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona el proceso de eliminación del GDPR para un usuario a través de múltiples servicios satelitales.
+ * @purpose Gestiona el proceso de eliminación de datos GDPR para un usuario a través de múltiples servicios satelitales.
  * @purpose_en Orchestrates the GDPR purge process for a user across multiple satellite services.
  * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:1,imports:4,sig:6g2z21
- * @lastUpdated 2026-06-25T09:22:33.947Z
+ * @fingerprint exports:1,imports:5,sig:1o3pfvq
+ * @lastUpdated 2026-06-26T10:04:22.580Z
  */
 
 'use server';

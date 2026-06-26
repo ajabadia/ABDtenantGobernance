@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona el envío de correos electrónicos a través de la API Resend, proporcionando métodos de nivel bajo y alto para casos específicos como invitaciones y reinicios de contraseña.
+ * @purpose Gestiona el envío de correos electrónicos a través de la API Resend, proporcionando métodos de nivel bajo y alto para casos específicos como invitaciones y restablecimiento de contraseñas.
  * @purpose_en Manages sending emails through the Resend API, providing low-level and high-level methods for specific use cases like invitations and password resets.
  * @refactorable false
  * @classification Business Service
  * @complexity Low
- * @fingerprint exports:5,imports:1,sig:1m6pf63
- * @lastUpdated 2026-06-23T23:28:25.488Z
+ * @fingerprint exports:5,imports:1,sig:105skqz
+ * @lastUpdated 2026-06-26T10:20:35.574Z
  */
 
 // src/services/email/resend-email-service.ts

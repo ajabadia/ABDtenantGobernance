@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona políticas de permisos para inquilinos al recuperar y crear políticas.
+ * @purpose Gestiona políticas de permisos para inquilinos mediante la recuperación y creación de políticas.
  * @purpose_en Manages permission policies for tenants by fetching and creating policies.
  * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:5,sig:vh6m1i
- * @lastUpdated 2026-06-24T10:34:30.648Z
+ * @fingerprint exports:2,imports:6,sig:b081yb
+ * @lastUpdated 2026-06-26T10:04:46.961Z
  */
 
 'use server'

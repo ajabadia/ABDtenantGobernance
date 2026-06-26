@@ -1,11 +1,11 @@
 /**
  * @purpose Gestiona solicitudes PATCH y DELETE para actualizar y desactivar información de un inquilino.
  * @purpose_en Manages PATCH and DELETE requests to update and deactivate a tenant's information.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:2,imports:6,sig:pjea8d
- * @lastUpdated 2026-06-24T10:33:46.032Z
+ * @fingerprint exports:2,imports:6,sig:1dtsone
+ * @lastUpdated 2026-06-26T10:04:27.225Z
  */
 
 import { NextResponse } from 'next/server';

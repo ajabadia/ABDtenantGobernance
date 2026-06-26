@@ -4,8 +4,8 @@
  * @refactorable false
  * @classification Type Definition
  * @complexity Low
- * @fingerprint exports:5,imports:1,sig:1snu40x
- * @lastUpdated 2026-06-23T21:51:58.588Z
+ * @fingerprint exports:5,imports:2,sig:qlpw50
+ * @lastUpdated 2026-06-26T10:20:33.814Z
  */
 
 import mongoose, { Schema, Document, Model } from 'mongoose';

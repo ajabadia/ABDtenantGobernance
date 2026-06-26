@@ -6,8 +6,8 @@ Se renderiza una grilla de tarjetas de acción para el panel administrativo, cad
  * @refactorable true (contains too many state variables and UI parts)
  * @classification UI Component
  * @complexity Low
- * @fingerprint exports:1,imports:2,sig:i8dep6
- * @lastUpdated 2026-06-23T21:44:51.271Z
+ * @fingerprint exports:1,imports:2,sig:3k5joz
+ * @lastUpdated 2026-06-26T10:05:11.566Z
  */
 
 import { Palette, Layers, Building2, ShieldCheck, Shield, ShoppingBag, GraduationCap, Cloud, Terminal, ShieldAlert } from 'lucide-react';

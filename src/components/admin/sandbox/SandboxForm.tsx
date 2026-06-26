@@ -4,8 +4,10 @@
  * @purpose Formulario de control Sandbox para inyectar JWTs de prueba, simular desconexión de licencias y saltos de rol instantáneos.
  * @purpose_en Sandbox control form to inject test JWTs, simulate license disconnects, and perform instant role shifting.
  * @refactorable false
- * @classification UI Component
- * @complexity Medium
+ * @classification Helper Utility
+ * @complexity Low
+ * @fingerprint exports:1,imports:3,sig:1nqxtsd
+ * @lastUpdated 2026-06-26T10:21:01.040Z
  */
 
 import React, { useState } from 'react';

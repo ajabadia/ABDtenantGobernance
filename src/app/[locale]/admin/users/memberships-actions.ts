@@ -1,11 +1,11 @@
 /**
- * @purpose Gestiona membresias de grupos de usuarios para inquilinos mediante la recuperación, actualización y eliminación de membresías.
+ * @purpose Gestiona pertenencias de grupos de usuarios para inquilinos mediante la recopilación, actualización y eliminación de membresías.
  * @purpose_en Manages user group memberships for tenants by fetching, updating, and deleting memberships.
  * @refactorable true (contains multiple functions with similar logic)
  * @classification Business Service
  * @complexity Medium
- * @fingerprint exports:3,imports:5,sig:g72999
- * @lastUpdated 2026-06-24T10:34:51.483Z
+ * @fingerprint exports:3,imports:6,sig:f0nrnu
+ * @lastUpdated 2026-06-26T10:05:04.313Z
  */
 
 'use server'

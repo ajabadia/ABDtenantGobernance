@@ -1,11 +1,11 @@
 /**
- * @purpose Renderiza la página de conectores administrativos con un encabezado y una interfaz de cliente interactiva para gestionar conectores.
+ * @purpose Renderiza la página de conectores administrativos con un encabezado y una interfaz de usuario interactiva para gestionar conectores.
  * @purpose_en Renders the admin connectors page with a header and a client interactive dashboard for managing connectors.
- * @refactorable false
+ * @refactorable true (contains too many state variables and UI parts)
  * @classification UI Component
  * @complexity Medium
- * @fingerprint exports:2,imports:8,sig:bxszad
- * @lastUpdated 2026-06-23T20:37:21.023Z
+ * @fingerprint exports:2,imports:9,sig:1k2ay7m
+ * @lastUpdated 2026-06-26T10:04:32.672Z
  */
 
 import React from 'react';
