@@ -19,40 +19,48 @@ interface SatelliteExportResult {
   error?: string;
 }
 
+async function callSatelliteExport(
+  satellite: string,
+  tenantId: string,
+  userId: string,
+  email?: string
+): Promise<SatelliteExportResult> {
+  const url = getSatelliteUrl(satellite);
+  if (!url) {
+    return { satellite, success: false, error: `No URL configured for ${satellite}` };
+  }
+  try {
+    const res = await fetch(`${url}/api/internal/gdpr/export`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.ABD_INTERNAL_SECRET || ''}` },
+      body: JSON.stringify({ tenantId, userId, email }),
+    });
+    if (res.ok) {
+      const buffer = await res.arrayBuffer();
+      const base64 = Buffer.from(buffer).toString('base64');
+      return { satellite, success: true, data: base64 };
+    }
+    const errData = await res.json().catch(() => ({ error: res.statusText }));
+    return { satellite, success: false, error: errData.error || `HTTP ${res.status}` };
+  } catch (err) {
+    return { satellite, success: false, error: String(err) };
+  }
+}
+
 export async function orchestrateGdprExport(
   tenantId: string,
   userId: string,
   email?: string
 ): Promise<{ results: SatelliteExportResult[]; combinedZip?: string }> {
-  const user = await ensureIndustrialAccess('ADMIN');
-  const results: SatelliteExportResult[] = [];
+  await ensureIndustrialAccess('ADMIN');
 
-  // 1. ABDQuiz export
-  const quizUrl = getSatelliteUrl('quiz');
-  if (quizUrl) {
-    try {
-      const res = await fetch(`${quizUrl}/api/internal/gdpr/export`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${process.env.ABD_INTERNAL_SECRET || ''}` },
-        body: JSON.stringify({ tenantId, userId, email }),
-      });
-      if (res.ok) {
-        const buffer = await res.arrayBuffer();
-        const base64 = Buffer.from(buffer).toString('base64');
-        results.push({ satellite: 'quiz', success: true, data: base64 });
-      } else {
-        const errData = await res.json().catch(() => ({ error: res.statusText }));
-        results.push({ satellite: 'quiz', success: false, error: errData.error || `HTTP ${res.status}` });
-      }
-    } catch (err) {
-      results.push({ satellite: 'quiz', success: false, error: String(err) });
-    }
-  }
+  const satellites = ['auth', 'quiz', 'files', 'logs'];
+  const results = await Promise.all(
+    satellites.map(s => callSatelliteExport(s, tenantId, userId, email))
+  );
 
-  // Aggregate all successful ZIPs into one (future: cross-satellite merge)
   const combinedZip = results.find(r => r.success)?.data;
 
-  // Log the export
   console.log(`[GDPR_EXPORT] User ${userId} from tenant ${tenantId}: ${results.filter(r => r.success).length}/${results.length} satellites succeeded`);
 
   return { results, combinedZip };
