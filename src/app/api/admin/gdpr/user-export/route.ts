@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona el solicitud POST para iniciar una exportación de usuario GDPR, asegurando acceso industrial, validando entrada y coordinando el proceso de exportación, y devolviendo el archivo zip resultante.
+ * @purpose_en Handles the POST request for initiating a GDPR user export, ensuring industrial access, validating input, orchestrating the export process, and returning the resulting zip file.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:3,sig:vswnkf
+ * @lastUpdated 2026-06-26T06:18:09.945Z
+ */
+
 import { NextRequest, NextResponse } from 'next/server';
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
 import { orchestrateGdprExport } from '@/actions/gdpr-export';

@@ -1,3 +1,13 @@
+/**
+ * @purpose Gestiona las solicitudes de exportación de GDPR para múltiples servicios satelitales para un inquilino y usuario.
+ * @purpose_en Orchestrates GDPR export requests across multiple satellite services for a given tenant and user.
+ * @refactorable false
+ * @classification Business Service
+ * @complexity Medium
+ * @fingerprint exports:1,imports:1,sig:20x3mg
+ * @lastUpdated 2026-06-26T06:18:04.483Z
+ */
+
 'use server';
 
 import { ensureIndustrialAccess } from '@ajabadia/satellite-sdk/auth-middleware';
