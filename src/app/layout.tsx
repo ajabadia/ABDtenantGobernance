@@ -19,7 +19,7 @@ configureLogger({
   token: process.env.LOGS_SECRET_TOKEN,
   appId: 'ABDGovernance',
 });
-import { ThemeProvider } from "@/components/ThemeProvider";
+import { ThemeProvider } from "@ajabadia/ecosystem-widgets";
 import "@ajabadia/styles/dist/styles/industrial-core.css";
 import "./globals.css";
 

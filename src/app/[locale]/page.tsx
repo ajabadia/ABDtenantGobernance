@@ -1,60 +1,41 @@
-/**
- * @purpose Renderiza la página de inicio para la aplicación ABDtenantGobernance, incluyendo un encabezado, botones de llamada a la acción y pie de página con información de telemetry.
- * @purpose_en Renders the home page for the ABDtenantGobernance application, including a header, CTA buttons, and footer with telemetry information.
- * @refactorable true (contains too many state variables and UI parts)
- * @classification UI Component
- * @complexity Low
- * @fingerprint exports:1,imports:5,sig:kj1jzw
- * @lastUpdated 2026-06-23T21:43:51.902Z
- */
-
 import { getTranslations } from 'next-intl/server';
 import { ArrowRight, ShieldCheck, Palette, Layers } from 'lucide-react';
-import { HeroHeader } from '@ajabadia/styles';
-import Link from 'next/link';
+import { HeroHeader, LandingPageLayout, SubtleLoginButton } from '@ajabadia/styles';
 import { GlobalFooter } from '@ajabadia/ecosystem-widgets';
+import { getIndustrialSession } from '@ajabadia/satellite-sdk/auth-middleware';
+import { redirect } from 'next/navigation';
 
 export default async function HomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
+  const session = await getIndustrialSession();
+
+  if (session.authenticated && session.user) {
+    redirect(`/${locale}/admin`);
+  }
+
   const t = await getTranslations('common');
   const h = await getTranslations('home');
-  
-  return (
-    <main className="flex min-h-screen flex-col items-center justify-center pb-12 px-6 md:px-24 bg-background text-foreground selection:bg-primary/30 overflow-hidden relative z-10" role="main">
-      {/* Tactical grid background layer */}
-      <div className="absolute inset-0 bg-industrial-grid mask-industrial-fade pointer-events-none opacity-50" aria-hidden="true" />
 
-      <div className="z-10 w-full max-w-5xl flex flex-col gap-16 animate-in fade-in duration-500">
-        
-        {/* Core Brand Header */}
-        <HeroHeader
-          statusText={h('status')}
-          title={
-            <>{h('abdTitle')} <span className="text-primary">{h('tenants')}</span></>
-          }
-          description={h('tagline')}
+  return (
+    <LandingPageLayout>
+      <HeroHeader
+        statusText={h('status')}
+        title={
+          <>{h('abdTitle')} <span className="text-primary">{h('tenants')}</span></>
+        }
+        description={h('tagline')}
+      />
+
+      <main className="flex flex-col gap-16">
+        <SubtleLoginButton
+          href={`/${locale}/admin`}
+          label={h('accessControlPlane')}
+          hint={locale === 'es'
+            ? 'Inicie sesión con sus credenciales federadas de ABDAuth'
+            : 'Sign in utilizing your federated credentials from ABDAuth'}
         />
 
-        {/* Central Tactical Action Area (CTA) */}
-        <div className="flex flex-col items-center justify-center gap-4">
-          <Link
-            href={`/${locale}/admin`}
-            className="inline-flex items-center justify-center px-10 py-5 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-widest hover:bg-primary/80 transition-all duration-300 font-black cursor-pointer shadow-lg active:scale-95 border border-primary/30 rounded-lg"
-          >
-            {h('accessControlPlane')}
-            <ArrowRight className="w-4 h-4 ml-3 animate-pulse" />
-          </Link>
-          <span className="font-mono text-[9px] uppercase tracking-[0.25em] text-muted-foreground">
-            {locale === 'es' 
-              ? 'Inicie sesión con sus credenciales federadas de ABDAuth' 
-              : 'Sign in utilizing your federated credentials from ABDAuth'}
-          </span>
-        </div>
-
-        {/* Tactical Key Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6" role="region" aria-label="System Capabilities">
-          
-          {/* Feature 1: Execution Engine */}
           <div className="p-6 bg-card border border-border rounded-xl flex flex-col gap-4">
             <div className="p-2.5 bg-secondary/10 border border-border text-primary w-fit rounded-lg">
               <Palette className="w-5 h-5" />
@@ -69,7 +50,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </p>
           </div>
 
-          {/* Feature 2: Scoring Systems */}
           <div className="p-6 bg-card border border-border rounded-xl flex flex-col gap-4">
             <div className="p-2.5 bg-secondary/10 border border-border text-primary w-fit rounded-lg">
               <Layers className="w-5 h-5" />
@@ -84,7 +64,6 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
             </p>
           </div>
 
-          {/* Feature 3: Security & Deduplication */}
           <div className="p-6 bg-card border border-border rounded-xl flex flex-col gap-4">
             <div className="p-2.5 bg-secondary/10 border border-border text-primary w-fit rounded-lg">
               <ShieldCheck className="w-5 h-5" />
@@ -100,17 +79,15 @@ export default async function HomePage({ params }: { params: Promise<{ locale: s
           </div>
 
         </div>
+      </main>
 
-        {/* Telemetry Footer */}
-        <GlobalFooter 
-          telemetryItems={[
-            { label: 'Control Plane', value: h('version') },
-            { label: 'Estilo', value: h('style') }
-          ]} 
-          separatorWidth="short"
-        />
-
-      </div>
-    </main>
+      <GlobalFooter
+        separatorWidth="short"
+        telemetryItems={[
+          { label: 'Control Plane', value: h('version') },
+          { label: 'Estilo', value: h('style') }
+        ]}
+      />
+    </LandingPageLayout>
   );
 }
