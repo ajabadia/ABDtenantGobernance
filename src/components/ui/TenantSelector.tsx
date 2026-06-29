@@ -7,10 +7,10 @@
  * @classification UI Component
  * @complexity Low
  * @fingerprint exports:1,imports:1,sig:ot0rqx
- * @lastUpdated 2026-06-23T21:46:53.428Z
+ * @lastUpdated 2026-06-29T00:00:00.000Z
  */
 
-import { TenantSelectorConnector } from "@ajabadia/ecosystem-widgets";
+import { DefaultTenantSelector } from "@ajabadia/ecosystem-widgets";
 
 interface SessionUser {
   id: string;
@@ -26,5 +26,5 @@ interface TenantSelectorProps {
 }
 
 export function TenantSelector({ sessionUser, variant, isOpen }: TenantSelectorProps) {
-  return <TenantSelectorConnector sessionUser={sessionUser} variant={variant} isOpen={isOpen} enableContexts />;
+  return <DefaultTenantSelector sessionUser={sessionUser} variant={variant} isOpen={isOpen} />;
 }
