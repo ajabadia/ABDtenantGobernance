@@ -20,7 +20,6 @@ configureLogger({
   appId: 'ABDGovernance',
 });
 import { ThemeProvider } from "@ajabadia/ecosystem-widgets";
-import "@ajabadia/styles/dist/styles/industrial-core.css";
 import "./globals.css";
 
 const geistSans = Geist({
