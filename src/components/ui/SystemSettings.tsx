@@ -6,8 +6,8 @@
  * @refactorable false
  * @classification UI Component
  * @complexity Medium
- * @fingerprint exports:1,imports:4,sig:zccnay
- * @lastUpdated 2026-06-23T21:46:49.348Z
+ * @fingerprint exports:1,imports:5,sig:1l4v9sy
+ * @lastUpdated 2026-06-30T05:49:50.901Z
  */
 
 import { useTheme } from 'next-themes';

@@ -1,11 +1,11 @@
 /**
- * @purpose Renderiza el layout raíz para la aplicación de Administración de Gobernanza ABDtenant, proporcionando manejo de ubicación y sesión, personalización del tema y estilos de marca.
+ * @purpose Renderiza el layout raíz para la aplicación ABDtenantGobernance, proporcionando gestión de ubicación y sesión, personalización del tema y estilos de marca.
  * @purpose_en Renders the root layout for the ABDtenantGobernance application, providing locale and session management, theme customization, and branding styles.
  * @refactorable false
  * @classification UI Component
  * @complexity Medium
- * @fingerprint exports:2,imports:8,sig:ms5fh0
- * @lastUpdated 2026-06-24T10:34:15.653Z
+ * @fingerprint exports:2,imports:7,sig:i99zma
+ * @lastUpdated 2026-06-30T05:49:45.358Z
  */
 
 import type { Metadata } from "next";
