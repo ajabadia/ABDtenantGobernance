@@ -88,7 +88,7 @@ export default async function AdminPortalPage({
             <HardDrive className="w-4 h-4 text-muted-foreground" />
             <span className="text-[9px] font-mono font-black text-muted-foreground uppercase">ALMACENAMIENTO_ACTIVO</span>
           </div>
-          <div className="text-xl font-mono font-black text-[#2dd4bf] uppercase">{activeProvider}</div>
+          <div className="text-xl font-mono font-black text-primary uppercase">{activeProvider}</div>
         </div>
 
         <DashboardCardsGrid locale={locale} tenantQuery={tenantQuery} adminT={t} portalT={ap} />
