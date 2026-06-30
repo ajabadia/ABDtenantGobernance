@@ -1,11 +1,11 @@
 /**
- * @purpose Renderiza la página de inicio del ABDtenantGobernance, incluyendo un encabezado heroico, botón de inicio de sesión y sección de capacidades del sistema.
+ * @purpose Renderiza la página principal del ABDtenantGobernance, incluyendo un encabezado heroico, botón de inicio de sesión y sección de capacidades del sistema.
  * @purpose_en Renders the home page for the ABDtenantGobernance application, including a hero header, login button, and system capabilities section.
  * @refactorable true (contains too many state variables and UI parts)
  * @classification UI Component
  * @complexity Low
- * @fingerprint exports:1,imports:6,sig:4ibh7f
- * @lastUpdated 2026-06-29T22:24:56.243Z
+ * @fingerprint exports:1,imports:6,sig:bam2hu
+ * @lastUpdated 2026-06-30T11:18:21.969Z
  */
 
 import { getTranslations } from 'next-intl/server';
